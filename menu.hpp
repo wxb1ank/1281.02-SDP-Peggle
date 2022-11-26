@@ -1,10 +1,8 @@
 #pragma once
 
 #include <array>
-#include <cstdlib>
 
 #include "graphics.hpp"
-#include "mechanics.hpp"
 #include "menu/page.hpp"
 #include "menu/page/credits.hpp"
 #include "menu/page/game.hpp"
@@ -14,7 +12,7 @@ namespace menu {
 
 class Menu {
 public:
-    Menu() : pages{&this->gamePage, &this->howToPlayPage, &this->creditsPage} {}
+    Menu();
 
     [[noreturn]] void run();
 

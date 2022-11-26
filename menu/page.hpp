@@ -5,16 +5,12 @@
 #include <FEHLCD.h>
 
 #include "../graphics.hpp"
-#include "../screen.hpp"
 
 namespace menu {
 
 class Page {
 public:
-    Page(const std::string name, const float centerY)
-        : runButton{name, {Screen::CENTER_X, centerY}, {100., 20.}},
-          backButton{"Back", {50., 15.}, {50., 15.}}
-    {}
+    Page(std::string, float);
 
     const gfx::Button &getRunButton() const {
         return this->runButton;

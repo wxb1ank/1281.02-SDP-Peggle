@@ -1,7 +1,11 @@
 #pragma once
 
+#include <cstdlib>
+#include <optional>
+
 struct Vector {
-    Vector(const float x = 0., const float y = 0.) : x{x}, y{y} {}
+    Vector();
+    Vector(float, float);
 
     float x;
     float y;
@@ -12,7 +16,10 @@ struct Vector {
 struct Position : Vector {
     using Vector::Vector;
 
-    static Position touch();
+    Position(std::size_t, std::size_t);
+
+    static std::optional<Position> currentTouch();
+    static Position nextTouch();
 
     float angleTo(Position) const;
 };

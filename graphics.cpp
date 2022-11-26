@@ -1,16 +1,33 @@
 #include <FEHLCD.h>
 
+#include "font.hpp"
+
 #include "graphics.hpp"
 
 namespace gfx {
 
+Button::Button(const std::string label, const Position center)
+    : label{label},
+      center{center},
+      size{
+        static_cast<float>(Font::widthOf(label)) + Button::DEFAULT_PADDING,
+        static_cast<float>(Font::HEIGHT) + Button::DEFAULT_PADDING
+      }
+{}
+
+Button::Button(const std::string label, const Position center, const Size size)
+    : label{label},
+      center{center},
+      size{size}
+{}
+
 bool Button::isPressed() const {
-    Position touch;
-    if (!LCD.Touch(&touch.x, &touch.y)) {
+    const auto touch = Position::currentTouch();
+    if (touch.has_value()) {
+        return this->isPressed(*touch);
+    } else {
         return false;
     }
-
-    return this->isPressed(touch);
 }
 
 bool Button::isPressed(const Position touch) const {
@@ -67,7 +84,17 @@ Position Button::getBottomRight() const {
     return { this->getRightX(), this->getBottomY() };
 }
 
-void Button::draw() const {
+void Button::drawUnpressed() const {
+    this->drawBorder();
+    this->drawLabel();
+}
+
+void Button::drawPressed() const {
+    this->fillBorder();
+    this->drawLabel();
+}
+
+void Button::drawBorder() const {
     const auto topLeft = this->getTopLeft();
     LCD.DrawRectangle(
         static_cast<int>(topLeft.x),
@@ -75,8 +102,38 @@ void Button::draw() const {
         static_cast<int>(this->size.width),
         static_cast<int>(this->size.height)
     );
+}
 
-    LCD.WriteAt(this->label.c_str(), static_cast<int>(topLeft.x), static_cast<int>(topLeft.y));
+void Button::fillBorder() const {
+    const auto topLeft = this->getTopLeft();
+    LCD.FillRectangle(
+        static_cast<int>(topLeft.x),
+        static_cast<int>(topLeft.y),
+        static_cast<int>(this->size.width),
+        static_cast<int>(this->size.height)
+    );
+}
+
+void Button::drawLabel() const {
+    LCD.WriteAt(
+        this->label.c_str(),
+        static_cast<int>(this->labelLeft()),
+        static_cast<int>(this->labelTop())
+    );
+}
+
+float Button::labelLeft() const {
+    const auto labelWidth = static_cast<float>(Font::widthOf(this->label));
+    const auto padding = (this->size.width - labelWidth) / 2.f;
+
+    return this->getLeftX() + padding;
+}
+
+float Button::labelTop() const {
+    const auto labelHeight = static_cast<float>(Font::HEIGHT);
+    const auto padding = (this->size.height - labelHeight) / 2.f;
+
+    return this->getTopY() + padding;
 }
 
 } // namespace gfx

@@ -6,29 +6,34 @@
 
 namespace menu {
 
+Menu::Menu() : pages{&this->gamePage, &this->howToPlayPage, &this->creditsPage} {}
+
 void Menu::run() {
     while (true) {
-        LCD.SetBackgroundColor(FEHLCD::FEHLCDColor::Black);
-        LCD.Clear();
         this->draw();
         this->step();
-        LCD.Update();
     }
 }
 
 void Menu::draw() const {
-    for (const auto page : this->pages) {
-        page->getRunButton().draw();
+    LCD.Update();
+    LCD.SetBackgroundColor(FEHLCD::FEHLCDColor::Black);
+    LCD.Clear();
+
+    for (const auto *page : this->pages) {
+        page->getRunButton().drawUnpressed();
     }
 }
 
 void Menu::step() {
-    const auto touch = Position::touch();
+    const auto touch = Position::nextTouch();
 
-    for (auto page : this->pages) {
+    for (auto *page : this->pages) {
         const auto &runButton = page->getRunButton();
 
         if (runButton.isPressed(touch)) {
+            runButton.drawPressed();
+
             // Wait until the button is no longer pressed.
             while (runButton.isPressed());
 

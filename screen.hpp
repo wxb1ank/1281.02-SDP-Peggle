@@ -9,11 +9,12 @@ public:
     static constexpr std::size_t WIDTH{320};
     static constexpr std::size_t HEIGHT{240};
 
-    static const float MAX_X;
-    static const float MAX_Y;
-
-    static const float CENTER_X;
-    static const float CENTER_Y;
+    static constexpr std::size_t MIN_X{0};
+    static constexpr std::size_t MIN_Y{0};
+    static constexpr std::size_t CENTER_X{Screen::WIDTH / 2};
+    static constexpr std::size_t CENTER_Y{Screen::HEIGHT / 2};
+    static constexpr std::size_t MAX_X{Screen::WIDTH - 1};
+    static constexpr std::size_t MAX_Y{Screen::HEIGHT - 1};
 
     static const Position TOP_LEFT;
     static const Position TOP_RIGHT;

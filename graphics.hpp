@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdlib>
 #include <string>
 
 #include "mechanics.hpp"
@@ -13,11 +14,8 @@ struct Size {
 
 class Button {
 public:
-    Button(const std::string label, const Position center, const Size size)
-        : label{label},
-          center{center},
-          size{size}
-    {}
+    Button(std::string, Position);
+    Button(std::string, Position, Size);
 
     const std::string &getLabel() const {
         return this->label;
@@ -39,17 +37,27 @@ public:
     bool isPressed() const;
     bool isPressed(Position) const;
 
-    void draw() const;
+    void drawUnpressed() const;
+    void drawPressed() const;
 
 private:
+    static constexpr float DEFAULT_PADDING{5.f};
+
     std::string label;
     Position center;
     Size size;
+
+    void drawBorder() const;
+    void fillBorder() const;
+    void drawLabel() const;
 
     float getLeftX() const;
     float getRightX() const;
     float getTopY() const;
     float getBottomY() const;
+
+    float labelLeft() const;
+    float labelTop() const;
 };
 
 } // namespace gfx

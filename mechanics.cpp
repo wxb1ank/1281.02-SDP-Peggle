@@ -2,20 +2,39 @@
 
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
+#include <optional>
 
 #include <FEHLCD.h>
 
 #include "mechanics.hpp"
 
+Vector::Vector() : x{0.}, y{0.} {}
+
+Vector::Vector(const float x, const float y) : x{x}, y{y} {}
+
 float Vector::magnitude() const {
     return std::abs(std::hypotf(this->x, this->y));
 }
 
-Position Position::touch() {
-    Position target;
-    while (!LCD.Touch(&target.x, &target.y));
+std::optional<Position> Position::currentTouch() {
+    Position touch;
+    if (LCD.Touch(&touch.x, &touch.y)) {
+        return {touch};
+    } else {
+        return {};
+    }
+}
 
-    return target;
+Position::Position(const std::size_t x, const std::size_t y)
+    : Vector{static_cast<float>(x), static_cast<float>(y)}
+{}
+
+Position Position::nextTouch() {
+    Position touch;
+    while (!LCD.Touch(&touch.x, &touch.y));
+
+    return touch;
 }
 
 float Position::angleTo(const Position other) const {
@@ -28,4 +47,4 @@ float Position::angleTo(const Position other) const {
     return angle;
 }
 
-const Acceleration Acceleration::GRAVITY{0., -200'000.};
+const Acceleration Acceleration::GRAVITY{0.f, -200'000.f};
