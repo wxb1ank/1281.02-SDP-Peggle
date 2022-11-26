@@ -18,10 +18,6 @@ simulator_libraries/
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-*.smod
-
 # Compiled Static libraries
 *.lai
 *.la
@@ -37,6 +33,7 @@ simulator_libraries/
 .DS_Store
 
 # VS Code
+.vscode
 *.code_workspace
 
 # Project specific
