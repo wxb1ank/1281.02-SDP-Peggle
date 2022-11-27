@@ -38,6 +38,11 @@ struct Size {
 /// \author Will Blankemeyer
 class View {
 public:
+    /// \brief Destroys this view.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~View();
+
     /// \brief The size of this view.
     ///
     /// \return The size.
@@ -123,13 +128,18 @@ public:
 /// \author Will Blankemeyer
 class Label : public View {
 public:
+    /// \brief Destroys this label.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~Label();
+
     /// \brief Creates a new label.
     ///
     /// \param[in]  center  The position of the center of this label.
     /// \param[in]  content The textual content of this label.
     /// \param[in]  color   The font color. The default is white.
     /// \author Will Blankemeyer
-    Label(Position center, std::string content, Color color = Color::White);
+    Label(Position center, std::string content, Color color = Color::WHITE);
 
     /// \brief A mutable reference to the textual content of this label.
     ///
@@ -174,7 +184,7 @@ public:
     ///
     /// \warning This method mutates the global font color of the LCD.
     /// \author Will Blankemeyer
-    void draw() const;
+    virtual void draw() const;
 
 private:
     Position center;
@@ -195,14 +205,19 @@ public:
     /// \param[in]  label   The button label.
     /// \param[in]  color   The border color. The default is white.
     /// \author Will Blankemeyer
-    Button(Label label, Color color = Color::White);
+    Button(Label label, Color color = Color::WHITE);
     /// \brief Creates a new button.
     ///
     /// \param[in]  label   The button label.
     /// \param[in]  size    The size of the button.
     /// \param[in]  color   The border color. The default is white.
     /// \author Will Blankemeyer
-    Button(Label label, Size size, Color color = Color::White);
+    Button(Label label, Size size, Color color = Color::WHITE);
+
+    /// \brief Destroys this button.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~Button();
 
     /// \brief The distance, in pixels, between the boundaries of a label and those of the
     /// containing button if constructed with default padding.
@@ -263,6 +278,10 @@ private:
     Label label;
     Size size;
     Color color;
+
+    static constexpr float pad(const float dim) {
+        return dim + Button::DEFAULT_PADDING;
+    }
 
     void drawBorder() const;
     void fillBorder() const;

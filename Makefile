@@ -134,7 +134,7 @@ $(OBJ_DIRS):
 	@-$(call mkdir,$(dir $@))
 
 doc:
-	$(DOXYGEN)
+	@$(DOXYGEN)
 
 clean:
 	@-$(call rm,$(TARGET))

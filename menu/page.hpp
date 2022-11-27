@@ -5,8 +5,7 @@
 #include <functional>
 #include <string>
 
-#include <FEHLCD.h>
-
+#include "../FEHLCD.h"
 #include "../ui.hpp"
 
 namespace menu {
@@ -19,6 +18,11 @@ public:
     /// \param[in]  centerY The Y coordinate of the center of the run button.
     /// \author Will Blankemeyer
     Page(std::string name, float centerY);
+
+    /// \brief Destroys this page.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~Page();
 
     /// \brief An immutable reference to the main menu button that runs this page.
     ///
@@ -36,6 +40,9 @@ public:
         return this->backButton;
     }
 
+    /// \brief Draws this page and responds to input.
+    ///
+    /// \author Will Blankemeyer
     virtual void run() = 0;
 
 protected:

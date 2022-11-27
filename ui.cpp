@@ -1,5 +1,4 @@
-#include <FEHLCD.h>
-
+#include "FEHLCD.h"
 #include "font.hpp"
 
 #include "ui.hpp"
@@ -16,6 +15,8 @@ Size::Size(const float width, const float height) : width{width}, height{height}
 float half(const float f) {
     return f / 2.f;
 }
+
+View::~View() {}
 
 float View::getLeftX() const {
     return this->getCenter().x - half(this->getWidth());
@@ -73,6 +74,8 @@ Label::Label(const Position center, const std::string content, const Color color
     color{color}
 {}
 
+Label::~Label() {}
+
 float Label::getWidth() const {
     return static_cast<float>(Font::WIDTH * this->content.length());
 }
@@ -82,7 +85,7 @@ float Label::getHeight() const {
 }
 
 void Label::draw() const {
-    LCD.SetFontColor(this->color);
+    LCD.SetFontColor(this->color.encode());
     LCD.WriteAt(
         this->content.c_str(),
         static_cast<int>(this->getLeftX()),
@@ -93,10 +96,7 @@ void Label::draw() const {
 Button::Button(const Label label, const Color color)
 :   Button{
         label,
-        {
-            label.getWidth() + Button::DEFAULT_PADDING,
-            label.getHeight() + Button::DEFAULT_PADDING
-        },
+        {Button::pad(label.getWidth()), Button::pad(label.getHeight())},
         color,
     }
 {}
@@ -106,6 +106,8 @@ Button::Button(const Label label, const Size size, const Color color)
     size{size},
     color{color}
 {}
+
+Button::~Button() {}
 
 bool Button::isPressed() const {
     const auto touch = Position::currentTouch();
@@ -129,7 +131,7 @@ void Button::drawPressed() const {
 void Button::drawBorder() const {
     const auto topLeft = this->getTopLeft();
 
-    LCD.SetFontColor(this->color);
+    LCD.SetFontColor(this->color.encode());
     LCD.DrawRectangle(
         static_cast<int>(topLeft.x),
         static_cast<int>(topLeft.y),
@@ -141,7 +143,7 @@ void Button::drawBorder() const {
 void Button::fillBorder() const {
     const auto topLeft = this->getTopLeft();
 
-    LCD.SetFontColor(this->color);
+    LCD.SetFontColor(this->color.encode());
     LCD.FillRectangle(
         static_cast<int>(topLeft.x),
         static_cast<int>(topLeft.y),

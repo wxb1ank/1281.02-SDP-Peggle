@@ -5,8 +5,7 @@
 
 #include <cstdlib>
 
-#include <FEHLCD.h>
-
+#include "FEHLCD.h"
 #include "mechanics.hpp"
 
 /// \brief The FEH Proteus LCD.
@@ -90,4 +89,25 @@ public:
 /// \brief The color of a pixel.
 ///
 /// \author Will Blankemeyer
-using Color = FEHLCD::FEHLCDColor;
+struct Color {
+    Color(unsigned char r, unsigned char g, unsigned char b);
+
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+
+    static const Color WHITE;
+    static const Color RED;
+    static const Color GREEN;
+    static const Color BLUE;
+    static const Color BLACK;
+
+    unsigned encode() const;
+
+    unsigned char getValue() const;
+    unsigned char getChroma() const;
+    float getHue() const;
+
+private:
+    unsigned char getMinComp() const;
+};

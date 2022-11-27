@@ -4,9 +4,9 @@
 #include <cmath>
 #include <iostream>
 
-#include <FEHLCD.h>
 #include <FEHUtility.h>
 
+#include "../../FEHLCD.h"
 #include "../../screen.hpp"
 
 #include "game.hpp"
@@ -126,13 +126,13 @@ int PegBoard::getNum()
 
 Page::Page(const float centerY) : menu::Page{"Game", centerY}, board{} {
     // Pegs on the board
-    for (unsigned x = 5; x < 160; x += 5) {
-        board.push({x, 200, 5});
+    for (unsigned x = 5; x < 160; x += 10) {
+        board.push({x, 200 - x, 5});
     }
 }
 
 void Page::run() {
-    LCD.Clear(Color::Black);
+    LCD.Clear(Color::BLACK.encode());
     this->board.drawPegs();
 
     // Location of where the player clicks on the screen
@@ -160,7 +160,7 @@ void Page::run() {
 
     // Updates the position of the ball after each tick based on the balls velocity and gravity
     while (true) {
-        LCD.Clear(Color::Black);
+        LCD.Clear(Color::BLACK.encode());
         this->board.drawPegs();
 
         x += vx*TICK_DURATION;

@@ -1,5 +1,6 @@
-#include <FEHLCD.h>
+#include <cstdlib>
 
+#include "FEHLCD.h"
 #include "mechanics.hpp"
 #include "screen.hpp"
 
@@ -7,11 +8,30 @@
 
 namespace menu {
 
+StackedLabel::StackedLabel(const Position center, const std::string content, const Color color)
+:   Label{center, content, color}
+{}
+
+StackedLabel::~StackedLabel() {}
+
+void StackedLabel::draw() const {
+    LCD.SetFontColor(this->getColor().encode());
+    for (std::size_t i = 0; i < 3; i++) {
+        const auto offset = static_cast<float>(i);
+        LCD.WriteAt(
+            this->getContent().c_str(),
+            static_cast<int>(this->getLeftX() + offset),
+            static_cast<int>(this->getTopY() + offset)
+        );
+    }
+}
+
 Menu::Menu()
-:   pages{
-        std::make_unique<GamePage>(75.),
-        std::make_unique<HowToPlayPage>(150.),
-        std::make_unique<CreditsPage>(225.)
+:   title{{static_cast<float>(Screen::CENTER_X), 10.f}, "Peggle!"},
+    pages{
+        std::make_unique<GamePage>(75.f),
+        std::make_unique<HowToPlayPage>(150.f),
+        std::make_unique<CreditsPage>(225.f)
     }
 {}
 
@@ -24,7 +44,9 @@ void Menu::run() {
 
 void Menu::draw() const {
     LCD.Update();
-    LCD.Clear(Color::Black);
+    LCD.Clear(Color::BLACK.encode());
+
+    this->title.draw();
 
     for (const auto &page : this->pages) {
         page->getRunButton().drawUnpressed();
