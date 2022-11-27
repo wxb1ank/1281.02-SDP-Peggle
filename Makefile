@@ -1,8 +1,6 @@
 # ~The Peggle Makefile~
 # Author: Will Blankemeyer
 #
-# Sorry in advance if it's cursed in some areas.
-#
 # Note: I have only tested this on Windows so it may fail on *nix-based platforms.
 
 REPO_NAME := simulator_libraries
@@ -14,6 +12,7 @@ BUILD_DIR := build
 GIT := git
 CXX := g++
 CC := gcc
+DOXYGEN := doxygen
 
 _recurse_dirs = $(foreach dir,$(dir $(wildcard $1*/.)),$(dir) $(call _recurse_dirs,$(dir)))
 recurse_dirs = $1 $(call _recurse_dirs,$1)
@@ -45,7 +44,7 @@ ifeq ($(OS),Windows_NT)
 
 	flip_slashes = $(subst /,\,$1)
 
-	mkdir = md $(call flip_slashes,$1)
+	mkdir = $(call quiet_shell,md $(call flip_slashes,$1))
 	rm = $(call quiet_shell,del /q $(call flip_slashes,$1))
 	rmdir = $(call quiet_shell,rd /s /q $(call flip_slashes,$1))
 
@@ -53,7 +52,7 @@ ifeq ($(OS),Windows_NT)
 
 	TARGET_SUFFIX := .exe
 else
-	mkdir = mkdir -p $1
+	mkdir = $(call quiet_shell,mkdir -p $1)
 	rm = $(call quiet_shell,rm -f $1)
 # The 'frfr' is essential for this to work.
 	rmdir = $(call quiet_shell,rm -frfr $1)
@@ -73,7 +72,7 @@ TARGET := game$(TARGET_SUFFIX)
 CXXFLAGS := $(COMMON_FLAGS) -std=c++$(CXX_STD)
 CFLAGS := $(COMMON_FLAGS) -std=c$(CC_STD)
 
-.PHONY: clone clean
+.PHONY: clone doc clean
 
 all: clone $(TARGET)
 
@@ -132,7 +131,10 @@ $(CC_OBJS): $(BUILD_DIR)/%.o: %.c | $(OBJ_DIRS)
 	@$(CC) -o $@ -c $< $(CFLAGS)
 
 $(OBJ_DIRS):
-	@$(call mkdir,$(dir $@))
+	@-$(call mkdir,$(dir $@))
+
+doc:
+	$(DOXYGEN)
 
 clean:
 	@-$(call rm,$(TARGET))

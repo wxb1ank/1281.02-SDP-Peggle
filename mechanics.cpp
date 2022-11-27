@@ -1,3 +1,4 @@
+// This is necessary for the `M_PI` family of macros.
 #define _USE_MATH_DEFINES
 
 #include <cmath>
@@ -13,7 +14,7 @@ Vector::Vector() : x{0.}, y{0.} {}
 
 Vector::Vector(const float x, const float y) : x{x}, y{y} {}
 
-float Vector::magnitude() const {
+float Vector::getMagnitude() const {
     return std::abs(std::hypotf(this->x, this->y));
 }
 
@@ -38,10 +39,10 @@ Position Position::nextTouch() {
 }
 
 float Position::angleTo(const Position other) const {
-    const auto x = other.x - this->x;
-    const auto y = other.y - this->y;
+    const auto dx = other.x - this->x;
+    const auto dy = other.y - this->y;
 
-    const auto angle = M_PI_2 - std::atan(x / y);
+    const auto angle = M_PI_2 - std::atan(dx / dy);
     printf("%f deg\n", angle * (180. / M_PI));
 
     return angle;

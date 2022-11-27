@@ -8,6 +8,11 @@ namespace ui {
 
 Size::Size(const float width, const float height) : width{width}, height{height} {}
 
+/// \brief Halves the given number.
+///
+/// \param[in]  f   A number.
+/// \return `f` divided by two.
+/// \author Will Blankemeyer
 float half(const float f) {
     return f / 2.f;
 }
@@ -44,9 +49,28 @@ Position View::getBottomRight() const {
     return { this->getRightX(), this->getBottomY() };
 }
 
-Label::Label(const Position center, const std::string content)
-    : center{center},
-      content{content}
+bool View::contains(const Position pos) const {
+    if (pos.x < this->getLeftX()) {
+        return false;
+    }
+    if (pos.x > this->getRightX()) {
+        return false;
+    }
+
+    if (pos.y < this->getTopY()) {
+        return false;
+    }
+    if (pos.y > this->getBottomY()) {
+        return false;
+    }
+
+    return true;
+}
+
+Label::Label(const Position center, const std::string content, const Color color)
+:   center{center},
+    content{content},
+    color{color}
 {}
 
 float Label::getWidth() const {
@@ -58,6 +82,7 @@ float Label::getHeight() const {
 }
 
 void Label::draw() const {
+    LCD.SetFontColor(this->color);
     LCD.WriteAt(
         this->content.c_str(),
         static_cast<int>(this->getLeftX()),
@@ -65,44 +90,30 @@ void Label::draw() const {
     );
 }
 
-Button::Button(const Label label)
-    : label{label},
-      size{
-        label.getWidth() + Button::DEFAULT_PADDING,
-        label.getHeight() + Button::DEFAULT_PADDING
-      }
+Button::Button(const Label label, const Color color)
+:   Button{
+        label,
+        {
+            label.getWidth() + Button::DEFAULT_PADDING,
+            label.getHeight() + Button::DEFAULT_PADDING
+        },
+        color,
+    }
 {}
 
-Button::Button(const Label label, const Size size)
-    : label{label},
-      size{size}
+Button::Button(const Label label, const Size size, const Color color)
+:   label{label},
+    size{size},
+    color{color}
 {}
 
 bool Button::isPressed() const {
     const auto touch = Position::currentTouch();
     if (touch.has_value()) {
-        return this->isPressed(*touch);
+        return this->contains(*touch);
     } else {
         return false;
     }
-}
-
-bool Button::isPressed(const Position touch) const {
-    if (touch.x < this->getLeftX()) {
-        return false;
-    }
-    if (touch.x > this->getRightX()) {
-        return false;
-    }
-
-    if (touch.y < this->getTopY()) {
-        return false;
-    }
-    if (touch.y > this->getBottomY()) {
-        return false;
-    }
-
-    return true;
 }
 
 void Button::drawUnpressed() const {
@@ -117,6 +128,8 @@ void Button::drawPressed() const {
 
 void Button::drawBorder() const {
     const auto topLeft = this->getTopLeft();
+
+    LCD.SetFontColor(this->color);
     LCD.DrawRectangle(
         static_cast<int>(topLeft.x),
         static_cast<int>(topLeft.y),
@@ -127,6 +140,8 @@ void Button::drawBorder() const {
 
 void Button::fillBorder() const {
     const auto topLeft = this->getTopLeft();
+
+    LCD.SetFontColor(this->color);
     LCD.FillRectangle(
         static_cast<int>(topLeft.x),
         static_cast<int>(topLeft.y),
