@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <functional>
 #include <string>
 
 #include <FEHLCD.h>
@@ -27,9 +28,18 @@ public:
         return this->runButton;
     }
 
-    void run();
+    /// \brief An immutable reference to the button that returns to the main menu.
+    ///
+    /// \return The back button.
+    /// \author Will Blankemeyer
+    const ui::Button &getBackButton() const {
+        return this->backButton;
+    }
 
-    virtual void step() = 0;
+    virtual void run() = 0;
+
+protected:
+    void run(std::function<void()> step) const;
 
 private:
     /// \brief The button in the main menu that runs this page.

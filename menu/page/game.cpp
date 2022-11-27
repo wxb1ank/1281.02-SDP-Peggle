@@ -131,9 +131,9 @@ Page::Page(const float centerY) : menu::Page{"Game", centerY}, board{} {
     }
 }
 
-void Page::step() {
+void Page::run() {
     LCD.Clear(Color::Black);
-    board.drawPegs();
+    this->board.drawPegs();
 
     // Location of where the player clicks on the screen
     float target_x;

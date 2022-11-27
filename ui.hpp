@@ -163,10 +163,10 @@ public:
         this->color = color;
     }
 
-    virtual float getWidth() const;
-    virtual float getHeight() const;
+    virtual float getWidth() const override;
+    virtual float getHeight() const override;
 
-    virtual Position getCenter() const {
+    virtual Position getCenter() const override {
         return this->center;
     }
 
@@ -226,19 +226,19 @@ public:
         return this->label;
     }
 
-    virtual Size getSize() const {
+    virtual Size getSize() const override {
         return this->size;
     }
 
-    virtual float getWidth() const {
+    virtual float getWidth() const override {
         return this->size.width;
     }
 
-    virtual float getHeight() const {
+    virtual float getHeight() const override {
         return this->size.height;
     }
 
-    virtual Position getCenter() const {
+    virtual Position getCenter() const override {
         return this->label.getCenter();
     }
 

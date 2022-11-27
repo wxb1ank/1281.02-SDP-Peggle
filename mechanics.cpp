@@ -28,7 +28,7 @@ std::optional<Position> Position::currentTouch() {
 }
 
 Position::Position(const std::size_t x, const std::size_t y)
-    : Vector{static_cast<float>(x), static_cast<float>(y)}
+:   Vector{static_cast<float>(x), static_cast<float>(y)}
 {}
 
 Position Position::nextTouch() {

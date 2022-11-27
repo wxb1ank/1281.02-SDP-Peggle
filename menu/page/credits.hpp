@@ -10,7 +10,7 @@ class CreditsPage : public Page {
 public:
     CreditsPage(float);
 
-    virtual void step();
+    virtual void run() final;
 };
 
 } // namespace menu

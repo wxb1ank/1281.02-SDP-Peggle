@@ -10,7 +10,7 @@ class HowToPlayPage : public Page {
 public:
     HowToPlayPage(float);
 
-    virtual void step();
+    virtual void run() final;
 };
 
 } // namespace menu

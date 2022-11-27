@@ -8,9 +8,11 @@ namespace menu {
 
 HowToPlayPage::HowToPlayPage(const float centerY) : Page{"How to Play", centerY} {}
 
-void HowToPlayPage::step() {
-    LCD.Clear();
-    LCD.WriteAt("How to Play", 100, 50);
+void HowToPlayPage::run() {
+    Page::run([]() {
+        LCD.Clear();
+        LCD.WriteAt("How to Play", 100, 50);
+    });
 }
 
 } // namespace menu

@@ -47,7 +47,7 @@ public:
     Page(float);
 
     /// \author Solomon Blair
-    virtual void step();
+    virtual void run() final;
 
 private:
     PegBoard board;

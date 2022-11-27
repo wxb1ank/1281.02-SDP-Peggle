@@ -8,9 +8,11 @@ namespace menu {
 
 CreditsPage::CreditsPage(const float centerY) : Page{"Credits", centerY} {}
 
-void CreditsPage::step() {
-    LCD.Clear();
-    LCD.WriteAt("Credits", 100, 50);
+void CreditsPage::run() {
+    Page::run([]() {
+        LCD.Clear();
+        LCD.WriteAt("Credits", 100, 50);
+    });
 }
 
 } // namespace menu
