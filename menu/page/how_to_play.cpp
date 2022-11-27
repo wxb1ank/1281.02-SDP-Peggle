@@ -7,11 +7,12 @@ namespace menu {
 
 HowToPlayPage::HowToPlayPage(const float centerY) : Page{"How to Play", centerY} {}
 
-void HowToPlayPage::run() {
-    Page::run([]() {
-        LCD.Clear();
-        LCD.WriteAt("How to Play", 100, 50);
-    });
+Color HowToPlayPage::getBackgroundColor() const {
+    return Color::BLACK;
+}
+
+void HowToPlayPage::drawContent() const {
+    LCD.WriteAt("How to Play", 100, 50);
 }
 
 } // namespace menu

@@ -6,11 +6,14 @@
 
 namespace menu {
 
-class HowToPlayPage : public Page {
+class HowToPlayPage final : public Page {
 public:
     HowToPlayPage(float);
 
-    virtual void run() final;
+    virtual Color getBackgroundColor() const override;
+
+protected:
+    virtual void drawContent() const override;
 };
 
 } // namespace menu

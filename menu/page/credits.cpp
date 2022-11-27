@@ -7,11 +7,12 @@ namespace menu {
 
 CreditsPage::CreditsPage(const float centerY) : Page{"Credits", centerY} {}
 
-void CreditsPage::run() {
-    Page::run([]() {
-        LCD.Clear();
-        LCD.WriteAt("Credits", 100, 50);
-    });
+Color CreditsPage::getBackgroundColor() const {
+    return Color::BLACK;
+}
+
+void CreditsPage::drawContent() const {
+    LCD.WriteAt("Credits", 100, 50);
 }
 
 } // namespace menu

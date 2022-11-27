@@ -68,10 +68,55 @@ bool View::contains(const Position pos) const {
     return true;
 }
 
-Label::Label(const Position center, const std::string content, const Color color)
+void View::draw() const {
+    this->drawBackground();
+    this->drawForeground();
+}
+
+void View::drawBackground() const {
+    if (this->fillsScreen()) {
+        LCD.Clear(this->getBackgroundColor().encode());
+    } else {
+        LCD.SetFontColor(this->getBackgroundColor().encode());
+        LCD.FillRectangle(
+            static_cast<int>(this->getLeftX()),
+            static_cast<int>(this->getTopY()),
+            static_cast<int>(this->getWidth()),
+            static_cast<int>(this->getHeight())
+        );
+    }
+}
+
+bool View::fillsScreen() const {
+    if (static_cast<int>(this->getLeftX()) > static_cast<int>(Screen::MIN_X)) {
+        return false;
+    }
+
+    if (static_cast<int>(this->getRightX()) < static_cast<int>(Screen::MAX_X)) {
+        return false;
+    }
+
+    if (static_cast<int>(this->getTopY()) > static_cast<int>(Screen::MIN_Y)) {
+        return false;
+    }
+
+    if (static_cast<int>(this->getBottomY()) < static_cast<int>(Screen::MAX_Y)) {
+        return false;
+    }
+
+    return true;
+}
+
+Label::Label(
+    const Position center,
+    const std::string content,
+    const Color backgroundColor,
+    const Color fontColor
+)
 :   center{center},
     content{content},
-    color{color}
+    backgroundColor{backgroundColor},
+    fontColor{fontColor}
 {}
 
 Label::~Label() {}
@@ -84,8 +129,8 @@ float Label::getHeight() const {
     return static_cast<float>(Font::HEIGHT);
 }
 
-void Label::draw() const {
-    LCD.SetFontColor(this->color.encode());
+void Label::drawForeground() const {
+    LCD.SetFontColor(this->fontColor.encode());
     LCD.WriteAt(
         this->content.c_str(),
         static_cast<int>(this->getLeftX()),
@@ -115,6 +160,14 @@ bool Button::isPressed() const {
         return this->contains(*touch);
     } else {
         return false;
+    }
+}
+
+void Button::drawForeground() const {
+    if (this->isPressed()) {
+        this->drawPressed();
+    } else {
+        this->drawUnpressed();
     }
 }
 

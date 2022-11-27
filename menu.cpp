@@ -8,14 +8,17 @@
 
 namespace menu {
 
-StackedLabel::StackedLabel(const Position center, const std::string content, const Color color)
-:   Label{center, content, color}
-{}
+StackedLabel::StackedLabel(
+    const Position center,
+    const std::string content,
+    const Color backgroundColor,
+    const Color fontColor
+) : Label{center, content, backgroundColor, fontColor} {}
 
 StackedLabel::~StackedLabel() {}
 
-void StackedLabel::draw() const {
-    LCD.SetFontColor(this->getColor().encode());
+void StackedLabel::drawForeground() const {
+    LCD.SetFontColor(this->getFontColor().encode());
     for (std::size_t i = 0; i < 3; i++) {
         const auto offset = static_cast<float>(i);
         LCD.WriteAt(
@@ -35,17 +38,17 @@ Menu::Menu()
     }
 {}
 
+Menu::~Menu() {}
+
 void Menu::run() {
     while (true) {
+        LCD.Update();
         this->draw();
         this->processInput();
     }
 }
 
-void Menu::draw() const {
-    LCD.Update();
-    LCD.Clear(Color::BLACK.encode());
-
+void Menu::drawForeground() const {
     this->title.draw();
 
     for (const auto &page : this->pages) {
@@ -71,6 +74,22 @@ void Menu::processInput() {
             return;
         }
     }
+}
+
+float Menu::getWidth() const {
+    return static_cast<float>(Screen::WIDTH);
+}
+
+float Menu::getHeight() const {
+    return static_cast<float>(Screen::WIDTH);
+}
+
+Position Menu::getCenter() const {
+    return Screen::CENTER;
+}
+
+Color Menu::getBackgroundColor() const {
+    return Color::BLACK;
 }
 
 } // namespace menu

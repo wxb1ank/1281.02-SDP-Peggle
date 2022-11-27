@@ -3,8 +3,11 @@
 #
 # Note: I have only tested this on Windows so it may fail on *nix-based platforms.
 
+# TODO: Object files should depend on headers, if they exist.
+
 REPO_NAME := simulator_libraries
 REPO_URL := https://code.osu.edu/fehelectronics/proteus_software/$(REPO_NAME).git
+REPO_HASH := c1a1b28
 
 REPO_DIR := $(REPO_NAME)
 BUILD_DIR := build
@@ -41,6 +44,7 @@ quiet_shell = $1 $(SUPPRESS_SHELL)
 
 ifeq ($(OS),Windows_NT)
 	SHELL := CMD
+	OPEN := start ""
 
 	flip_slashes = $(subst /,\,$1)
 
@@ -58,9 +62,13 @@ else
 	rmdir = $(call quiet_shell,rm -frfr $1)
 
 	ifeq ($(shell uname),Darwin)
+		OPEN := open
+
 		LDFLAGS := -framework OpenGL -framework Cocoa
 		COMMON_FLAGS := $(COMMON_FLAGS) -DOBJC_OLD_DISPATCH_PROTOTYPES
 	else
+		OPEN := xdg-open
+
 		LDFLAGS := `pkg-config --libs --cflags opengl x11 glx`
 	endif
 
@@ -72,9 +80,12 @@ TARGET := game$(TARGET_SUFFIX)
 CXXFLAGS := $(COMMON_FLAGS) -std=c++$(CXX_STD)
 CFLAGS := $(COMMON_FLAGS) -std=c$(CC_STD)
 
-.PHONY: clone doc clean
+.PHONY: checkout clone doc docs open-doc open-docs clean
 
-all: clone $(TARGET)
+all: checkout $(TARGET)
+
+checkout:
+	@$(GIT) -C $(REPO_DIR) checkout $(REPO_HASH)
 
 clone:
 ifeq ($(OS),Windows_NT)
@@ -133,8 +144,11 @@ $(CC_OBJS): $(BUILD_DIR)/%.o: %.c | $(OBJ_DIRS)
 $(OBJ_DIRS):
 	@-$(call mkdir,$(dir $@))
 
-doc:
+doc docs:
 	@$(DOXYGEN)
+
+open-doc open-docs:
+	@$(OPEN) $(BUILD_DIR)/html/index.html
 
 clean:
 	@-$(call rm,$(TARGET))

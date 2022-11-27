@@ -121,6 +121,22 @@ public:
     /// \return Whether or not this view contains the given position.
     /// \author Will Blankemeyer
     bool contains(Position pos) const;
+
+    virtual Color getBackgroundColor() const = 0;
+
+    /// \brief Draws this view to the screen.
+    ///
+    /// \warning This method mutates the global font color of the LCD.
+    /// \author Will Blankemeyer
+    void draw() const;
+
+protected:
+    virtual void drawForeground() const = 0;
+
+private:
+    void drawBackground() const;
+
+    bool fillsScreen() const;
 };
 
 /// \brief A single line of text.
@@ -128,18 +144,24 @@ public:
 /// \author Will Blankemeyer
 class Label : public View {
 public:
+    /// \brief Creates a new label.
+    ///
+    /// \param[in]  center          The position of the center of this label.
+    /// \param[in]  content         The textual content of this label.
+    /// \param[in]  backgroundColor The background color. The default is black.
+    /// \param[in]  fontColor       The font color. The default is white.
+    /// \author Will Blankemeyer
+    Label(
+        Position center,
+        std::string content,
+        Color backgroundColor = Color::BLACK,
+        Color fontColor = Color::WHITE
+    );
+
     /// \brief Destroys this label.
     ///
     /// \author Will Blankemeyer
     virtual ~Label();
-
-    /// \brief Creates a new label.
-    ///
-    /// \param[in]  center  The position of the center of this label.
-    /// \param[in]  content The textual content of this label.
-    /// \param[in]  color   The font color. The default is white.
-    /// \author Will Blankemeyer
-    Label(Position center, std::string content, Color color = Color::WHITE);
 
     /// \brief A mutable reference to the textual content of this label.
     ///
@@ -161,16 +183,16 @@ public:
     ///
     /// \return The font color.
     /// \author Will Blankemeyer
-    Color getColor() const {
-        return this->color;
+    Color getFontColor() const {
+        return this->fontColor;
     }
 
     /// \brief Sets the font color.
     ///
     /// \param[in]  color   The new font color.
     /// \author Will Blankemeyer
-    void setColor(const Color color) {
-        this->color = color;
+    void setFontColor(const Color color) {
+        this->fontColor = color;
     }
 
     virtual float getWidth() const override;
@@ -180,16 +202,18 @@ public:
         return this->center;
     }
 
-    /// \brief Draws this label to the screen.
-    ///
-    /// \warning This method mutates the global font color of the LCD.
-    /// \author Will Blankemeyer
-    virtual void draw() const;
+    virtual Color getBackgroundColor() const override {
+        return this->backgroundColor;
+    }
+
+protected:
+    virtual void drawForeground() const override;
 
 private:
     Position center;
     std::string content;
-    Color color;
+    Color backgroundColor;
+    Color fontColor;
 };
 
 /// \brief A pushbutton containing a label.
@@ -257,6 +281,10 @@ public:
         return this->label.getCenter();
     }
 
+    virtual Color getBackgroundColor() const override {
+        return this->label.getBackgroundColor();
+    }
+
     /// \brief Determines if this button is currently pressed.
     ///
     /// \return Whether or not this button is pressed.
@@ -273,6 +301,9 @@ public:
     /// \warning This method mutates the global font color of the LCD.
     /// \author Will Blankemeyer
     void drawPressed() const;
+
+protected:
+    virtual void drawForeground() const override;
 
 private:
     Label label;

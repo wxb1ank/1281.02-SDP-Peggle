@@ -10,7 +10,7 @@
 
 namespace menu {
 
-class Page {
+class Page : public ui::View {
 public:
     /// \brief Creates a new page.
     ///
@@ -43,10 +43,25 @@ public:
     /// \brief Draws this page and responds to input.
     ///
     /// \author Will Blankemeyer
-    virtual void run() = 0;
+    void run();
+
+    virtual float getWidth() const override;
+    virtual float getHeight() const override;
+    virtual Position getCenter() const override;
 
 protected:
-    void run(std::function<void()> step) const;
+    virtual void drawForeground() const final;
+    virtual void drawContent() const = 0;
+
+    enum class StepResult {
+        RedrawAndContinue,
+        Continue,
+        Return,
+    };
+
+    virtual StepResult step() {
+        return StepResult::Continue;
+    }
 
 private:
     /// \brief The button in the main menu that runs this page.

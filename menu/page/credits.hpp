@@ -6,11 +6,14 @@
 
 namespace menu {
 
-class CreditsPage : public Page {
+class CreditsPage final : public Page {
 public:
     CreditsPage(float);
 
-    virtual void run() final;
+    virtual Color getBackgroundColor() const override;
+
+protected:
+    virtual void drawContent() const override;
 };
 
 } // namespace menu

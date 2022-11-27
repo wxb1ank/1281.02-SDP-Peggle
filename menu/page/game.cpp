@@ -56,7 +56,7 @@ Peg::Peg(int x_pos, int y_pos, int radius)
 }
 
 // Checks if the ball collides with a peg
-void Peg::collisionCheck(float x, float y, float * vx, float * vy)
+void Peg::collisionCheck(float x, float y, float * vx, float * vy) const
 {
     float xDistance = x - x_position;
     float yDistance = y - y_position;
@@ -75,25 +75,25 @@ void Peg::collisionCheck(float x, float y, float * vx, float * vy)
     }
 }
 // Returns x position of peg
-int Peg::getX()
+int Peg::getX() const
 {
     return x_position;
 }
 
 // Returns y position of peg
-int Peg::getY()
+int Peg::getY() const
 {
     return y_position;
 }
 
 // Returns radius of peg
-int Peg::getRadius()
+int Peg::getRadius() const
 {
     return peg_radius;
 }
 
 // Returns whther peg is active(1) or inactive(0)
-int Peg::getStatus()
+int Peg::getStatus() const
 {
     return active;
 }
@@ -108,7 +108,7 @@ void PegBoard::push(const Peg peg) {
 }
 
 // Draws every peg in the PegBoard class
-void PegBoard::drawPegs()
+void PegBoard::drawPegs() const
 {
     for(auto &peg : pegs)
     {
@@ -119,7 +119,7 @@ void PegBoard::drawPegs()
     }
 }
 
-int PegBoard::getNum()
+int PegBoard::getNum() const
 {
     return pegs.size();
 }
@@ -131,7 +131,17 @@ Page::Page(const float centerY) : menu::Page{"Game", centerY}, board{} {
     }
 }
 
-void Page::run() {
+Color Page::getBackgroundColor() const {
+    return Color::BLACK;
+}
+
+void Page::drawContent() const {
+    board.drawPegs();
+}
+
+menu::Page::StepResult Page::step() {
+    return menu::Page::StepResult::RedrawAndContinue;
+/*
     LCD.Clear(Color::BLACK.encode());
     this->board.drawPegs();
 
@@ -192,6 +202,7 @@ void Page::run() {
         LCD.DrawCircle((int)x, (int)y, BALL_RADIUS);
         LCD.Update();
     }
+*/
 }
 
 } // namespace game
