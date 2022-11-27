@@ -15,6 +15,12 @@ StackedLabel::StackedLabel(
     const Color fontColor
 ) : Label{center, content, backgroundColor, fontColor} {}
 
+StackedLabel::StackedLabel(
+    const Position center,
+    const std::string content,
+    const Color fontColor
+) : Label{center, content, fontColor} {}
+
 StackedLabel::~StackedLabel() {}
 
 void StackedLabel::drawForeground() const {
@@ -30,7 +36,7 @@ void StackedLabel::drawForeground() const {
 }
 
 Menu::Menu()
-:   title{{static_cast<float>(Screen::CENTER_X), 10.f}, "Peggle!"},
+:   title{{static_cast<float>(Screen::CENTER_X), 10.f}, "Peggle!", Color::WHITE},
     pages{
         std::make_unique<GamePage>(75.f),
         std::make_unique<HowToPlayPage>(150.f),

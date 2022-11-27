@@ -49,6 +49,12 @@ public:
     virtual float getHeight() const override;
     virtual Position getCenter() const override;
 
+    virtual ui::Visibility getBackgroundVisibility() const final {
+        return ui::Visibility::Visible;
+    }
+
+    virtual void setBackgroundVisibility(const ui::Visibility _) final {}
+
 protected:
     virtual void drawForeground() const final;
     virtual void drawContent() const = 0;

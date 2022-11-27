@@ -12,6 +12,11 @@
 /// \brief The Peggle user interface (UI).
 namespace ui {
 
+enum class Visibility {
+    Visible,
+    Invisible,
+};
+
 /// \brief The width and height of a `View`.
 ///
 /// \author Will Blankemeyer
@@ -122,6 +127,17 @@ public:
     /// \author Will Blankemeyer
     bool contains(Position pos) const;
 
+    virtual Visibility getBackgroundVisibility() const = 0;
+    virtual void setBackgroundVisibility(Visibility vis) = 0;
+
+    void showBackground() {
+        this->setBackgroundVisibility(Visibility::Visible);
+    }
+
+    void hideBackground() {
+        this->setBackgroundVisibility(Visibility::Invisible);
+    }
+
     virtual Color getBackgroundColor() const = 0;
 
     /// \brief Draws this view to the screen.
@@ -148,14 +164,25 @@ public:
     ///
     /// \param[in]  center          The position of the center of this label.
     /// \param[in]  content         The textual content of this label.
-    /// \param[in]  backgroundColor The background color. The default is black.
-    /// \param[in]  fontColor       The font color. The default is white.
+    /// \param[in]  backgroundColor The background color.
+    /// \param[in]  fontColor       The font color.
     /// \author Will Blankemeyer
     Label(
         Position center,
         std::string content,
-        Color backgroundColor = Color::BLACK,
-        Color fontColor = Color::WHITE
+        Color backgroundColor,
+        Color fontColor
+    );
+    /// \brief Creates a new label with an invisible background.
+    ///
+    /// \param[in]  center          The position of the center of this label.
+    /// \param[in]  content         The textual content of this label.
+    /// \param[in]  fontColor       The font color.
+    /// \author Will Blankemeyer
+    Label(
+        Position center,
+        std::string content,
+        Color fontColor
     );
 
     /// \brief Destroys this label.
@@ -202,6 +229,14 @@ public:
         return this->center;
     }
 
+    virtual Visibility getBackgroundVisibility() const override {
+        return this->backgroundVisibility;
+    }
+
+    virtual void setBackgroundVisibility(const Visibility vis) override {
+        this->backgroundVisibility = vis;
+    }
+
     virtual Color getBackgroundColor() const override {
         return this->backgroundColor;
     }
@@ -213,6 +248,7 @@ private:
     Position center;
     std::string content;
     Color backgroundColor;
+    Visibility backgroundVisibility;
     Color fontColor;
 };
 
@@ -221,22 +257,24 @@ private:
 /// \author Will Blankemeyer
 class Button : public View {
 public:
+    /// \brief Creates a new button.
+    ///
+    /// \param[in]  label           The button label.
+    /// \param[in]  size            The size of the button.
+    /// \param[in]  backgroundColor The background color.
+    /// \param[in]  borderColor     The border color.
+    /// \author Will Blankemeyer
+    Button(Label label, Size size, Color backgroundColor, Color borderColor);
     /// \brief Creates a new button with default padding.
     ///
     /// The size of this button is determined by adding `DEFAULT_PADDING` to the size of the
     /// contained label.
     ///
-    /// \param[in]  label   The button label.
-    /// \param[in]  color   The border color. The default is white.
+    /// \param[in]  label           The button label.
+    /// \param[in]  backgroundColor The background color.
+    /// \param[in]  borderColor     The border color.
     /// \author Will Blankemeyer
-    Button(Label label, Color color = Color::WHITE);
-    /// \brief Creates a new button.
-    ///
-    /// \param[in]  label   The button label.
-    /// \param[in]  size    The size of the button.
-    /// \param[in]  color   The border color. The default is white.
-    /// \author Will Blankemeyer
-    Button(Label label, Size size, Color color = Color::WHITE);
+    Button(Label label, Color backgroundColor, Color color);
 
     /// \brief Destroys this button.
     ///
@@ -265,6 +303,14 @@ public:
         return this->label;
     }
 
+    Color getBorderColor() const {
+        return this->borderColor;
+    }
+
+    void setBorderColor(const Color color) {
+        this->borderColor = color;
+    }
+
     virtual Size getSize() const override {
         return this->size;
     }
@@ -281,8 +327,16 @@ public:
         return this->label.getCenter();
     }
 
+    virtual Visibility getBackgroundVisibility() const override {
+        return this->backgroundVisibility;
+    }
+
+    virtual void setBackgroundVisibility(const Visibility vis) override {
+        this->backgroundVisibility = vis;
+    }
+
     virtual Color getBackgroundColor() const override {
-        return this->label.getBackgroundColor();
+        return this->backgroundColor;
     }
 
     /// \brief Determines if this button is currently pressed.
@@ -308,7 +362,9 @@ protected:
 private:
     Label label;
     Size size;
-    Color color;
+    Color backgroundColor;
+    Visibility backgroundVisibility;
+    Color borderColor;
 
     static constexpr float pad(const float dim) {
         return dim + Button::DEFAULT_PADDING;

@@ -23,14 +23,25 @@ public:
     ///
     /// \param[in]  center          The position of the center of this label.
     /// \param[in]  content         The textual content of this label.
-    /// \param[in]  backgroundColor The background color. The default is black.
-    /// \param[in]  fontColor       The font color. The default is white.
+    /// \param[in]  backgroundColor The background color.
+    /// \param[in]  fontColor       The font color.
     /// \author Will Blankemeyer
     StackedLabel(
         Position center,
         std::string content,
-        Color backgroundColor = Color::BLACK,
-        Color fontColor = Color::WHITE
+        Color backgroundColor,
+        Color fontColor
+    );
+    /// \brief Creates a new stacked label with an invisible background.
+    ///
+    /// \param[in]  center          The position of the center of this label.
+    /// \param[in]  content         The textual content of this label.
+    /// \param[in]  fontColor       The font color.
+    /// \author Will Blankemeyer
+    StackedLabel(
+        Position center,
+        std::string content,
+        Color fontColor
     );
 
     /// \brief Destroys this label.
@@ -67,6 +78,12 @@ public:
     virtual float getHeight() const override;
     virtual Position getCenter() const override;
     virtual Color getBackgroundColor() const override;
+
+    virtual ui::Visibility getBackgroundVisibility() const final {
+        return ui::Visibility::Visible;
+    }
+
+    virtual void setBackgroundVisibility(const ui::Visibility _) final {}
 
 protected:
     virtual void drawForeground() const override;

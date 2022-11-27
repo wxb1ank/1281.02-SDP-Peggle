@@ -69,7 +69,9 @@ bool View::contains(const Position pos) const {
 }
 
 void View::draw() const {
-    this->drawBackground();
+    if (this->getBackgroundVisibility() == Visibility::Visible) {
+        this->drawBackground();
+    }
     this->drawForeground();
 }
 
@@ -116,6 +118,19 @@ Label::Label(
 :   center{center},
     content{content},
     backgroundColor{backgroundColor},
+    backgroundVisibility{Visibility::Visible},
+    fontColor{fontColor}
+{}
+
+Label::Label(
+    const Position center,
+    const std::string content,
+    const Color fontColor
+)
+:   center{center},
+    content{content},
+    backgroundColor{Color::BLACK},
+    backgroundVisibility{Visibility::Invisible},
     fontColor{fontColor}
 {}
 
@@ -138,18 +153,26 @@ void Label::drawForeground() const {
     );
 }
 
-Button::Button(const Label label, const Color color)
+Button::Button(
+    const Label label,
+    const Size size,
+    const Color backgroundColor,
+    const Color borderColor
+)
+:   label{label},
+    size{size},
+    backgroundColor{backgroundColor},
+    backgroundVisibility{Visibility::Visible},
+    borderColor{borderColor}
+{}
+
+Button::Button(const Label label, const Color backgroundColor, const Color borderColor)
 :   Button{
         label,
         {Button::pad(label.getWidth()), Button::pad(label.getHeight())},
-        color,
+        backgroundColor,
+        borderColor,
     }
-{}
-
-Button::Button(const Label label, const Size size, const Color color)
-:   label{label},
-    size{size},
-    color{color}
 {}
 
 Button::~Button() {}
@@ -184,7 +207,7 @@ void Button::drawPressed() const {
 void Button::drawBorder() const {
     const auto topLeft = this->getTopLeft();
 
-    LCD.SetFontColor(this->color.encode());
+    LCD.SetFontColor(this->borderColor.encode());
     LCD.DrawRectangle(
         static_cast<int>(topLeft.x),
         static_cast<int>(topLeft.y),
@@ -196,7 +219,7 @@ void Button::drawBorder() const {
 void Button::fillBorder() const {
     const auto topLeft = this->getTopLeft();
 
-    LCD.SetFontColor(this->color.encode());
+    LCD.SetFontColor(this->borderColor.encode());
     LCD.FillRectangle(
         static_cast<int>(topLeft.x),
         static_cast<int>(topLeft.y),
