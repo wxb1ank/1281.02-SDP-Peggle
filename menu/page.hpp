@@ -4,7 +4,7 @@
 
 #include <FEHLCD.h>
 
-#include "../graphics.hpp"
+#include "../ui.hpp"
 
 namespace menu {
 
@@ -12,7 +12,7 @@ class Page {
 public:
     Page(std::string, float);
 
-    const gfx::Button &getRunButton() const {
+    const ui::Button &getRunButton() const {
         return this->runButton;
     }
 
@@ -21,8 +21,8 @@ public:
     virtual void step() = 0;
 
 private:
-    gfx::Button runButton;
-    gfx::Button backButton;
+    ui::Button runButton;
+    ui::Button backButton;
 };
 
 } // namespace menu

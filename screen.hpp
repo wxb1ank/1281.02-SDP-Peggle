@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 
+#include <FEHLCD.h>
+
 #include "mechanics.hpp"
 
 class Screen {
@@ -27,3 +29,5 @@ public:
     static const Position CENTER_BOTTOM;
     static const Position CENTER;
 };
+
+using Color = FEHLCD::FEHLCDColor;

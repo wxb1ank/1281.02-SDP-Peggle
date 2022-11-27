@@ -7,8 +7,8 @@
 namespace menu {
 
 Page::Page(const std::string name, const float centerY)
-    : runButton{name, {static_cast<float>(Screen::CENTER_X), centerY}, {150.f, 22.f}},
-      backButton{"Back", {50.f, 15.f}}
+    : runButton{{{static_cast<float>(Screen::CENTER_X), centerY}, name}, {150.f, 22.f}},
+      backButton{{{50.f, 15.f}, "Back"}}
 {}
 
 void Page::run() {

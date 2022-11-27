@@ -2,7 +2,6 @@
 
 #include <array>
 
-#include "graphics.hpp"
 #include "menu/page.hpp"
 #include "menu/page/credits.hpp"
 #include "menu/page/game.hpp"
