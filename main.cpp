@@ -27,9 +27,9 @@
 #define INIT_VELOCITY 2'500.
 
 // Momentum lost to a collision
-#define MOMENTUM_LOSS -1.001
+#define MOMENTUM_LOSS -.65
 
-// Class representing a peg
+// Class representing a peg 
 class Peg
 {
     public:
@@ -41,19 +41,19 @@ class Peg
         int getRadius();
         int getStatus();
     private:
-        int x_position, y_position, peg_radius, active;
+        int x_position, y_position, peg_radius, active; 
 };
 
 // Class represeting the whole board
 class PegBoard
 {
     public:
-        PegBoard(Peg pegs[100]);
+        PegBoard(Peg pegs[]);
         void drawPegs();
         int getNum();
     private:
         int num_pegs;
-        Peg peg_data[100];
+        Peg peg_data[100]; 
 };
 
 
@@ -62,10 +62,10 @@ int main()
     // Location of where the player clicks on the screen
     float target_x;
     float target_y;
-
+    
     // Array of peg locations
     Peg pegs[100];
-
+    
 
     // Pegs on the board
     pegs[0] = Peg(5, 200, 5);
@@ -86,22 +86,22 @@ int main()
     pegs[15] = Peg(155, 200, 5);
 
 
-
+    
     PegBoard board = PegBoard(pegs);
     board.drawPegs();
 
-
+    
     // Shoots ball upon LCD.Touch returning a true value
     while (!LCD.Touch(&target_x, &target_y));
-
+    
     // Sets (0,0) to be at (160,0)
     target_x -= ((float)WIDTH / 2.);
     //printf("x:%f\ny:%f\n",target_x,target_y);
 
-    // Finds the angle at which the ball is shot
+    // Finds the angle at which the ball is shot 
     float angle = -1.*atanf(target_x / target_y) + M_PI_2;
     //printf("Angle: %f\n", angle * (180. / M_PI));
-
+    
     // Uses the angle to find the initial velocities in the x and y directions
     float vx = INIT_VELOCITY*cos(angle);
     float vy = INIT_VELOCITY*sin(angle);
@@ -136,7 +136,7 @@ int main()
             x = MAX_BALL_X;
             vx = MOMENTUM_LOSS*vx;
         }
-
+        
         for(int i = 0; i < board.getNum(); i++)
         {
             pegs[i].collisionCheck(x,y,&vx,&vy);
@@ -214,13 +214,13 @@ int Peg::getStatus()
 // PegBoard class functions
 
 // Constructor for the PegBoard class
-PegBoard::PegBoard(Peg pegs[100])
+PegBoard::PegBoard(Peg pegs[])
 {
-    num_pegs = sizeof(pegs);
+    num_pegs = 100;
     for(int i = 0; i < num_pegs; i++)
     {
         peg_data[i] = pegs[i];
-    }
+    } 
 }
 
 // Draws every peg in the PegBoard class
