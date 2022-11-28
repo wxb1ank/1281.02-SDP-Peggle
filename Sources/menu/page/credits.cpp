@@ -5,7 +5,7 @@
 namespace menu {
 
 CreditsPage::CreditsPage(const float centerY)
-:   Page{"Credits", centerY, ui::Background(Color::BLACK)}
+:   PageWithBackButton{Page("Credits", centerY, ui::Background(Color::BLACK))}
 {}
 
 void CreditsPage::drawContent() const {

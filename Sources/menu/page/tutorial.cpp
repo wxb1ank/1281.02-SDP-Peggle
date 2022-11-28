@@ -5,7 +5,7 @@
 namespace menu {
 
 TutorialPage::TutorialPage(const float centerY)
-:   Page{"How to Play", centerY, ui::Background(Color::BLACK)}
+:   PageWithBackButton{Page("How to Play", centerY, ui::Background(Color::BLACK))}
 {}
 
 void TutorialPage::drawContent() const {

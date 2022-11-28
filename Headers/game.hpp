@@ -43,7 +43,7 @@ class Game {
 public:
     Game();
 
-    void step();
+    void run();
 
 private:
     PegBoard board;

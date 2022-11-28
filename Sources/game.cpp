@@ -131,7 +131,7 @@ Game::Game() {
     }
 }
 
-void Game::step() {
+void Game::run() {
     int ballsRemaining = 10;
 
     while (ballsRemaining > 0) {

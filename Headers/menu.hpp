@@ -35,6 +35,34 @@ public:
     /// \author Will Blankemeyer
     const ui::Button &getRunButton() const;
 
+    /// \brief Draws this page and responds to input.
+    ///
+    /// \author Will Blankemeyer
+    virtual void run();
+
+    virtual ui::Background &getBackground() override;
+    virtual const ui::Background &getBackground() const override;
+
+protected:
+    virtual void drawForeground() const override;
+
+private:
+    /// \brief The button in the main menu that runs this page.
+    ///
+    /// \author Will Blankemeyer
+    ui::Button runButton;
+    ui::Background background;
+};
+
+class PageWithBackButton : public Page {
+public:
+    PageWithBackButton(Page page);
+
+    /// \brief Destroys this page.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~PageWithBackButton();
+
     /// \brief An immutable reference to the button that returns to the main menu.
     ///
     /// \return The back button.
@@ -44,14 +72,11 @@ public:
     /// \brief Draws this page and responds to input.
     ///
     /// \author Will Blankemeyer
-    void run();
-
-    virtual ui::Background &getBackground() override;
-    virtual const ui::Background &getBackground() const override;
+    virtual void run() final;
 
 protected:
     virtual void drawForeground() const final;
-    virtual void drawContent() const = 0;
+    virtual void drawContent() const;
 
     enum class StepResult {
         RedrawAndContinue,
@@ -59,23 +84,16 @@ protected:
         Return,
     };
 
-    virtual StepResult step() {
-        return StepResult::Continue;
-    }
+    virtual StepResult step();
 
 private:
-    /// \brief The button in the main menu that runs this page.
-    ///
-    /// \author Will Blankemeyer
-    ui::Button runButton;
     /// \brief The button drawn on the page that returns control to the main menu.
     ///
     /// \author Will Blankemeyer
     ui::Button backButton;
-    ui::Background background;
 };
 
-class CreditsPage final : public Page {
+class CreditsPage final : public PageWithBackButton {
 public:
     CreditsPage(float);
 
@@ -83,23 +101,19 @@ protected:
     virtual void drawContent() const override;
 };
 
-/// \author Solomon Blair
+/// \author Will Blankemeyer
 class GamePage final : public Page {
 public:
     GamePage(float);
 
-protected:
-    /// \author Solomon Blair
-    virtual void drawContent() const override;
-
-    /// \author Solomon Blair
-    virtual StepResult step() override;
+    /// \author Will Blankemeyer
+    virtual void run() override;
 
 private:
     Game game;
 };
 
-class StatsPage final : public Page {
+class StatsPage final : public PageWithBackButton {
 public:
     StatsPage(float);
 
@@ -107,7 +121,7 @@ protected:
     virtual void drawContent() const override;
 };
 
-class TutorialPage final : public Page {
+class TutorialPage final : public PageWithBackButton {
 public:
     TutorialPage(float);
 
