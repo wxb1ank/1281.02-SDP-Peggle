@@ -37,6 +37,7 @@ class PegBoard
         void push(Peg peg);
         void drawPegs() const;
         int getNum() const;
+        std::vector<Peg> &getPegs();
     private:
         std::vector<Peg> pegs;
 };

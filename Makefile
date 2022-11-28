@@ -156,7 +156,7 @@ CFLAGS := $(COMMON_FLAGS) -std=c$(CC_STD)
 
 .PHONY: checkout clone doc docs open-doc open-docs clean
 
-all: checkout $(TARGET)
+all: checkout $(OBJ_DIRS) $(TARGET)
 
 checkout:
 	@$(GIT) -C $(REPO_DIR) checkout $(REPO_HASH)
@@ -207,11 +207,11 @@ $(TARGET): $(OBJS)
 	@echo [LD ] $@
 	@$(CXX) -o $@ $^ $(LDFLAGS)
 
-$(CXX_OBJS): $(BUILD_DIR)/%.o: %.cpp | $(OBJ_DIRS)
+$(CXX_OBJS): $(BUILD_DIR)/%.o: %.cpp
 	@echo [CXX] $@
 	@$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-$(CC_OBJS): $(BUILD_DIR)/%.o: %.c | $(OBJ_DIRS)
+$(CC_OBJS): $(BUILD_DIR)/%.o: %.c
 	@echo [CC ] $@
 	@$(CC) -o $@ -c $< $(CFLAGS)
 

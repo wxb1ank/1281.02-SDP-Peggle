@@ -10,6 +10,7 @@
 #include "menu/page/credits.hpp"
 #include "menu/page/game.hpp"
 #include "menu/page/how_to_play.hpp"
+#include "menu/page/stats.hpp"
 #include "ui.hpp"
 
 /// \brief The Peggle main menu.
@@ -90,7 +91,7 @@ protected:
 
 private:
     StackedLabel title;
-    std::array<std::unique_ptr<Page>, 3> pages;
+    std::array<std::unique_ptr<Page>, 4> pages;
 
     void processInput();
 };

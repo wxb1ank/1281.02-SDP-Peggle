@@ -39,7 +39,8 @@ Menu::Menu()
 :   title{{static_cast<float>(Screen::CENTER_X), 10.f}, "Peggle!", Color::WHITE},
     pages{
         std::make_unique<GamePage>(75.f),
-        std::make_unique<HowToPlayPage>(150.f),
+        std::make_unique<StatsPage>(125.f),
+        std::make_unique<HowToPlayPage>(175.f),
         std::make_unique<CreditsPage>(225.f)
     }
 {}
