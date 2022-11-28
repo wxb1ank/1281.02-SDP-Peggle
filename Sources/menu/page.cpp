@@ -1,21 +1,37 @@
-#include "../FEHLCD.h"
-#include "../screen.hpp"
+#include <menu.hpp>
 
-#include "page.hpp"
+#include <screen.hpp>
 
 namespace menu {
 
-Page::Page(const std::string name, const float centerY)
+Page::Page(const std::string name, const float centerY, const ui::Background background)
 :   runButton{
-        {{static_cast<float>(Screen::CENTER_X), centerY}, name, Color::WHITE},
-        {150.f, 22.f},
-        Color::BLACK,
+        ui::Label(
+            Position(static_cast<float>(Screen::CENTER_X), centerY),
+            name,
+            ui::Background(),
+            Color::WHITE
+        ),
+        ui::Background(Color::BLACK),
         Color::RED
     },
-    backButton{{{50.f, 15.f}, "Back", Color::WHITE}, Color::BLACK, Color::BLUE}
+    backButton{
+        ui::Label(Position(50.f, 15.f), "Back", ui::Background(), Color::WHITE),
+        ui::Background(Color::BLACK),
+        Color::BLUE
+    },
+    background{background}
 {}
 
 Page::~Page() {}
+
+const ui::Button &Page::getRunButton() const {
+    return this->runButton;
+}
+
+const ui::Button &Page::getBackButton() const {
+    return this->backButton;
+}
 
 void Page::run() {
     this->draw();
@@ -52,21 +68,17 @@ void Page::run() {
     }
 }
 
+ui::Background &Page::getBackground() {
+    return this->background;
+}
+
+const ui::Background &Page::getBackground() const {
+    return this->background;
+}
+
 void Page::drawForeground() const {
     this->backButton.draw();
     this->drawContent();
-}
-
-float Page::getWidth() const {
-    return static_cast<float>(Screen::WIDTH);
-}
-
-float Page::getHeight() const {
-    return static_cast<float>(Screen::WIDTH);
-}
-
-Position Page::getCenter() const {
-    return Screen::CENTER;
 }
 
 } // namespace menu

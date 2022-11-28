@@ -43,10 +43,10 @@ struct Position : Vector {
 
     Position(std::size_t, std::size_t);
 
-    static std::optional<Position> currentTouch();
-    static Position nextTouch();
+    static std::optional<Position> getCurrentTouch();
+    static Position getNextTouch();
 
-    float angleTo(Position) const;
+    float getAngleTo(Position) const;
 };
 
 struct Velocity : Vector {

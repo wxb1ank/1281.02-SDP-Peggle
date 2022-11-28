@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <cstdlib>
+#include <FEHLCD.hpp>
+#include <mechanics.hpp>
 
-#include "FEHLCD.h"
-#include "mechanics.hpp"
+#include <cstdlib>
 
 /// \brief The FEH Proteus LCD.
 ///
@@ -92,9 +92,9 @@ public:
 struct Color {
     Color(unsigned char r, unsigned char g, unsigned char b);
 
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
+    float r;
+    float g;
+    float b;
 
     static const Color WHITE;
     static const Color RED;
@@ -104,10 +104,10 @@ struct Color {
 
     unsigned encode() const;
 
-    unsigned char getValue() const;
-    unsigned char getChroma() const;
+    float getValue() const;
+    float getChroma() const;
     float getHue() const;
 
 private:
-    unsigned char getMinComp() const;
+    float getMinComp() const;
 };

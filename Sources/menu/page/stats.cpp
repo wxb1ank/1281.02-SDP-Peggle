@@ -1,15 +1,10 @@
-#include "../../FEHLCD.h"
-#include "../../screen.hpp"
+#include <menu.hpp>
 
-#include "stats.hpp"
+#include <FEHLCD.hpp>
 
 namespace menu {
 
-StatsPage::StatsPage(const float centerY) : Page{"Stats", centerY} {}
-
-Color StatsPage::getBackgroundColor() const {
-    return Color::BLACK;
-}
+StatsPage::StatsPage(const float centerY) : Page{"Stats", centerY, ui::Background(Color::BLACK)} {}
 
 void StatsPage::drawContent() const {
     LCD.WriteAt("Lifetime Stats", 100, 30);

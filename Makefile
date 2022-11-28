@@ -43,7 +43,7 @@ REPO_HASH := c1a1b28
 REPO_DIR := $(REPO_NAME)
 # :: rel-path
 # The relative path to the directory to which object files and generated documentation are written.
-BUILD_DIR := build
+BUILD_DIR := Build
 
 # :: exe
 # The name of the system Git executable.
@@ -102,7 +102,7 @@ CC_DEPS := $(CC_OBJS:.o=.d)
 # The list of relative paths to all Peggle and simulator dependency Makefiles.
 DEPS := $(CXX_DEPS) $(CC_DEPS)
 
-INC_DIRS := $(REPO_DIR)
+INC_DIRS := $(REPO_DIR) Headers
 INCFLAGS := $(foreach dir,$(INC_DIRS),-I$(dir))
 CXX_STD := 17
 CC_STD := 17

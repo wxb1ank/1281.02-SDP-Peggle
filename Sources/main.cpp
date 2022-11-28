@@ -1,4 +1,4 @@
-#include "menu.hpp"
+#include <menu.hpp>
 
 int main() {
     // Run the main menu.

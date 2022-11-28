@@ -4,9 +4,6 @@
 
 #include <vector>
 
-#include "../page.hpp"
-
-namespace menu {
 namespace game {
 
 /// \brief Class representing a peg
@@ -42,19 +39,11 @@ class PegBoard
         std::vector<Peg> pegs;
 };
 
-/// \author Solomon Blair
-class Page final : public menu::Page {
+class Game {
 public:
-    Page(float);
+    Game();
 
-    virtual Color getBackgroundColor() const override;
-
-protected:
-    /// \author Solomon Blair
-    virtual void drawContent() const override;
-
-    /// \author Solomon Blair
-    virtual menu::Page::StepResult step() override;
+    void step();
 
 private:
     PegBoard board;
@@ -62,6 +51,4 @@ private:
 
 } // namespace game
 
-using GamePage = game::Page;
-
-} // namespace menu
+using game::Game;

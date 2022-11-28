@@ -1,17 +1,14 @@
-#include "../../FEHLCD.h"
-#include "../../screen.hpp"
+#include <menu.hpp>
 
-#include "how_to_play.hpp"
+#include <FEHLCD.hpp>
 
 namespace menu {
 
-HowToPlayPage::HowToPlayPage(const float centerY) : Page{"How to Play", centerY} {}
+TutorialPage::TutorialPage(const float centerY)
+:   Page{"How to Play", centerY, ui::Background(Color::BLACK)}
+{}
 
-Color HowToPlayPage::getBackgroundColor() const {
-    return Color::BLACK;
-}
-
-void HowToPlayPage::drawContent() const {
+void TutorialPage::drawContent() const {
     LCD.WriteAt("How to Play", 100, 30);
 
     LCD.WriteAt("Tap to shoot the ball.",15, 70);

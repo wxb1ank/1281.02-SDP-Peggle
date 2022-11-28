@@ -1,15 +1,15 @@
 #define _USE_MATH_DEFINES
 
-#include <cstdio>
-#include <cmath>
-#include <iostream>
+#include <game.hpp>
+
+#include <FEHLCD.hpp>
+#include <screen.hpp>
 
 #include <FEHUtility.h>
 
-#include "../../FEHLCD.h"
-#include "../../screen.hpp"
-
-#include "game.hpp"
+#include <cstdio>
+#include <cmath>
+#include <iostream>
 
 // Acceleration due to gravity
 #define GRAVITY_ACCEL 5.
@@ -31,7 +31,6 @@
 // Momentum lost to a collision
 #define MOMENTUM_LOSS -.65
 
-namespace menu {
 namespace game {
 
 // Default constructor for Peg class
@@ -125,22 +124,14 @@ std::vector<Peg> &PegBoard::getPegs() {
     return this->pegs;
 }
 
-Page::Page(const float centerY) : menu::Page{"Game", centerY}, board{} {
+Game::Game() {
     // Pegs on the board
     for (unsigned x = 5; x < 160; x += 10) {
         board.push({x, 200 - x, 5});
     }
 }
 
-Color Page::getBackgroundColor() const {
-    return Color::BLACK;
-}
-
-void Page::drawContent() const {
-    board.drawPegs();
-}
-
-menu::Page::StepResult Page::step() {
+void Game::step() {
     int ballsRemaining = 10;
 
     while (ballsRemaining > 0) {
@@ -218,11 +209,6 @@ menu::Page::StepResult Page::step() {
 
         ballsRemaining -=1;
     }
-
-    return menu::Page::StepResult::Return;
 }
 
-
-
 } // namespace game
-} // namespace menu

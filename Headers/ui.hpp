@@ -3,18 +3,31 @@
 
 #pragma once
 
+#include <mechanics.hpp>
+#include <screen.hpp>
+
 #include <cstdlib>
 #include <string>
-
-#include "mechanics.hpp"
-#include "screen.hpp"
 
 /// \brief The Peggle user interface (UI).
 namespace ui {
 
-enum class Visibility {
-    Visible,
-    Invisible,
+class Background {
+public:
+    Background();
+    Background(Color Color);
+
+    bool isVisible() const;
+    void setVisibility(bool visibility);
+    void show();
+    void hide();
+
+    Color &getColor();
+    const Color &getColor() const;
+
+private:
+    bool visibility;
+    Color color;
 };
 
 /// \brief The width and height of a `View`.
@@ -52,9 +65,7 @@ public:
     ///
     /// \return The size.
     /// \author Will Blankemeyer
-    virtual Size getSize() const {
-        return {this->getWidth(), this->getHeight()};
-    }
+    virtual Size getSize() const;
 
     /// \brief The width of this view.
     ///
@@ -82,63 +93,53 @@ public:
     ///
     /// \return The leftmost X coordinate.
     /// \author Will Blankemeyer
-    float getLeftX() const;
+    virtual float getLeftX() const;
     /// \brief The X coordinate of the right boundary of this view.
     ///
     /// \return The rightmost X coordinate.
     /// \author Will Blankemeyer
-    float getRightX() const;
+    virtual float getRightX() const;
     /// \brief The Y coordinate of the top boundary of this view.
     ///
     /// \return The topmost Y coordinate.
     /// \author Will Blankemeyer
-    float getTopY() const;
+    virtual float getTopY() const;
     /// \brief The Y coordinate of the bottom boundary of this view.
     ///
     /// \return The bottommost Y coordinate.
     /// \author Will Blankemeyer
-    float getBottomY() const;
+    virtual float getBottomY() const;
 
     /// \brief The position of the top-left corner of this view.
     ///
     /// \return The top-left position.
     /// \author Will Blankemeyer
-    Position getTopLeft() const;
+    virtual Position getTopLeft() const;
     /// \brief The position of the top-right corner of this view.
     ///
     /// \return The top-right position.
     /// \author Will Blankemeyer
-    Position getTopRight() const;
+    virtual Position getTopRight() const;
     /// \brief The position of the bottom-left corner of this view.
     ///
     /// \return The bottom-left position.
     /// \author Will Blankemeyer
-    Position getBottomLeft() const;
+    virtual Position getBottomLeft() const;
     /// \brief The position of the bottom-right corner of this view.
     ///
     /// \return The bottom-right position.
     /// \author Will Blankemeyer
-    Position getBottomRight() const;
+    virtual Position getBottomRight() const;
 
     /// \brief Determines if the given position is contained within the boundaries of this view.
     ///
-    /// \param[in]  pos The position.
+    /// \param[in]  Pos The position.
     /// \return Whether or not this view contains the given position.
     /// \author Will Blankemeyer
     bool contains(Position pos) const;
 
-    virtual Visibility getBackgroundVisibility() const = 0;
-    virtual void setBackgroundVisibility(Visibility vis) = 0;
-
-    void showBackground() {
-        this->setBackgroundVisibility(Visibility::Visible);
-    }
-
-    void hideBackground() {
-        this->setBackgroundVisibility(Visibility::Invisible);
-    }
-
-    virtual Color getBackgroundColor() const = 0;
+    virtual Background &getBackground() = 0;
+    virtual const Background &getBackground() const = 0;
 
     /// \brief Draws this view to the screen.
     ///
@@ -152,7 +153,29 @@ protected:
 private:
     void drawBackground() const;
 
-    bool fillsScreen() const;
+    virtual bool fillsScreen() const;
+};
+
+class FullscreenView : public View {
+public:
+    virtual ~FullscreenView();
+
+    virtual float getWidth() const final;
+    virtual float getHeight() const final;
+    virtual Position getCenter() const final;
+
+    virtual float getLeftX() const final;
+    virtual float getRightX() const final;
+    virtual float getTopY() const final;
+    virtual float getBottomY() const final;
+
+    virtual Position getTopLeft() const final;
+    virtual Position getTopRight() const final;
+    virtual Position getBottomLeft() const final;
+    virtual Position getBottomRight() const final;
+
+private:
+    virtual bool fillsScreen() const final;
 };
 
 /// \brief A single line of text.
@@ -160,28 +183,17 @@ private:
 /// \author Will Blankemeyer
 class Label : public View {
 public:
-    /// \brief Creates a new label.
+    /// \brief Creates a new label with a visible background.
     ///
     /// \param[in]  center          The position of the center of this label.
     /// \param[in]  content         The textual content of this label.
-    /// \param[in]  backgroundColor The background color.
+    /// \param[in]  background      The background.
     /// \param[in]  fontColor       The font color.
     /// \author Will Blankemeyer
     Label(
         Position center,
         std::string content,
-        Color backgroundColor,
-        Color fontColor
-    );
-    /// \brief Creates a new label with an invisible background.
-    ///
-    /// \param[in]  center          The position of the center of this label.
-    /// \param[in]  content         The textual content of this label.
-    /// \param[in]  fontColor       The font color.
-    /// \author Will Blankemeyer
-    Label(
-        Position center,
-        std::string content,
+        Background background,
         Color fontColor
     );
 
@@ -194,52 +206,26 @@ public:
     ///
     /// \return The content.
     /// \author Will Blankemeyer
-    std::string &getContent() {
-        return this->content;
-    }
-
+    std::string &getContent();
     /// \brief An immutable reference to the textual content of this label.
     ///
     /// \return The content.
     /// \author Will Blankemeyer
-    const std::string &getContent() const {
-        return this->content;
-    }
+    const std::string &getContent() const;
 
     /// \brief The font color.
     ///
     /// \return The font color.
     /// \author Will Blankemeyer
-    Color getFontColor() const {
-        return this->fontColor;
-    }
-
-    /// \brief Sets the font color.
-    ///
-    /// \param[in]  color   The new font color.
-    /// \author Will Blankemeyer
-    void setFontColor(const Color color) {
-        this->fontColor = color;
-    }
+    Color &getFontColor();
+    const Color &getFontColor() const;
 
     virtual float getWidth() const override;
     virtual float getHeight() const override;
+    virtual Position getCenter() const override;
 
-    virtual Position getCenter() const override {
-        return this->center;
-    }
-
-    virtual Visibility getBackgroundVisibility() const override {
-        return this->backgroundVisibility;
-    }
-
-    virtual void setBackgroundVisibility(const Visibility vis) override {
-        this->backgroundVisibility = vis;
-    }
-
-    virtual Color getBackgroundColor() const override {
-        return this->backgroundColor;
-    }
+    virtual Background &getBackground() override;
+    virtual const Background &getBackground() const override;
 
 protected:
     virtual void drawForeground() const override;
@@ -247,9 +233,24 @@ protected:
 private:
     Position center;
     std::string content;
-    Color backgroundColor;
-    Visibility backgroundVisibility;
+    Background background;
     Color fontColor;
+};
+
+class StackedLabel : public ui::Label {
+public:
+    /// \brief Creates a new stacked label.
+    ///
+    /// \author Will Blankemeyer
+    StackedLabel(Label label);
+
+    /// \brief Destroys this label.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~StackedLabel();
+
+protected:
+    virtual void drawForeground() const override;
 };
 
 /// \brief A pushbutton containing a label.
@@ -257,24 +258,16 @@ private:
 /// \author Will Blankemeyer
 class Button : public View {
 public:
-    /// \brief Creates a new button.
-    ///
-    /// \param[in]  label           The button label.
-    /// \param[in]  size            The size of the button.
-    /// \param[in]  backgroundColor The background color.
-    /// \param[in]  borderColor     The border color.
-    /// \author Will Blankemeyer
-    Button(Label label, Size size, Color backgroundColor, Color borderColor);
     /// \brief Creates a new button with default padding.
     ///
     /// The size of this button is determined by adding `DEFAULT_PADDING` to the size of the
     /// contained label.
     ///
-    /// \param[in]  label           The button label.
-    /// \param[in]  backgroundColor The background color.
-    /// \param[in]  borderColor     The border color.
+    /// \param[in]  label       The button label.
+    /// \param[in]  background  The background.
+    /// \param[in]  borderColor The border color.
     /// \author Will Blankemeyer
-    Button(Label label, Color backgroundColor, Color color);
+    Button(Label label, Background background, Color borderColor);
 
     /// \brief Destroys this button.
     ///
@@ -291,53 +284,23 @@ public:
     ///
     /// \return The label.
     /// \author Will Blankemeyer
-    Label &getLabel() {
-        return this->label;
-    }
-
+    Label &getLabel();
     /// \brief An immutable reference to the contained label.
     ///
     /// \return The label.
     /// \author Will Blankemeyer
-    const Label &getLabel() const {
-        return this->label;
-    }
+    const Label &getLabel() const;
 
-    Color getBorderColor() const {
-        return this->borderColor;
-    }
+    Color &getBorderColor();
+    const Color &getBorderColor() const;
 
-    void setBorderColor(const Color color) {
-        this->borderColor = color;
-    }
+    virtual Size getSize() const override;
+    virtual float getWidth() const override;
+    virtual float getHeight() const override;
+    virtual Position getCenter() const override;
 
-    virtual Size getSize() const override {
-        return this->size;
-    }
-
-    virtual float getWidth() const override {
-        return this->size.width;
-    }
-
-    virtual float getHeight() const override {
-        return this->size.height;
-    }
-
-    virtual Position getCenter() const override {
-        return this->label.getCenter();
-    }
-
-    virtual Visibility getBackgroundVisibility() const override {
-        return this->backgroundVisibility;
-    }
-
-    virtual void setBackgroundVisibility(const Visibility vis) override {
-        this->backgroundVisibility = vis;
-    }
-
-    virtual Color getBackgroundColor() const override {
-        return this->backgroundColor;
-    }
+    virtual Background &getBackground() override;
+    virtual const Background &getBackground() const override;
 
     /// \brief Determines if this button is currently pressed.
     ///
@@ -362,13 +325,10 @@ protected:
 private:
     Label label;
     Size size;
-    Color backgroundColor;
-    Visibility backgroundVisibility;
+    Background background;
     Color borderColor;
 
-    static constexpr float pad(const float dim) {
-        return dim + Button::DEFAULT_PADDING;
-    }
+    float pad(float dim) const;
 
     void drawBorder() const;
     void fillBorder() const;
