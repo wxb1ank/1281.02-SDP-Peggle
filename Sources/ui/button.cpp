@@ -6,12 +6,10 @@ namespace ui {
 
 Button::Button(
     const Label label,
-    const Background background,
     const Color borderColor
 )
 :   label{label},
     size{Button::pad(label.getWidth()), Button::pad(label.getHeight())},
-    background{background},
     borderColor{borderColor}
 {}
 
@@ -49,20 +47,20 @@ Position Button::getCenter() const {
     return this->label.getCenter();
 }
 
-Background &Button::getBackground() {
-    return this->background;
-}
-
-const Background &Button::getBackground() const {
-    return this->background;
-}
-
 bool Button::isPressed() const {
     const auto touch = Position::getCurrentTouch();
     if (touch.has_value()) {
         return this->contains(*touch);
     } else {
         return false;
+    }
+}
+
+void Button::draw() const {
+    if (this->isPressed()) {
+        this->drawPressed();
+    } else {
+        this->drawUnpressed();
     }
 }
 
@@ -74,14 +72,6 @@ void Button::drawUnpressed() const {
 void Button::drawPressed() const {
     this->fillBorder();
     this->label.draw();
-}
-
-void Button::drawForeground() const {
-    if (this->isPressed()) {
-        this->drawPressed();
-    } else {
-        this->drawUnpressed();
-    }
 }
 
 float Button::pad(const float dim) const {

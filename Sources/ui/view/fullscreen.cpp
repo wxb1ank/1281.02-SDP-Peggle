@@ -50,8 +50,4 @@ Position FullscreenView::getBottomRight() const {
     return Screen::BOTTOM_RIGHT;
 }
 
-bool FullscreenView::fillsScreen() const {
-    return true;
-}
-
 } // namespace ui

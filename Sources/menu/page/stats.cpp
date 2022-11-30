@@ -5,7 +5,7 @@
 namespace menu {
 
 StatsPage::StatsPage(const float centerY)
-: PageWithBackButton{Page("Stats", centerY, ui::Background(Color::BLACK))}
+: PageWithBackButton{Page("Stats", centerY, ui::BackgroundView(Color::BLACK))}
 {}
 
 void StatsPage::drawContent() const {

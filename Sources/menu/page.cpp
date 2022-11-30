@@ -4,15 +4,13 @@
 
 namespace menu {
 
-Page::Page(const std::string name, const float centerY, const ui::Background background)
+Page::Page(const std::string name, const float centerY, const ui::BackgroundView background)
 :   runButton{
         ui::Label(
             Position(static_cast<float>(Screen::CENTER_X), centerY),
             name,
-            ui::Background(),
             Color::WHITE
         ),
-        ui::Background(Color::BLACK),
         Color::RED
     },
     background{background}
@@ -26,21 +24,18 @@ const ui::Button &Page::getRunButton() const {
 
 void Page::run() {}
 
-ui::Background &Page::getBackground() {
+ui::BackgroundView &Page::getBackground() {
     return this->background;
 }
 
-const ui::Background &Page::getBackground() const {
+const ui::BackgroundView &Page::getBackground() const {
     return this->background;
 }
-
-void Page::drawForeground() const {}
 
 PageWithBackButton::PageWithBackButton(const Page page)
 :   Page{page},
     backButton{
-        ui::Label(Position(50.f, 15.f), "Back", ui::Background(), Color::WHITE),
-        ui::Background(Color::BLACK),
+        ui::Label(Position(50.f, 15.f), "Back", Color::WHITE),
         Color::BLUE
     }
 {}
@@ -52,14 +47,14 @@ const ui::Button &PageWithBackButton::getBackButton() const {
 }
 
 void PageWithBackButton::run() {
-    this->draw();
+    this->draw(ui::Button::drawUnpressed);
 
     while (true) {
         LCD.Update();
 
         switch (this->step()) {
             case StepResult::RedrawAndContinue:
-                this->draw();
+                this->draw(ui::Button::drawUnpressed);
             case StepResult::Continue:
                 break;
             case StepResult::Return:
@@ -72,8 +67,7 @@ void PageWithBackButton::run() {
             while (this->backButton.isPressed()) {
                 switch (this->step()) {
                     case StepResult::RedrawAndContinue:
-                        this->backButton.drawPressed();
-                        this->drawContent();
+                        this->draw(ui::Button::drawPressed);
                     case StepResult::Continue:
                         continue;
                     case StepResult::Return:
@@ -86,8 +80,9 @@ void PageWithBackButton::run() {
     }
 }
 
-void PageWithBackButton::drawForeground() const {
-    this->backButton.draw();
+void PageWithBackButton::draw(std::function<void(const ui::Button *)> drawButton) const {
+    this->getBackground().draw();
+    drawButton(&this->backButton);
     this->drawContent();
 }
 

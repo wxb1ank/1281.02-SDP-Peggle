@@ -4,7 +4,7 @@
 
 namespace menu {
 
-GamePage::GamePage(const float centerY) : Page{"Play", centerY, ui::Background(Color::BLACK)} {}
+GamePage::GamePage(const float centerY) : Page{"Play", centerY, ui::BackgroundView(Color::BLACK)} {}
 
 void GamePage::run() {
     this->game.run();

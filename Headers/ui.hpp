@@ -12,24 +12,6 @@
 /// \brief The Peggle user interface (UI).
 namespace ui {
 
-class Background {
-public:
-    Background();
-    Background(Color Color);
-
-    bool isVisible() const;
-    void setVisibility(bool visibility);
-    void show();
-    void hide();
-
-    Color &getColor();
-    const Color &getColor() const;
-
-private:
-    bool visibility;
-    Color color;
-};
-
 /// \brief The width and height of a `View`.
 ///
 /// \author Will Blankemeyer
@@ -138,22 +120,10 @@ public:
     /// \author Will Blankemeyer
     bool contains(Position pos) const;
 
-    virtual Background &getBackground() = 0;
-    virtual const Background &getBackground() const = 0;
-
     /// \brief Draws this view to the screen.
     ///
-    /// \warning This method mutates the global font color of the LCD.
     /// \author Will Blankemeyer
-    void draw() const;
-
-protected:
-    virtual void drawForeground() const = 0;
-
-private:
-    void drawBackground() const;
-
-    virtual bool fillsScreen() const;
+    virtual void draw() const = 0;
 };
 
 class FullscreenView : public View {
@@ -173,9 +143,21 @@ public:
     virtual Position getTopRight() const final;
     virtual Position getBottomLeft() const final;
     virtual Position getBottomRight() const final;
+};
+
+class BackgroundView final : public FullscreenView {
+public:
+    BackgroundView(Color color);
+
+    virtual ~BackgroundView();
+
+    Color &getColor();
+    const Color &getColor() const;
+
+    virtual void draw() const override;
 
 private:
-    virtual bool fillsScreen() const final;
+    Color color;
 };
 
 /// \brief A single line of text.
@@ -183,17 +165,15 @@ private:
 /// \author Will Blankemeyer
 class Label : public View {
 public:
-    /// \brief Creates a new label with a visible background.
+    /// \brief Creates a new label.
     ///
     /// \param[in]  center          The position of the center of this label.
     /// \param[in]  content         The textual content of this label.
-    /// \param[in]  background      The background.
     /// \param[in]  fontColor       The font color.
     /// \author Will Blankemeyer
     Label(
         Position center,
         std::string content,
-        Background background,
         Color fontColor
     );
 
@@ -224,16 +204,11 @@ public:
     virtual float getHeight() const override;
     virtual Position getCenter() const override;
 
-    virtual Background &getBackground() override;
-    virtual const Background &getBackground() const override;
-
-protected:
-    virtual void drawForeground() const override;
+    virtual void draw() const override;
 
 private:
     Position center;
     std::string content;
-    Background background;
     Color fontColor;
 };
 
@@ -249,8 +224,7 @@ public:
     /// \author Will Blankemeyer
     virtual ~StackedLabel();
 
-protected:
-    virtual void drawForeground() const override;
+    virtual void draw() const override;
 };
 
 /// \brief A pushbutton containing a label.
@@ -264,10 +238,9 @@ public:
     /// contained label.
     ///
     /// \param[in]  label       The button label.
-    /// \param[in]  background  The background.
     /// \param[in]  borderColor The border color.
     /// \author Will Blankemeyer
-    Button(Label label, Background background, Color borderColor);
+    Button(Label label, Color borderColor);
 
     /// \brief Destroys this button.
     ///
@@ -299,14 +272,13 @@ public:
     virtual float getHeight() const override;
     virtual Position getCenter() const override;
 
-    virtual Background &getBackground() override;
-    virtual const Background &getBackground() const override;
-
     /// \brief Determines if this button is currently pressed.
     ///
     /// \return Whether or not this button is pressed.
     /// \author Will Blankemeyer
     bool isPressed() const;
+
+    virtual void draw() const override;
 
     /// \brief Draws this button, in its unpressed state, to the screen.
     ///
@@ -319,13 +291,9 @@ public:
     /// \author Will Blankemeyer
     void drawPressed() const;
 
-protected:
-    virtual void drawForeground() const override;
-
 private:
     Label label;
     Size size;
-    Background background;
     Color borderColor;
 
     float pad(float dim) const;

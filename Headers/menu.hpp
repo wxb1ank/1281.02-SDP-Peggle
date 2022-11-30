@@ -7,6 +7,7 @@
 #include <ui.hpp>
 
 #include <array>
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -15,14 +16,15 @@
 /// \author Will Blankemeyer
 namespace menu {
 
-class Page : public ui::FullscreenView {
+class Page {
 public:
     /// \brief Creates a new page.
     ///
     /// \param[in]  name    The name of this page.
     /// \param[in]  centerY The Y coordinate of the center of the run button.
+    /// \param[in]  background
     /// \author Will Blankemeyer
-    Page(std::string name, float centerY, ui::Background background);
+    Page(std::string name, float centerY, ui::BackgroundView background);
 
     /// \brief Destroys this page.
     ///
@@ -40,18 +42,16 @@ public:
     /// \author Will Blankemeyer
     virtual void run();
 
-    virtual ui::Background &getBackground() override;
-    virtual const ui::Background &getBackground() const override;
-
 protected:
-    virtual void drawForeground() const override;
+    ui::BackgroundView &getBackground();
+    const ui::BackgroundView &getBackground() const;
 
 private:
     /// \brief The button in the main menu that runs this page.
     ///
     /// \author Will Blankemeyer
     ui::Button runButton;
-    ui::Background background;
+    ui::BackgroundView background;
 };
 
 class PageWithBackButton : public Page {
@@ -75,7 +75,6 @@ public:
     virtual void run() final;
 
 protected:
-    virtual void drawForeground() const final;
     virtual void drawContent() const;
 
     enum class StepResult {
@@ -91,6 +90,8 @@ private:
     ///
     /// \author Will Blankemeyer
     ui::Button backButton;
+
+    void draw(std::function<void(const ui::Button *)>) const;
 };
 
 class CreditsPage final : public PageWithBackButton {
@@ -132,7 +133,7 @@ protected:
 /// \brief The Peggle main menu.
 ///
 /// \author Will Blankemeyer
-class Menu : public ui::FullscreenView {
+class Menu {
 public:
     /// \brief Creates a new main menu.
     ///
@@ -150,18 +151,13 @@ public:
     /// \author Will Blankemeyer
     [[noreturn]] void run();
 
-    virtual ui::Background &getBackground() override;
-    virtual const ui::Background &getBackground() const override;
-
-protected:
-    virtual void drawForeground() const override;
-
 private:
     ui::StackedLabel title;
     std::array<std::unique_ptr<Page>, 4> pages;
-    ui::Background background;
+    ui::BackgroundView background;
 
-    void processInput();
+    void draw();
+    void processTouch(Position touch);
 };
 
 } // namespace menu

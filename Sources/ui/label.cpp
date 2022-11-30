@@ -7,12 +7,10 @@ namespace ui {
 Label::Label(
     const Position center,
     const std::string content,
-    const Background background,
     const Color fontColor
 )
 :   center{center},
     content{content},
-    background{background},
     fontColor{fontColor}
 {}
 
@@ -46,15 +44,7 @@ Position Label::getCenter() const {
     return this->center;
 }
 
-Background &Label::getBackground() {
-    return this->background;
-}
-
-const Background &Label::getBackground() const {
-    return this->background;
-}
-
-void Label::drawForeground() const {
+void Label::draw() const {
     LCD.SetFontColor(this->fontColor.encode());
     LCD.WriteAt(
         this->content.c_str(),

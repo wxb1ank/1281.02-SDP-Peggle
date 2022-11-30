@@ -8,7 +8,6 @@ Menu::Menu()
 :   title{ui::Label(
         Position(static_cast<float>(Screen::CENTER_X), 10.f),
         "Peggle!",
-        ui::Background(),
         Color::WHITE
     )},
     pages{
@@ -23,33 +22,28 @@ Menu::Menu()
 Menu::~Menu() {}
 
 void Menu::run() {
+    this->draw();
+
     while (true) {
         LCD.Update();
-        this->draw();
-        this->processInput();
+
+        const auto touch = Position::getCurrentTouch();
+        if (touch.has_value()) {
+            this->processTouch(*touch);
+        }
     }
 }
 
-ui::Background &Menu::getBackground() {
-    return this->background;
-}
-
-const ui::Background &Menu::getBackground() const {
-    return this->background;
-}
-
-void Menu::drawForeground() const {
+void Menu::draw() {
+    this->background.draw();
     this->title.draw();
 
     for (const auto &page : this->pages) {
-        page->getRunButton().drawUnpressed();
+        page->getRunButton().draw();
     }
 }
 
-void Menu::processInput() {
-    // Wait until the next touch.
-    const auto touch = Position::getNextTouch();
-
+void Menu::processTouch(const Position touch) {
     for (auto &page : this->pages) {
         const auto &runButton = page->getRunButton();
 
@@ -60,6 +54,7 @@ void Menu::processInput() {
             while (runButton.isPressed());
 
             page->run();
+            this->draw();
 
             return;
         }

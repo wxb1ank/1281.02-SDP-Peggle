@@ -6,7 +6,7 @@ StackedLabel::StackedLabel(const Label label) : Label{label} {}
 
 StackedLabel::~StackedLabel() {}
 
-void StackedLabel::drawForeground() const {
+void StackedLabel::draw() const {
     LCD.SetFontColor(this->getFontColor().encode());
     for (std::size_t i = 0; i < 3; i++) {
         const auto offset = static_cast<float>(i);
