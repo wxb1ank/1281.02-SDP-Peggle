@@ -71,6 +71,7 @@ public:
     /// \author Will Blankemeyer
     virtual Position getCenter() const = 0;
 
+
     /// \brief The X coordinate of the left boundary of this view.
     ///
     /// \return The leftmost X coordinate.

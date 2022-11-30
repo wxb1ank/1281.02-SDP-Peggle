@@ -32,8 +32,6 @@ public:
 
     bool isOnScreen() const;
 
-    void checkCollisionWith(const Obstacle &);
-
     virtual float getWidth() const override;
     virtual float getHeight() const override;
     virtual Position getCenter() const override;
@@ -48,34 +46,39 @@ private:
     void tickY(float timeElapsed);
 };
 
+struct Deflection {
+    Position pos;
+    Velocity vel;
+};
+
 class Obstacle {
 public:
     ~Obstacle();
 
     static constexpr float MOMENTUM_LOSS{-.65f};
 
-    virtual std::optional<Velocity> deflectionTo(const Ball &) const = 0;
+    virtual void checkCollisionWith(Ball &) const = 0;
 };
 
 class Ceiling final : public Obstacle {
 public:
     Ceiling();
 
-    virtual std::optional<Velocity> deflectionTo(const Ball &) const override;
+    virtual void checkCollisionWith(Ball &) const override;
 };
 
 class LeftWall final : public Obstacle {
 public:
     LeftWall();
 
-    virtual std::optional<Velocity> deflectionTo(const Ball &) const override;
+    virtual void checkCollisionWith(Ball &) const override;
 };
 
 class RightWall final : public Obstacle {
 public:
     RightWall();
 
-    virtual std::optional<Velocity> deflectionTo(const Ball &) const override;
+    virtual void checkCollisionWith(Ball &) const override;
 };
 
 extern const Ceiling CEILING;
@@ -95,7 +98,7 @@ class Peg : public Obstacle
         int getRadius() const;
         int getStatus() const;
 
-        virtual std::optional<Velocity> deflectionTo(const Ball &) const override;
+        virtual void checkCollisionWith(Ball &) const override;
 
     private:
         int x_position, y_position, peg_radius, active;

@@ -48,30 +48,24 @@ int Peg::getStatus() const
     return active;
 }
 
-std::optional<Velocity> Peg::deflectionTo(const Ball &ball) const {
+void Peg::checkCollisionWith(Ball &ball) const {
     const auto pos = ball.getPos();
-    auto vel = ball.getVel();
+    auto &vel = ball.getVel();
 
     float xDistance = pos.x - x_position;
     float yDistance = pos.y - y_position;
-    float distance = sqrt(powf(xDistance,2) + powf(yDistance,2));
+    float distance = std::hypot(xDistance, yDistance);
     if(distance <= static_cast<float>(peg_radius + Ball::RADIUS))
     {
-        float collision_angle = atan(yDistance/xDistance);
+        float collisionAngle = atan(yDistance/xDistance);
         if(xDistance >= 0)
         {
-            collision_angle += M_PI;
+            collisionAngle += M_PI;
         }
-        float v = sqrt(powf(vel.x,2) + powf(vel.y,2));
-        vel.x = Obstacle::MOMENTUM_LOSS * v * cos(collision_angle);
-        vel.y = Obstacle::MOMENTUM_LOSS * v * sin(collision_angle);
+        float velMag = Obstacle::MOMENTUM_LOSS * vel.getMagnitude();
+        vel.x = velMag * cos(collisionAngle);
+        vel.y = velMag * sin(collisionAngle);
         printf("Y: %f\nX: %f\n", vel.y,vel.x);
-
-        return std::optional(vel);
-    }
-    else
-    {
-        return {};
     }
 }
 

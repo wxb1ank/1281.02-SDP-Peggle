@@ -45,13 +45,6 @@ void Ball::tick(const float timeElapsed) {
     this->tickY(timeElapsed);
 }
 
-void Ball::checkCollisionWith(const Obstacle &obstacle) {
-    const auto deflection = obstacle.deflectionTo(*this);
-    if (deflection.has_value()) {
-        this->vel = *deflection;
-    }
-}
-
 bool Ball::isOnScreen() const {
     return (this->pos.y + static_cast<float>(Ball::RADIUS)) <= static_cast<float>(Screen::MAX_Y);
 }

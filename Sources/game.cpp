@@ -51,13 +51,13 @@ void Game::run() {
             lastTime = newTime;
 
             ball.tick(tickDuration);
-            ball.checkCollisionWith(CEILING);
-            ball.checkCollisionWith(LEFT_WALL);
-            ball.checkCollisionWith(RIGHT_WALL);
+            CEILING.checkCollisionWith(ball);
+            LEFT_WALL.checkCollisionWith(ball);
+            RIGHT_WALL.checkCollisionWith(ball);
 
             for(const auto &peg : this->board.getPegs())
             {
-                ball.checkCollisionWith(peg);
+                peg.checkCollisionWith(ball);
             }
 
             ball.draw();
