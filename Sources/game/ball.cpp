@@ -1,13 +1,16 @@
 #include <game.hpp>
 
 #include <cmath>
+#include <cstdio>
 
 namespace game {
 
-Ball::Ball() : pos{Screen::CENTER_TOP}, vel{} {}
+Ball::Ball() : pos{Screen::CENTER_X, Screen::MIN_Y + Ball::RADIUS + 5}, vel{} {}
 
 void Ball::shootAt(const Position target) {
-    this->vel.y = 10.f;
+    printf("Target: (%.1f, %.1f)\n", target.x, target.y);
+
+    this->vel.y = 100.f;
 
     // Uses the angle to find the initial velocities in the x and y directions
     const auto timeToTarget = (
@@ -15,8 +18,10 @@ void Ball::shootAt(const Position target) {
             std::pow(this->vel.y, 2.f) + (2.f * Acceleration::GRAVITY.y * target.y)
         )
     ) / Acceleration::GRAVITY.y;
+    printf("Time to target: %f sec\n", timeToTarget);
 
     this->vel.x = target.x / timeToTarget;
+    printf("Vel: (%.5f, %.5f)\n", this->vel.x, this->vel.y);
 }
 
 Position &Ball::getPos() {

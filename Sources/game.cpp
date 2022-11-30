@@ -30,9 +30,8 @@ void Game::run() {
 
         // Location of where the player clicks on the screen
         auto target = Position::getNextTouch();
-        // Sets (0,0) to be at (160,0)
-        target.x -= static_cast<float>(Screen::CENTER_X);
-
+        target.x -= ball.getPos().x;
+        target.y -= ball.getPos().y;
         ball.shootAt(target);
 
         float target_angle = M_PI_2 - std::atan2(target.y, target.x);
