@@ -4,7 +4,7 @@
 
 namespace menu {
 
-Page::Page(const std::string name, const float centerY, const ui::BackgroundView background)
+Page::Page(const std::string name, const float centerY)
 :   runButton{
         ui::Label(
             Position(static_cast<float>(Screen::CENTER_X), centerY),
@@ -12,8 +12,7 @@ Page::Page(const std::string name, const float centerY, const ui::BackgroundView
             Color::WHITE
         ),
         Color::RED
-    },
-    background{background}
+    }
 {}
 
 Page::~Page() {}
@@ -24,16 +23,9 @@ const ui::Button &Page::getRunButton() const {
 
 void Page::run() {}
 
-ui::BackgroundView &Page::getBackground() {
-    return this->background;
-}
-
-const ui::BackgroundView &Page::getBackground() const {
-    return this->background;
-}
-
-PageWithBackButton::PageWithBackButton(const Page page)
+PageWithBackButton::PageWithBackButton(const Page page, const ui::BackgroundView background)
 :   Page{page},
+    background{background},
     backButton{
         ui::Label(Position(50.f, 15.f), "Back", Color::WHITE),
         Color::BLUE
@@ -50,8 +42,6 @@ void PageWithBackButton::run() {
     this->draw(ui::Button::drawUnpressed);
 
     while (true) {
-        LCD.Update();
-
         switch (this->step()) {
             case StepResult::RedrawAndContinue:
                 this->draw(ui::Button::drawUnpressed);
@@ -63,6 +53,7 @@ void PageWithBackButton::run() {
 
         if (this->backButton.isPressed()) {
             this->backButton.drawPressed();
+            LCD.Update();
 
             while (this->backButton.isPressed()) {
                 switch (this->step()) {
@@ -84,12 +75,22 @@ void PageWithBackButton::draw(std::function<void(const ui::Button *)> drawButton
     this->getBackground().draw();
     drawButton(&this->backButton);
     this->drawContent();
+
+    LCD.Update();
 }
 
 void PageWithBackButton::drawContent() const {}
 
 PageWithBackButton::StepResult PageWithBackButton::step() {
     return StepResult::Continue;
+}
+
+ui::BackgroundView &PageWithBackButton::getBackground() {
+    return this->background;
+}
+
+const ui::BackgroundView &PageWithBackButton::getBackground() const {
+    return this->background;
 }
 
 } // namespace menu

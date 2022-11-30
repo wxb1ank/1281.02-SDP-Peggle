@@ -46,4 +46,4 @@ float Position::getAngleTo(const Position pos) const {
     return angle;
 }
 
-const Acceleration Acceleration::GRAVITY{0.f, -200'000.f};
+const Acceleration Acceleration::GRAVITY{0.f, 1'000.f};

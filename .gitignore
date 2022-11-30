@@ -1,4 +1,4 @@
-build/
+/Build/
 simulator_libraries/
 
 # Precompiled Headers
@@ -29,4 +29,4 @@ simulator_libraries/
 *.code_workspace
 
 # Project specific
-game
+/game/

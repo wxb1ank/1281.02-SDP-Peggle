@@ -22,9 +22,8 @@ public:
     ///
     /// \param[in]  name    The name of this page.
     /// \param[in]  centerY The Y coordinate of the center of the run button.
-    /// \param[in]  background
     /// \author Will Blankemeyer
-    Page(std::string name, float centerY, ui::BackgroundView background);
+    Page(std::string name, float centerY);
 
     /// \brief Destroys this page.
     ///
@@ -42,21 +41,16 @@ public:
     /// \author Will Blankemeyer
     virtual void run();
 
-protected:
-    ui::BackgroundView &getBackground();
-    const ui::BackgroundView &getBackground() const;
-
 private:
     /// \brief The button in the main menu that runs this page.
     ///
     /// \author Will Blankemeyer
     ui::Button runButton;
-    ui::BackgroundView background;
 };
 
 class PageWithBackButton : public Page {
 public:
-    PageWithBackButton(Page page);
+    PageWithBackButton(Page page, ui::BackgroundView background);
 
     /// \brief Destroys this page.
     ///
@@ -85,11 +79,15 @@ protected:
 
     virtual StepResult step();
 
+    ui::BackgroundView &getBackground();
+    const ui::BackgroundView &getBackground() const;
+
 private:
     /// \brief The button drawn on the page that returns control to the main menu.
     ///
     /// \author Will Blankemeyer
     ui::Button backButton;
+    ui::BackgroundView background;
 
     void draw(std::function<void(const ui::Button *)>) const;
 };
@@ -155,9 +153,6 @@ private:
     ui::StackedLabel title;
     std::array<std::unique_ptr<Page>, 4> pages;
     ui::BackgroundView background;
-
-    void draw();
-    void processTouch(Position touch);
 };
 
 } // namespace menu

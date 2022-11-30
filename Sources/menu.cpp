@@ -2,6 +2,10 @@
 
 #include <screen.hpp>
 
+#include <FEHUtility.h>
+
+#include <optional>
+
 namespace menu {
 
 Menu::Menu()
@@ -22,41 +26,39 @@ Menu::Menu()
 Menu::~Menu() {}
 
 void Menu::run() {
-    this->draw();
-
     while (true) {
+        // Fun fact: `LCD::Touch` redraws the screen (???). This has unfortunate consequences.
+        // Because of this, it is essential that we get the current touch---and, by extension,
+        // redraw the screen (ugh)---*before* we clear the screen. Otherwise, if we get the touch
+        // after clearing then the menu will be drawn incompletely (without the page buttons).
+        // Because we're in a loop, that equates to a nasty flickering effect that no one wants to
+        // see.
+        const auto touch = Position::getCurrentTouch();
+
+        this->background.getColor().r += 0.1f;
+        this->background.draw();
+        this->title.draw();
+
+        std::optional<Page *> nextPage{};
+
+        for (auto &page : this->pages) {
+            const auto &runButton = page->getRunButton();
+            if (!nextPage.has_value() && touch.has_value() && runButton.contains(*touch)) {
+                runButton.drawPressed();
+                nextPage.emplace(page.get());
+            } else {
+                runButton.drawUnpressed();
+            }
+        }
+
+        // Finally, we can properly call `LCD::Update`.
         LCD.Update();
 
-        const auto touch = Position::getCurrentTouch();
-        if (touch.has_value()) {
-            this->processTouch(*touch);
-        }
-    }
-}
-
-void Menu::draw() {
-    this->background.draw();
-    this->title.draw();
-
-    for (const auto &page : this->pages) {
-        page->getRunButton().draw();
-    }
-}
-
-void Menu::processTouch(const Position touch) {
-    for (auto &page : this->pages) {
-        const auto &runButton = page->getRunButton();
-
-        if (runButton.contains(touch)) {
-            runButton.drawPressed();
-
+        if (nextPage.has_value()) {
             // Wait until the button is no longer pressed.
-            while (runButton.isPressed());
+            while ((*nextPage)->getRunButton().isPressed());
 
-            page->run();
-            this->draw();
-
-            return;
+            (*nextPage)->run();
         }
     }
 }
