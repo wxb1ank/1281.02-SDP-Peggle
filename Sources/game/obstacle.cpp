@@ -6,35 +6,40 @@ namespace game {
 
 Obstacle::~Obstacle() {}
 
+void Obstacle::checkCollisionWith(Velocity &vel, Position &pos) const {}
+
 Ceiling::Ceiling() {}
 
 void checkFlatCollisionWith(
-    Ball &ball,
+    Velocity &vel,
+    Position &pos,
     const bool condition,
     std::function<void(Position &)> fixPos,
     std::function<float &(Velocity &)> selectVelComp
 ) {
     if (condition) {
-        fixPos(ball.getPos());
-        selectVelComp(ball.getVel()) *= Obstacle::MOMENTUM_LOSS;
+        fixPos(pos);
+        selectVelComp(vel) *= Obstacle::MOMENTUM_LOSS;
     }
 }
 
-void Ceiling::checkCollisionWith(Ball &ball) const {
+void Ceiling::checkCollisionWith(Velocity &vel, Position &pos) const {
     checkFlatCollisionWith(
-        ball,
-        ball.getTopY() < static_cast<float>(Screen::MIN_Y),
-        [](Position &pos) { pos.y = static_cast<float>(Screen::MIN_Y - Ball::RADIUS) - 1.f; },
+        vel,
+        pos,
+        (pos.y - static_cast<float>(Ball::RADIUS)) < static_cast<float>(Screen::MIN_Y),
+        [](Position &pos) { pos.y = static_cast<float>(Screen::MIN_Y + Ball::RADIUS) + 1.f; },
         [](Velocity &vel) -> float & { return vel.y; }
     );
 }
 
 LeftWall::LeftWall() {}
 
-void LeftWall::checkCollisionWith(Ball &ball) const {
+void LeftWall::checkCollisionWith(Velocity &vel, Position &pos) const {
     checkFlatCollisionWith(
-        ball,
-        ball.getLeftX() < static_cast<float>(Screen::MIN_X),
+        vel,
+        pos,
+        (pos.x - static_cast<float>(Ball::RADIUS)) < static_cast<float>(Screen::MIN_X),
         [](Position &pos) { pos.x = static_cast<float>(Screen::MIN_X + Ball::RADIUS) + 1.f; },
         [](Velocity &vel) -> float & { return vel.x; }
     );
@@ -42,10 +47,11 @@ void LeftWall::checkCollisionWith(Ball &ball) const {
 
 RightWall::RightWall() {}
 
-void RightWall::checkCollisionWith(Ball &ball) const {
+void RightWall::checkCollisionWith(Velocity &vel, Position &pos) const {
     checkFlatCollisionWith(
-        ball,
-        ball.getRightX() > static_cast<float>(Screen::MAX_X),
+        vel,
+        pos,
+        (pos.x + static_cast<float>(Ball::RADIUS)) > static_cast<float>(Screen::MAX_X),
         [](Position &pos) { pos.x = static_cast<float>(Screen::MAX_X - Ball::RADIUS) - 1.f; },
         [](Velocity &vel) -> float & { return vel.x; }
     );

@@ -14,7 +14,7 @@ namespace game {
 Game::Game() : background{Color::BLACK} {
     // Pegs on the board
     for (unsigned x = 5; x < 160; x += 10) {
-        board.push({x, 200 - x, 5});
+        board.push(Peg(x, 200 - x, 5));
     }
 }
 
@@ -24,15 +24,28 @@ void Game::run() {
     while (ballsRemaining > 0) {
         this->background.draw();
         this->board.drawPegs();
+        LCD.SetFontColor(Color::WHITE.encode());
         LCD.WriteAt(static_cast<int>(ballsRemaining), 15, 15);
 
         Ball ball;
 
         // Location of where the player clicks on the screen
-        auto target = Position::getNextTouch();
-        target.x -= ball.getPos().x;
-        target.y -= ball.getPos().y;
-        ball.shootAt(target);
+        Position target;
+        while (!LCD.Touch(&target.x, &target.y));
+
+        while (LCD.Touch(&target.x, &target.y)) {
+            target.x -= ball.getPos().x;
+            target.y -= ball.getPos().y;
+            ball.shootAt(target);
+
+            this->background.draw();
+            this->board.drawPegs();
+            LCD.SetFontColor(Color::WHITE.encode());
+            LCD.WriteAt(static_cast<int>(ballsRemaining), 15, 15);
+            ball.drawGuide(this->board.getPegs());
+
+            LCD.ClearBuffer();
+        }
 
         float target_angle = M_PI_2 - std::atan2(target.y, target.x);
 
@@ -44,6 +57,7 @@ void Game::run() {
         while (ball.isOnScreen()) {
             this->background.draw();
             this->board.drawPegs();
+            LCD.SetFontColor(Color::WHITE.encode());
             LCD.WriteAt(static_cast<int>(ballsRemaining), 15, 15);
 
             double newTime = TimeNow();
@@ -51,13 +65,13 @@ void Game::run() {
             lastTime = newTime;
 
             ball.tick(tickDuration);
-            CEILING.checkCollisionWith(ball);
-            LEFT_WALL.checkCollisionWith(ball);
-            RIGHT_WALL.checkCollisionWith(ball);
+            CEILING.checkCollisionWith(ball.getVel(), ball.getPos());
+            LEFT_WALL.checkCollisionWith(ball.getVel(), ball.getPos());
+            RIGHT_WALL.checkCollisionWith(ball.getVel(), ball.getPos());
 
             for(const auto &peg : this->board.getPegs())
             {
-                peg.checkCollisionWith(ball);
+                peg.checkCollisionWith(ball.getVel(), ball.getPos());
             }
 
             ball.draw();

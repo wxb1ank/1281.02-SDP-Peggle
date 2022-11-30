@@ -2,6 +2,8 @@
 
 #include <game.hpp>
 
+#include <LCDColors.h>
+
 #include <cmath>
 
 namespace game {
@@ -48,10 +50,7 @@ int Peg::getStatus() const
     return active;
 }
 
-void Peg::checkCollisionWith(Ball &ball) const {
-    const auto pos = ball.getPos();
-    auto &vel = ball.getVel();
-
+void Peg::checkCollisionWith(Velocity &vel, Position &pos) const {
     float xDistance = pos.x - x_position;
     float yDistance = pos.y - y_position;
     float distance = std::hypot(xDistance, yDistance);
@@ -65,7 +64,7 @@ void Peg::checkCollisionWith(Ball &ball) const {
         float velMag = Obstacle::MOMENTUM_LOSS * vel.getMagnitude();
         vel.x = velMag * cos(collisionAngle);
         vel.y = velMag * sin(collisionAngle);
-        printf("Y: %f\nX: %f\n", vel.y,vel.x);
+        // printf("Y: %f\nX: %f\n", vel.y,vel.x);
     }
 }
 
@@ -85,6 +84,11 @@ void PegBoard::drawPegs() const
     {
         if(peg.getStatus() == 1)
         {
+            LCD.SetFontColor(NAVY);
+            LCD.FillCircle(peg.getX(), peg.getY(),peg.getRadius());
+            LCD.SetFontColor(LIGHTSTEELBLUE);
+            LCD.FillCircle(peg.getX() - 1, peg.getY() - 1, 1);
+            LCD.SetFontColor(ROYALBLUE);
             LCD.DrawCircle(peg.getX(), peg.getY(),peg.getRadius());
         }
     }

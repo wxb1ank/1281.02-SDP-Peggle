@@ -22,3 +22,5 @@
 #define LCDCOLORS_H
 
 #include <FEHLCD.h>
+
+#undef LCDCOLORS_H

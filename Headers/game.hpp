@@ -12,6 +12,7 @@
 namespace game {
 
 class Obstacle;
+class Peg;
 
 /// \author Will Blankemeyer
 class Ball final : public ui::View {
@@ -37,13 +38,15 @@ public:
     virtual Position getCenter() const override;
 
     virtual void draw() const override;
+    void drawGuide(const std::vector<Peg> &);
 
 private:
     Position pos;
     Velocity vel;
 
-    void tickX(float timeElapsed);
-    void tickY(float timeElapsed);
+    static void tick(Velocity &vel, Position &pos, float timeElapsed);
+    static void tickX(const Velocity &vel, Position &pos, float timeElapsed);
+    static void tickY(Velocity &vel, Position &pos, float timeElapsed);
 };
 
 struct Deflection {
@@ -57,28 +60,28 @@ public:
 
     static constexpr float MOMENTUM_LOSS{-.65f};
 
-    virtual void checkCollisionWith(Ball &) const = 0;
+    virtual void checkCollisionWith(Velocity &, Position &) const;
 };
 
 class Ceiling final : public Obstacle {
 public:
     Ceiling();
 
-    virtual void checkCollisionWith(Ball &) const override;
+    virtual void checkCollisionWith(Velocity &, Position &) const override;
 };
 
 class LeftWall final : public Obstacle {
 public:
     LeftWall();
 
-    virtual void checkCollisionWith(Ball &) const override;
+    virtual void checkCollisionWith(Velocity &, Position &) const override;
 };
 
 class RightWall final : public Obstacle {
 public:
     RightWall();
 
-    virtual void checkCollisionWith(Ball &) const override;
+    virtual void checkCollisionWith(Velocity &, Position &) const override;
 };
 
 extern const Ceiling CEILING;
@@ -98,7 +101,7 @@ class Peg : public Obstacle
         int getRadius() const;
         int getStatus() const;
 
-        virtual void checkCollisionWith(Ball &) const override;
+        virtual void checkCollisionWith(Velocity &, Position &) const override;
 
     private:
         int x_position, y_position, peg_radius, active;
