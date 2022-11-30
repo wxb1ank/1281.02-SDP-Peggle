@@ -12,7 +12,7 @@
 #include <iostream>
 
 // Acceleration due to gravity
-#define GRAVITY_ACCEL 5.
+#define GRAVITY_ACCEL 1'000.
 
 // Radius of the ball
 #define BALL_RADIUS 3
@@ -155,31 +155,28 @@ void Game::run() {
         // Sets the initial position of the ball at (160,0)
         float x = (float)WIDTH / 2.;
         float y = 0.;
+
+        float vy = 10.f;
+
         // Uses the angle to find the initial velocities in the x and y directions
-        float time_to_target = hypotf(target_x,target_y)/INIT_VELOCITY;
-        float vx = target_x/time_to_target;
-        float vy = (target_y+GRAVITY_ACCEL/2*pow(time_to_target,2))/time_to_target;
+        float time_to_target = (-vy + sqrtf(powf(vy, 2.f) + (2 * GRAVITY_ACCEL * target_y))) / GRAVITY_ACCEL;
+        float vx = target_x / time_to_target;
 
-        printf("\nTime to target: %f\nTarget X: %f\n Target Y: %f\n Target angle: %f\n",time_to_target, target_x,target_y, target_angle * 180./M_PI);
-
-        // SOMETHING WRONG WITH TIME
-        // SOMETHING WRONG WITH TIME
-        // SOMETHING WRONG WITH TIME
-        // SOMETHING WRONG WITH TIME
-        // SOMETHING WRONG WITH TIME
-        // SOMETHING WRONG WITH TIME
+        printf("\nTime to target: %f sec\nTarget X: %f px\n Target Y: %f px\n Target angle: %f deg\n",time_to_target, target_x,target_y, target_angle * 180./M_PI);
 
         double lastTime = TimeNow();
-        float tick_duration = 1./30.;
+
+        ballsRemaining -=1;
+
         // Updates the position of the ball after each tick based on the balls velocity and gravity
         while ((y + BALL_RADIUS) <= static_cast<float>(Screen::MAX_Y)) {
             LCD.Clear(Color::BLACK.encode());
             this->board.drawPegs();
             LCD.WriteAt(ballsRemaining, 15, 15);
 
-            //double newTime = TimeNow();
-            //double tick_duration = newTime - lastTime;
-            //double lastTime = newTime;
+            double newTime = TimeNow();
+            const auto tick_duration = static_cast<float>(newTime - lastTime);
+            lastTime = newTime;
 
             x += vx*tick_duration;
 
@@ -206,8 +203,6 @@ void Game::run() {
             LCD.DrawCircle((int)x, (int)y, BALL_RADIUS);
             LCD.Update();
         }
-
-        ballsRemaining -=1;
     }
 }
 
