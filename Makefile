@@ -44,6 +44,7 @@ REPO_DIR := $(REPO_NAME)
 # :: rel-path
 # The relative path to the directory to which object files and generated documentation are written.
 BUILD_DIR := Build
+SCRIPTS_DIR := Scripts
 
 # :: exe
 # The name of the system Git executable.
@@ -85,10 +86,10 @@ filter_objs = $(addprefix $(BUILD_DIR)/,$(patsubst %$1,%.o,$(filter %$1,$(SRCS))
 CXX_OBJS := $(call filter_objs,.cpp)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator object files compiled from C source files.
-CC_OBJS := $(call filter_objs,.c)
+C_OBJS := $(call filter_objs,.c)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator object files.
-OBJS := $(CXX_OBJS) $(CC_OBJS)
+OBJS := $(CXX_OBJS) $(C_OBJS)
 
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator dependency Makefiles generated from C++
@@ -97,15 +98,15 @@ CXX_DEPS := $(CXX_OBJS:.o=.d)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator dependency Makefiles generated from C
 # source files.
-CC_DEPS := $(CC_OBJS:.o=.d)
+C_DEPS := $(C_OBJS:.o=.d)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator dependency Makefiles.
-DEPS := $(CXX_DEPS) $(CC_DEPS)
+DEPS := $(CXX_DEPS) $(C_DEPS)
 
 INC_DIRS := $(REPO_DIR) Headers
 INCFLAGS := $(foreach dir,$(INC_DIRS),-I$(dir))
 CXX_STD := 17
-CC_STD := 17
+C_STD := 17
 
 COMMON_FLAGS := $(INCFLAGS) -Os -w -MMD -MP
 
@@ -152,71 +153,41 @@ endif
 TARGET := game$(TARGET_SUFFIX)
 
 CXXFLAGS := $(COMMON_FLAGS) -std=c++$(CXX_STD)
-CFLAGS := $(COMMON_FLAGS) -std=c$(CC_STD)
+CFLAGS := $(COMMON_FLAGS) -std=c$(C_STD)
 
-.PHONY: checkout clone doc docs open-doc open-docs clean
+.PHONY: checkout-deps clone-deps doc docs open-doc open-docs clean
+.SILENT:
 
-all: checkout $(OBJ_DIRS) $(TARGET)
+all: checkout-deps $(TARGET)
 
-checkout:
+checkout-deps: clone-deps
 	@$(GIT) -C $(REPO_DIR) checkout $(REPO_HASH)
 
-clone:
+clone-deps:
 ifeq ($(OS),Windows_NT)
-# check for internet connection
-# if there's internet, check to see if Libraries folder exists
-# if it does, remove it before cloning the repo
-	@ping -n 1 -w 1000 $(REPO_URL) > NUL & \
-	if errorlevel 1 \
-	( \
-		( echo Warning: No internet connection! ) \
-	) \
-	else \
-	( \
-		( if exist "$(REPO_DIR)" \
-		( \
-			cd $(REPO_DIR) && \
-			$(GIT) stash && \
-			$(GIT) pull && \
-			cd .. \
-		) \
-		else \
-		( \
-			$(GIT) clone $(REPO_URL) \
-		) \
-		) \
-	)
+	$(SCRIPTS_DIR)\clone-deps.bat $(GIT) $(REPO_DIR) $(REPO_URL)
 else
-# Mac/Linux
-	@ping -c 1 -W 1000 $(REPO_URL) > /dev/null ; \
-	if [ "$$?" -ne 0 ]; then \
-		echo Warning: No internet connection!; \
-	else \
-		if [ -d "$(REPO_DIR)" ]; then \
-			cd $(REPO_DIR) ; \
-			$(GIT) stash ; \
-			  $(GIT) pull ; \
-			  cd .. ; \
-		else \
-			  $(GIT) clone $(REPO_URL) ; \
-		fi \
-	fi
+	./$(SCRIPTS_DIR)/clone-deps.sh $(GIT) $(REPO_DIR) $(REPO_URL)
 endif
 
 $(TARGET): $(OBJS)
-	@echo [LD ] $@
-	@$(CXX) -o $@ $^ $(LDFLAGS)
+	echo [LD ] $@
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
-$(CXX_OBJS): $(BUILD_DIR)/%.o: %.cpp
-	@echo [CXX] $@
-	@$(CXX) -o $@ -c $< $(CXXFLAGS)
+.SECONDEXPANSION:
 
-$(CC_OBJS): $(BUILD_DIR)/%.o: %.c
-	@echo [CC ] $@
-	@$(CC) -o $@ -c $< $(CFLAGS)
+$(CXX_OBJS): $(BUILD_DIR)/%.o: %.cpp | $$(@D)/.
+	echo [CXX] $@
+	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
-$(OBJ_DIRS):
-	@-$(call mkdir,$(dir $@))
+$(C_OBJS): $(BUILD_DIR)/%.o: %.c | $$(@D)/.
+	echo [CC ] $@
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+$(BUILD_DIR)/.:
+	$(call mkdir,$(dir $@))
+$(BUILD_DIR)/%/.:
+	$(call mkdir,$(dir $@))
 
 -include $(DEPS)
 
@@ -224,12 +195,12 @@ $(OBJ_DIRS):
 #
 # The generated webpage files are written to the build directory.
 doc docs:
-	@$(DOXYGEN)
+	$(DOXYGEN)
 
 open-doc open-docs:
-	@$(OPEN) $(BUILD_DIR)/html/index.html
+	$(OPEN) $(BUILD_DIR)/html/index.html
 
 # Deletes the target executable and build directory.
 clean:
-	@-$(call rm,$(TARGET))
-	@-$(call rmdir,$(BUILD_DIR))
+	-$(call rm,$(TARGET))
+	-$(call rmdir,$(BUILD_DIR))
