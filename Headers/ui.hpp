@@ -10,6 +10,9 @@
 #include <string>
 
 /// \brief The Peggle user interface (UI).
+///
+/// This library was loosely influenced by Apple's *UIKit*. It is lighter than a traditonal MVC
+/// design but retains the essential `View` class.
 namespace ui {
 
 /// \brief The width and height of a `View`.
@@ -127,37 +130,72 @@ public:
     virtual void draw() const = 0;
 };
 
+/// \brief A view that fills the entire screen.
+///
+/// This class offers optimized implementations of basic `View` methods for views that are always
+/// the same size as the screen.
+///
+/// \author Will Blankemeyer
 class FullscreenView : public View {
 public:
+    /// \brief Destroys this fullscreen view.
+    ///
+    /// \author Will Blankemeyer
     virtual ~FullscreenView();
 
+    /// \author Will Blankemeyer
     virtual float getWidth() const final;
+    /// \author Will Blankemeyer
     virtual float getHeight() const final;
+    /// \author Will Blankemeyer
     virtual Position getCenter() const final;
 
+    /// \author Will Blankemeyer
     virtual float getLeftX() const final;
+    /// \author Will Blankemeyer
     virtual float getRightX() const final;
+    /// \author Will Blankemeyer
     virtual float getTopY() const final;
+    /// \author Will Blankemeyer
     virtual float getBottomY() const final;
 
+    /// \author Will Blankemeyer
     virtual Position getTopLeft() const final;
+    /// \author Will Blankemeyer
     virtual Position getTopRight() const final;
+    /// \author Will Blankemeyer
     virtual Position getBottomLeft() const final;
+    /// \author Will Blankemeyer
     virtual Position getBottomRight() const final;
 };
 
+/// \brief A fullscreen view that draws a rectangle filled with a single color.
+///
+/// \author Will Blankemeyer
 class BackgroundView final : public FullscreenView {
 public:
+    /// \brief Creates a new background view of the given color.
+    ///
+    /// \param[in]  color   The initial color.
+    /// \author Will Blankemeyer
     BackgroundView(Color color);
 
-    virtual ~BackgroundView();
-
+    /// \brief A mutable reference to the background color.
+    ///
+    /// \return The color.
+    /// \author Will Blankemeyer
     Color &getColor();
+    /// \brief An immutable reference to the background color.
+    ///
+    /// \return The color.
+    /// \author Will Blankemeyer
     const Color &getColor() const;
 
+    /// \author Will Blankemeyer
     virtual void draw() const override;
 
 private:
+    /// \author Will Blankemeyer
     Color color;
 };
 
@@ -168,9 +206,9 @@ class Label : public View {
 public:
     /// \brief Creates a new label.
     ///
-    /// \param[in]  center          The position of the center of this label.
-    /// \param[in]  content         The textual content of this label.
-    /// \param[in]  fontColor       The font color.
+    /// \param[in]  center          The initial position of the center of this label.
+    /// \param[in]  content         The initial textual content of this label.
+    /// \param[in]  fontColor       The initial font color.
     /// \author Will Blankemeyer
     Label(
         Position center,
@@ -194,37 +232,53 @@ public:
     /// \author Will Blankemeyer
     const std::string &getContent() const;
 
-    /// \brief The font color.
+    /// \brief A mutable reference to the font color.
     ///
     /// \return The font color.
     /// \author Will Blankemeyer
     Color &getFontColor();
+    /// \brief An immutable reference to the font color.
+    ///
+    /// \return The font color.
+    /// \author Will Blankemeyer
     const Color &getFontColor() const;
 
+    /// \author Will Blankemeyer
     virtual float getWidth() const override;
+    /// \author Will Blankemeyer
     virtual float getHeight() const override;
+    /// \author Will Blankemeyer
     virtual Position getCenter() const override;
 
+    /// \author Will Blankemeyer
     virtual void draw() const override;
 
 private:
+    /// \author Will Blankemeyer
     Position center;
+    /// \author Will Blankemeyer
     std::string content;
+    /// \author Will Blankemeyer
     Color fontColor;
 };
 
+/// \brief A collection of labels stacked upon each other to emulate 3D depth.
+///
+/// \author Will Blankemeyer
 class StackedLabel : public ui::Label {
 public:
-    /// \brief Creates a new stacked label.
+    /// \brief Creates a new stacked label from the given label.
     ///
+    /// \param[in]  label   The label to stack.
     /// \author Will Blankemeyer
     StackedLabel(Label label);
 
-    /// \brief Destroys this label.
+    /// \brief Destroys this stacked label.
     ///
     /// \author Will Blankemeyer
     virtual ~StackedLabel();
 
+    /// \author Will Blankemeyer
     virtual void draw() const override;
 };
 
@@ -265,20 +319,34 @@ public:
     /// \author Will Blankemeyer
     const Label &getLabel() const;
 
+    /// \brief A mutable reference to the border color.
+    ///
+    /// \return The border color.
+    /// \author Will Blankemeyer
     Color &getBorderColor();
+    /// \brief An immutable reference to the border color.
+    ///
+    /// \return The border color.
+    /// \author Will Blankemeyer
     const Color &getBorderColor() const;
 
+    /// \author Will Blankemeyer
     virtual Size getSize() const override;
+    /// \author Will Blankemeyer
     virtual float getWidth() const override;
+    /// \author Will Blankemeyer
     virtual float getHeight() const override;
+    /// \author Will Blankemeyer
     virtual Position getCenter() const override;
 
     /// \brief Determines if this button is currently pressed.
     ///
     /// \return Whether or not this button is pressed.
+    /// \warning This method updates the LCD.
     /// \author Will Blankemeyer
     bool isPressed() const;
 
+    /// \author Will Blankemeyer
     virtual void draw() const override;
 
     /// \brief Draws this button, in its unpressed state, to the screen.
@@ -293,13 +361,19 @@ public:
     void drawPressed() const;
 
 private:
+    /// \author Will Blankemeyer
     Label label;
+    /// \author Will Blankemeyer
     Size size;
+    /// \author Will Blankemeyer
     Color borderColor;
 
+    /// \author Will Blankemeyer
     float pad(float dim) const;
 
+    /// \author Will Blankemeyer
     void drawBorder() const;
+    /// \author Will Blankemeyer
     void fillBorder() const;
 };
 

@@ -1,4 +1,5 @@
 /// \file
+/// \brief Core game logic.
 
 #pragma once
 

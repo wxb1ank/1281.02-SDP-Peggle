@@ -23,4 +23,5 @@
 
 #include <FEHLCD.h>
 
+// In case you actually want to include `LCDColors.h`, you can do so explicitly after this header.
 #undef LCDCOLORS_H
