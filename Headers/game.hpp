@@ -14,6 +14,26 @@ namespace game {
 class Obstacle;
 class Peg;
 
+class Statistics {
+public:
+    Statistics();
+
+    std::size_t getTotalScore() const;
+    std::size_t getTopScore() const;
+    std::size_t getOrangePegsHit() const;
+    std::size_t getBallsShot() const;
+
+    void addScore(std::size_t score);
+    void addOrangePegsHit(std::size_t pegsHit);
+    void addBallsShot(std::size_t ballsShot);
+
+private:
+    std::size_t totalScore;
+    std::size_t topScore;
+    std::size_t orangePegsHit;
+    std::size_t ballsShot;
+};
+
 /// \author Will Blankemeyer
 class Ball final : public ui::View {
 public:
@@ -38,7 +58,7 @@ public:
     virtual Position getCenter() const override;
 
     virtual void draw() const override;
-    void drawGuide(const std::vector<Peg> &);
+    void drawGuide(std::vector<Peg> &);
 
 private:
     Position pos;
@@ -58,35 +78,53 @@ class Obstacle {
 public:
     ~Obstacle();
 
-    static constexpr float MOMENTUM_LOSS{-.65f};
+    static constexpr float MOMENTUM_LOSS{-.90f};
 
-    virtual void checkCollisionWith(Velocity &, Position &) const;
+    virtual void checkCollisionWith(Velocity &, Position &, int guide);
 };
 
 class Ceiling final : public Obstacle {
 public:
     Ceiling();
 
-    virtual void checkCollisionWith(Velocity &, Position &) const override;
+    virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
 };
 
 class LeftWall final : public Obstacle {
 public:
     LeftWall();
 
-    virtual void checkCollisionWith(Velocity &, Position &) const override;
+    virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
 };
 
 class RightWall final : public Obstacle {
 public:
     RightWall();
 
-    virtual void checkCollisionWith(Velocity &, Position &) const override;
+    virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
 };
 
-extern const Ceiling CEILING;
-extern const LeftWall LEFT_WALL;
-extern const RightWall RIGHT_WALL;
+extern Ceiling CEILING;
+extern LeftWall LEFT_WALL;
+extern RightWall RIGHT_WALL;
+
+class Bucket final : public ui::View {
+public:
+    Bucket();
+
+    void tick();
+
+    virtual float getWidth() const override;
+    virtual float getHeight() const override;
+    virtual Position getCenter() const override;
+    virtual void draw() const override;
+
+private:
+    Position center;
+    float changeX;
+
+    static const ui::Size SIZE;
+};
 
 /// \brief Class representing a peg
 ///
@@ -95,16 +133,17 @@ class Peg : public Obstacle
 {
     public:
         Peg();
-        Peg(int x_pos, int y_pos, int radius);
+        Peg(int x_pos, int y_pos, int radius, int colorOfPeg);
         int getX() const;
         int getY() const;
         int getRadius() const;
         int getStatus() const;
-
-        virtual void checkCollisionWith(Velocity &, Position &) const override;
+        void setStatus(int status);
+        int getColor() const;
+        virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
 
     private:
-        int x_position, y_position, peg_radius, active;
+        int x_position, y_position, peg_radius, active, color;
 };
 
 /// \brief Class represeting the whole board
@@ -127,10 +166,11 @@ class Game {
 public:
     Game();
 
-    void run();
+    void run(Statistics &stats);
 
 private:
     PegBoard board;
+    Bucket bucket;
     ui::BackgroundView background;
 };
 

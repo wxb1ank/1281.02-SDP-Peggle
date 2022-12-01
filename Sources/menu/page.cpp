@@ -21,7 +21,7 @@ const ui::Button &Page::getRunButton() const {
     return this->runButton;
 }
 
-void Page::run() {}
+void Page::run(game::Statistics &stats) {}
 
 PageWithBackButton::PageWithBackButton(const Page page, const ui::BackgroundView background)
 :   Page{page},
@@ -38,11 +38,11 @@ const ui::Button &PageWithBackButton::getBackButton() const {
     return this->backButton;
 }
 
-void PageWithBackButton::run() {
+void PageWithBackButton::run(game::Statistics &stats) {
     this->draw(ui::Button::drawUnpressed);
 
     while (true) {
-        switch (this->step()) {
+        switch (this->step(stats)) {
             case StepResult::RedrawAndContinue:
                 this->draw(ui::Button::drawUnpressed);
             case StepResult::Continue:
@@ -56,7 +56,7 @@ void PageWithBackButton::run() {
             LCD.Update();
 
             while (this->backButton.isPressed()) {
-                switch (this->step()) {
+                switch (this->step(stats)) {
                     case StepResult::RedrawAndContinue:
                         this->draw(ui::Button::drawPressed);
                     case StepResult::Continue:
@@ -71,17 +71,12 @@ void PageWithBackButton::run() {
     }
 }
 
-void PageWithBackButton::draw(std::function<void(const ui::Button *)> drawButton) const {
+void PageWithBackButton::draw(std::function<void(const ui::Button *)> drawButton) {
     this->getBackground().draw();
     drawButton(&this->backButton);
-    this->drawContent();
-
-    LCD.Update();
 }
 
-void PageWithBackButton::drawContent() const {}
-
-PageWithBackButton::StepResult PageWithBackButton::step() {
+PageWithBackButton::StepResult PageWithBackButton::step(game::Statistics &stats) {
     return StepResult::Continue;
 }
 

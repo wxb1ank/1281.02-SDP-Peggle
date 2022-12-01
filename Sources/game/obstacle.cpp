@@ -6,7 +6,7 @@ namespace game {
 
 Obstacle::~Obstacle() {}
 
-void Obstacle::checkCollisionWith(Velocity &vel, Position &pos) const {}
+void Obstacle::checkCollisionWith(Velocity &vel, Position &pos, int guide) {}
 
 Ceiling::Ceiling() {}
 
@@ -23,7 +23,7 @@ void checkFlatCollisionWith(
     }
 }
 
-void Ceiling::checkCollisionWith(Velocity &vel, Position &pos) const {
+void Ceiling::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
     checkFlatCollisionWith(
         vel,
         pos,
@@ -35,7 +35,7 @@ void Ceiling::checkCollisionWith(Velocity &vel, Position &pos) const {
 
 LeftWall::LeftWall() {}
 
-void LeftWall::checkCollisionWith(Velocity &vel, Position &pos) const {
+void LeftWall::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
     checkFlatCollisionWith(
         vel,
         pos,
@@ -47,7 +47,7 @@ void LeftWall::checkCollisionWith(Velocity &vel, Position &pos) const {
 
 RightWall::RightWall() {}
 
-void RightWall::checkCollisionWith(Velocity &vel, Position &pos) const {
+void RightWall::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
     checkFlatCollisionWith(
         vel,
         pos,
@@ -57,8 +57,8 @@ void RightWall::checkCollisionWith(Velocity &vel, Position &pos) const {
     );
 }
 
-const Ceiling CEILING{};
-const LeftWall LEFT_WALL{};
-const RightWall RIGHT_WALL{};
+Ceiling CEILING{};
+LeftWall LEFT_WALL{};
+RightWall RIGHT_WALL{};
 
 } // namespace game

@@ -7,8 +7,8 @@ namespace menu {
 GamePage::GamePage(const float centerY)
 :   Page{"Play", centerY}, game{} {}
 
-void GamePage::run() {
-    this->game.run();
+void GamePage::run(game::Statistics &stats) {
+    this->game.run(stats);
 }
 
 } // namespace menu

@@ -39,7 +39,7 @@ public:
     /// \brief Draws this page and responds to input.
     ///
     /// \author Will Blankemeyer
-    virtual void run();
+    virtual void run(game::Statistics &stats);
 
 private:
     /// \brief The button in the main menu that runs this page.
@@ -66,18 +66,16 @@ public:
     /// \brief Draws this page and responds to input.
     ///
     /// \author Will Blankemeyer
-    virtual void run() final;
+    virtual void run(game::Statistics &stats) final;
 
 protected:
-    virtual void drawContent() const;
-
     enum class StepResult {
         RedrawAndContinue,
         Continue,
         Return,
     };
 
-    virtual StepResult step();
+    virtual StepResult step(game::Statistics &stats);
 
     ui::BackgroundView &getBackground();
     const ui::BackgroundView &getBackground() const;
@@ -89,7 +87,7 @@ private:
     ui::Button backButton;
     ui::BackgroundView background;
 
-    void draw(std::function<void(const ui::Button *)>) const;
+    void draw(std::function<void(const ui::Button *)>);
 };
 
 class CreditsPage final : public PageWithBackButton {
@@ -97,7 +95,7 @@ public:
     CreditsPage(float);
 
 protected:
-    virtual void drawContent() const override;
+    virtual StepResult step(game::Statistics &stats);
 };
 
 /// \author Will Blankemeyer
@@ -106,7 +104,7 @@ public:
     GamePage(float);
 
     /// \author Will Blankemeyer
-    virtual void run() override;
+    virtual void run(game::Statistics &stats) override;
 
 private:
     Game game;
@@ -117,7 +115,7 @@ public:
     StatsPage(float);
 
 protected:
-    virtual void drawContent() const override;
+    virtual StepResult step(game::Statistics &stats) override;
 };
 
 class TutorialPage final : public PageWithBackButton {
@@ -125,7 +123,7 @@ public:
     TutorialPage(float);
 
 protected:
-    virtual void drawContent() const override;
+    virtual StepResult step(game::Statistics &stats);
 };
 
 /// \brief The Peggle main menu.
@@ -153,6 +151,7 @@ private:
     ui::StackedLabel title;
     std::array<std::unique_ptr<Page>, 4> pages;
     ui::BackgroundView background;
+    game::Statistics stats;
 };
 
 } // namespace menu

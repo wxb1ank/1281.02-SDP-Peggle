@@ -8,7 +8,7 @@ TutorialPage::TutorialPage(const float centerY)
 :   PageWithBackButton{Page("How to Play", centerY), ui::BackgroundView(Color::BLACK)}
 {}
 
-void TutorialPage::drawContent() const {
+TutorialPage::StepResult TutorialPage::step(game::Statistics &) {
     LCD.WriteAt("How to Play", 100, 30);
 
     LCD.WriteAt("Tap to shoot the ball.",15, 70);
@@ -20,6 +20,8 @@ void TutorialPage::drawContent() const {
     LCD.WriteAt("Landing the ball",15,170);
     LCD.WriteAt("in the bucket",15,190);
     LCD.WriteAt("returns the ball to you.",15,210);
+
+    return StepResult::Continue;
 }
 
 } // namespace menu

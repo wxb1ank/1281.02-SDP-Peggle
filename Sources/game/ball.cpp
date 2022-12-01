@@ -12,7 +12,9 @@ namespace game {
 Ball::Ball() : pos{Screen::CENTER_X, Screen::MIN_Y + Ball::RADIUS + 5}, vel{} {}
 
 void Ball::shootAt(const Position target) {
-    // printf("Target: (%.1f, %.1f)\n", target.x, target.y);
+    if (target.y <= this->pos.y) {
+        return;
+    }
 
     this->vel.y = 100.f;
 
@@ -99,20 +101,24 @@ void Ball::tickY(Velocity &vel, Position &pos, const float timeElapsed) {
     pos.y += vel.y * timeElapsed;
 }
 
-void Ball::drawGuide(const std::vector<Peg> &pegs) {
+void Ball::drawGuide(std::vector<Peg> &pegs) {
     auto pos = this->pos;
     auto vel = this->vel;
 
     for (int i = 0; i < 40; i++) {
         Ball::tick(vel, pos, 0.025f);
+        if (pos.y > static_cast<float>(Screen::MAX_Y)) {
+            return;
+        }
+
         LCD.SetFontColor(GOLDENROD);
         LCD.DrawPixel(static_cast<int>(pos.x), static_cast<int>(pos.y));
 
-        CEILING.checkCollisionWith(vel, pos);
-        LEFT_WALL.checkCollisionWith(vel, pos);
-        RIGHT_WALL.checkCollisionWith(vel, pos);
-        for (const auto &peg : pegs) {
-            peg.checkCollisionWith(vel, pos);
+        CEILING.checkCollisionWith(vel, pos, 1);
+        LEFT_WALL.checkCollisionWith(vel, pos, 1);
+        RIGHT_WALL.checkCollisionWith(vel, pos, 1);
+        for (auto &peg : pegs) {
+            peg.checkCollisionWith(vel, pos, 1);
         }
     }
 }

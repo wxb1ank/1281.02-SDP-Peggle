@@ -20,7 +20,8 @@ Menu::Menu()
         std::make_unique<TutorialPage>(175.f),
         std::make_unique<CreditsPage>(225.f)
     },
-    background{Color::BLACK}
+    background{Color::BLACK},
+    stats{}
 {}
 
 Menu::~Menu() {}
@@ -58,7 +59,7 @@ void Menu::run() {
             // Wait until the button is no longer pressed.
             while ((*nextPage)->getRunButton().isPressed());
 
-            (*nextPage)->run();
+            (*nextPage)->run(this->stats);
         }
     }
 }
