@@ -56,6 +56,10 @@ void Bucket::tick() {
     this->center.x += this->changeX;
 }
 
+ui::Size Bucket::getSize() const {
+    return Bucket::SIZE;
+}
+
 float Bucket::getWidth() const {
     return Bucket::SIZE.width;
 }
@@ -73,7 +77,7 @@ void Bucket::draw() const {
     LCD.FillRectangle(this->getLeftX(), this->getTopY(), Bucket::SIZE.width, Bucket::SIZE.height);
 }
 
-const ui::Size Bucket::SIZE{60, 5};
+const ui::Size Bucket::SIZE{60.f, 5.f};
 
 Game::Game() : background{Color::BLACK}, bucket{} {}
 

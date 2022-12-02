@@ -1,5 +1,7 @@
 #include <ui.hpp>
 
+#include <FEHLCD.hpp>
+
 namespace ui {
 
 StackedLabel::StackedLabel(const Label label) : Label{label} {}

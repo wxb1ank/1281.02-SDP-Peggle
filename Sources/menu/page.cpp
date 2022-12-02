@@ -1,5 +1,6 @@
 #include <menu.hpp>
 
+#include <FEHLCD.hpp>
 #include <screen.hpp>
 
 namespace menu {

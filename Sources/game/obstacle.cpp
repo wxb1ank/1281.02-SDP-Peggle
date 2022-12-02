@@ -6,8 +6,6 @@ namespace game {
 
 Obstacle::~Obstacle() {}
 
-void Obstacle::checkCollisionWith(Velocity &vel, Position &pos, int guide) {}
-
 Ceiling::Ceiling() {}
 
 void checkFlatCollisionWith(

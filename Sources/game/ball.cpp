@@ -1,11 +1,12 @@
 #include <game.hpp>
 
+#include <FEHLCD.hpp>
+
 #include <FEHUtility.h>
+#include <LCDColors.h>
 
 #include <cmath>
 #include <cstdio>
-
-#include <LCDColors.h>
 
 namespace game {
 
@@ -21,9 +22,9 @@ void Ball::shootAt(const Position target) {
     // Uses the angle to find the initial velocities in the x and y directions
     const auto timeToTarget = (
         -this->vel.y + std::sqrt(
-            std::abs(std::pow(this->vel.y, 2.f) + (2.f * Acceleration::GRAVITY.y * target.y))
+            std::abs(std::pow(this->vel.y, 2.f) + (2.f * Acceleration::GRAVITY * target.y))
         )
-    ) / Acceleration::GRAVITY.y;
+    ) / Acceleration::GRAVITY;
     // printf("Time to target: %f sec\n", timeToTarget);
 
     this->vel.x = target.x / timeToTarget;
@@ -97,7 +98,7 @@ void Ball::tickX(const Velocity &vel, Position &pos, const float timeElapsed) {
 }
 
 void Ball::tickY(Velocity &vel, Position &pos, const float timeElapsed) {
-    vel.y += Acceleration::GRAVITY.y * timeElapsed;
+    vel.y += Acceleration::GRAVITY * timeElapsed;
     pos.y += vel.y * timeElapsed;
 }
 

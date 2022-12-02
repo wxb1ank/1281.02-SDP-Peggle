@@ -82,7 +82,7 @@ public:
 
     static constexpr float MOMENTUM_LOSS{-.90f};
 
-    virtual void checkCollisionWith(Velocity &, Position &, int guide);
+    virtual void checkCollisionWith(Velocity &, Position &, int guide) = 0;
 };
 
 class Ceiling final : public Obstacle {
@@ -116,6 +116,7 @@ public:
 
     void tick();
 
+    virtual ui::Size getSize() const override;
     virtual float getWidth() const override;
     virtual float getHeight() const override;
     virtual Position getCenter() const override;

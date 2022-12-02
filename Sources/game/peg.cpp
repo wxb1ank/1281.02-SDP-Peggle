@@ -2,6 +2,8 @@
 
 #include <game.hpp>
 
+#include <FEHLCD.hpp>
+
 #include <LCDColors.h>
 
 #include <cmath>
