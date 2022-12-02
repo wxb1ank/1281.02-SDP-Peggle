@@ -9,17 +9,22 @@ TutorialPage::TutorialPage(const float centerY)
 {}
 
 TutorialPage::StepResult TutorialPage::step(game::Statistics &) {
-    LCD.WriteAt("How to Play", 100, 30);
+    ui::Label(TITLE_POSITION, "How to Play", Color::SILVER).draw();
 
-    LCD.WriteAt("Tap to shoot the ball.",15, 70);
-
-    LCD.WriteAt("Try to hit all the orange",15, 100);
-    LCD.WriteAt("pegs before using",15, 120);
-    LCD.WriteAt("all balls.",15, 140);
-
-    LCD.WriteAt("Landing the ball",15,170);
-    LCD.WriteAt("in the bucket",15,190);
-    LCD.WriteAt("returns the ball to you.",15,210);
+    ui::MultilineLabel(
+        Position(static_cast<float>(Screen::CENTER_X), static_cast<float>(Screen::CENTER_Y) + 20.f),
+        "Tap to shoot the ball.\n"
+        "\n"
+        "Try to hit al the orange\n"
+        "pegs before using all\n"
+        "balls.\n"
+        "\n"
+        "Landing the ball in the\n"
+        "bucket returns the ball\n"
+        "to you.\n",
+        Color::WHITE
+    )
+    .draw();
 
     return StepResult::Continue;
 }

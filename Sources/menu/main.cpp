@@ -9,13 +9,7 @@
 namespace menu {
 
 MainMenu::MainMenu()
-:   Menu(),
-    title{ui::Label(
-        Position(static_cast<float>(Screen::CENTER_X), 10.f),
-        "Peggle!",
-        Color::WHITE
-    )},
-    background{Color::BLACK}
+:   Menu(), title{ui::Label(TITLE_POSITION, "Peggle!", Color::WHITE)}, background{Color::BLACK}
 {
     auto &pages = this->getPages();
     pages.emplace_back(std::make_unique<LevelMenuPage>(75.f));

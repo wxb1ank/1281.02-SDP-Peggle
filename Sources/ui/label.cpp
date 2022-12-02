@@ -28,20 +28,7 @@ const Color &Label::getFontColor() const {
 }
 
 float Label::getWidth() const {
-    const auto length = this->content.length();
-
-    switch (length) {
-        case 0:
-            return 0.f;
-        case 1:
-            return static_cast<float>(Font::WIDTH);
-        default:
-            return static_cast<float>(
-                ((Font::WIDTH + Font::HORI_PADDING) * length)
-                // Horizontal padding only applies between characters, so we counted one too many.
-                - Font::HORI_PADDING
-            );
-    };
+    return static_cast<float>(Font::getWidthOf(this->content));
 }
 
 float Label::getHeight() const {

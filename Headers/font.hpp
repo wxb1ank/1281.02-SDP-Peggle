@@ -4,6 +4,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <string>
 
 /// \brief The FEH Proteus LCD font.
 ///
@@ -34,7 +35,9 @@ public:
     static constexpr std::size_t HEIGHT{14};
 
     static constexpr std::size_t LEFT_MARGIN{2};
-    static constexpr std::size_t BOTTOM_MARGIN{3};
 
     static constexpr std::size_t HORI_PADDING{2};
+    static constexpr std::size_t VERT_PADDING{3};
+
+    static std::size_t getWidthOf(const std::string &s);
 };

@@ -6,6 +6,13 @@
 
 namespace menu {
 
+const ui::Size BUTTON_SIZE{160.f, 25.f};
+
+const Position TITLE_POSITION{
+    static_cast<float>(Screen::CENTER_X),
+    static_cast<float>(Screen::MIN_Y + 25.f)
+};
+
 Menu::Menu() : pages{} {}
 
 Menu::~Menu() {}

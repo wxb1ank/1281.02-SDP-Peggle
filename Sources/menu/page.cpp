@@ -12,7 +12,8 @@ Page::Page(const std::string name, const float centerY)
             name,
             Color::WHITE
         ),
-        Color::RED
+        Color::RED,
+        BUTTON_SIZE
     }
 {}
 
@@ -28,7 +29,7 @@ PageWithBackButton::PageWithBackButton(const Page page, const ui::BackgroundView
 :   Page{page},
     background{background},
     backButton{
-        ui::Label(Position(50.f, 15.f), "Back", Color::WHITE),
+        ui::Label(Position(45.f, TITLE_POSITION.y), "Back", Color::WHITE),
         Color::BLUE
     }
 {}

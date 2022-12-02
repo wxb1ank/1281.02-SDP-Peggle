@@ -17,6 +17,9 @@ namespace game {
 /// \brief The Peggle main menu.
 namespace menu {
 
+extern const ui::Size BUTTON_SIZE;
+extern const Position TITLE_POSITION;
+
 /// \brief A controller for a fullscreen view accessible from the main menu.
 ///
 /// \author Will Blankemeyer
@@ -189,6 +192,8 @@ public:
 };
 
 struct Level {
+    float pegRadius;
+    std::size_t orangePegCount;
     std::vector<Position> pegPositions{};
 };
 

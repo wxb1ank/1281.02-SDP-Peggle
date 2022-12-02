@@ -10,13 +10,19 @@ StatsPage::StatsPage(const float centerY)
 {}
 
 StatsPage::StepResult StatsPage::step(game::Statistics &stats) {
-    LCD.WriteAt("Lifetime Stats", 100, 30);
+    ui::MultilineLabel(TITLE_POSITION, "Lifetime\nStatistics", Color::SILVER).draw();
 
-    LCD.WriteAt("Total Score:", 15, 70);
-    LCD.WriteAt("Top Score:", 15, 90);
-    LCD.WriteAt("Orange Pegs Hit:", 15, 110);
-    LCD.WriteAt("Balls Shot:", 15, 130);
+    const auto statLabels = ui::MultilineLabel(
+        Position(static_cast<float>(Screen::CENTER_X) - 40.f, static_cast<float>(Screen::CENTER_Y)),
+        "Total Score:\n"
+        "Top Score:\n"
+        "Orange Pegs Hit:\n"
+        "Balls Shot:",
+        Color::WHITE
+    );
+    statLabels.draw();
 
+    // TODO
     LCD.WriteAt(static_cast<int>(stats.getTotalScore()), 250, 70);
     LCD.WriteAt(static_cast<int>(stats.getTopScore()), 250, 90);
     LCD.WriteAt(static_cast<int>(stats.getOrangePegsHit()), 250, 110);

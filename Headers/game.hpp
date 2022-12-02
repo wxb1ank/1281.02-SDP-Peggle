@@ -136,17 +136,18 @@ class Peg : public Obstacle
 {
     public:
         Peg();
-        Peg(int x_pos, int y_pos, int radius, int colorOfPeg);
+        Peg(int x_pos, int y_pos, float radius, int colorOfPeg);
         int getX() const;
         int getY() const;
-        int getRadius() const;
+        float getRadius() const;
         int getStatus() const;
         void setStatus(int status);
         int getColor() const;
         virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
 
     private:
-        int x_position, y_position, peg_radius, active, color;
+        int x_position, y_position, active, color;
+        float peg_radius;
 };
 
 /// \brief Class represeting the whole board

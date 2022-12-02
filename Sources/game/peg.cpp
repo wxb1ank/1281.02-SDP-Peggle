@@ -21,7 +21,7 @@ Peg::Peg()
 }
 
 // Constructor for Peg class
-Peg::Peg(int x_pos, int y_pos, int radius, int colorOfPeg)
+Peg::Peg(int x_pos, int y_pos, float radius, int colorOfPeg)
 {
     x_position = x_pos;
     y_position = y_pos;
@@ -48,7 +48,7 @@ int Peg::getY() const
 }
 
 // Returns radius of peg
-int Peg::getRadius() const
+float Peg::getRadius() const
 {
     return peg_radius;
 }

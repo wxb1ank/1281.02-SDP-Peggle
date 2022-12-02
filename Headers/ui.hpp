@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 /// \brief The Peggle user interface (UI).
 ///
@@ -288,6 +289,45 @@ public:
     virtual void draw() const override;
 };
 
+/// \brief One or more lines of text.
+///
+/// \author Will Blankemeyer
+class MultilineLabel : public ui::View {
+public:
+    /// \brief Creates a new multiline label.
+    ///
+    /// \param[in]  center          The initial position of the center of this multiline label.
+    /// \param[in]  content         The initial textual content of this multiline label.
+    /// \param[in]  fontColor       The initial font color.
+    /// \author Will Blankemeyer
+    MultilineLabel(
+        Position center,
+        std::string content,
+        Color fontColor
+    );
+
+    /// \author Will Blankemeyer
+    virtual ~MultilineLabel();
+
+    /// \author Will Blankemeyer
+    virtual float getWidth() const override;
+    /// \author Will Blankemeyer
+    virtual float getHeight() const override;
+    /// \author Will Blankemeyer
+    virtual Position getCenter() const override;
+
+    /// \author Will Blankemeyer
+    virtual void draw() const override;
+
+private:
+    /// \author Will Blankemeyer
+    Position center;
+    /// \author Will Blankemeyer
+    Color fontColor;
+    /// \author Will Blankemeyer
+    std::vector<std::string> lines;
+};
+
 /// \brief A pushbutton containing a label.
 ///
 /// \author Will Blankemeyer
@@ -302,6 +342,13 @@ public:
     /// \param[in]  borderColor The border color.
     /// \author Will Blankemeyer
     Button(Label label, Color borderColor);
+    /// \brief Creates a new button.
+    ///
+    /// \param[in]  label       The button label.
+    /// \param[in]  borderColor The border color.
+    /// \param[in]  size        The size of the button.
+    /// \author Will Blankemeyer
+    Button(Label label, Color borderColor, Size size);
 
     /// \brief Destroys this button.
     ///

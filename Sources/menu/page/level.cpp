@@ -13,22 +13,22 @@ LevelPage::LevelPage(const std::string name, const float centerY, const Level le
 {}
 
 void LevelPage::run(game::Statistics &stats) {
-    int pegsToPlace = this->level.pegPositions.size();
-    int orangePegsToPlace = std::min(25, pegsToPlace);
+    auto pegsToPlace = this->level.pegPositions.size();
+    auto orangePegsToPlace = std::min(this->level.orangePegCount, pegsToPlace);
 
     game::PegBoard board{};
     for (auto pegPos : this->level.pegPositions) {
-        int tempColor = 0;
+        int color;
 
         if((Random.RandInt()%pegsToPlace) * 1. / pegsToPlace < orangePegsToPlace * 1. / pegsToPlace)
         {
-            tempColor = 1;
+            color = 1;
             orangePegsToPlace -= 1;
         }
         else{
-            tempColor = 0;
+            color = 0;
         }
-        board.push(game::Peg(pegPos.x, pegPos.y, 1, tempColor));
+        board.push(game::Peg(pegPos.x, pegPos.y, this->level.pegRadius, color));
         pegsToPlace -= 1;
     }
 

@@ -5,9 +5,11 @@
 namespace ui {
 
 Button::Button(const Label label, const Color borderColor)
-:   label{label},
-    size{Button::pad(label.getWidth()), Button::pad(label.getHeight())},
-    borderColor{borderColor}
+:   Button{label, borderColor, Size(Button::pad(label.getWidth()), Button::pad(label.getHeight()))}
+{}
+
+Button::Button(const Label label, const Color borderColor, const Size size)
+:   label{label}, borderColor{borderColor}, size{size}
 {}
 
 Button::~Button() {}

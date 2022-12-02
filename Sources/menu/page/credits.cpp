@@ -9,11 +9,22 @@ CreditsPage::CreditsPage(const float centerY)
 {}
 
 CreditsPage::StepResult CreditsPage::step(game::Statistics &) {
-    LCD.WriteAt("Credits", 100, 50);
+    ui::Label(TITLE_POSITION, "Credits", Color::SILVER).draw();
 
-    LCD.WriteAt("Solomon Blair", 20, 80);
-    LCD.WriteAt("Will Blankemeyer", 20, 100);
-    LCD.WriteAt("Based on Peggle <3", 80, 130);
+    const auto namesLabel = ui::MultilineLabel(
+        Screen::CENTER,
+        "Solomon Blair\n"
+        "Will Blankemeyer",
+        Color::WHITE
+    );
+    namesLabel.draw();
+
+    ui::Label(
+        Position(static_cast<float>(Screen::CENTER_X), namesLabel.getBottomY() + 20.f),
+        "Based on Peggle <3",
+        Color::PINK
+    )
+    .draw();
 
     return StepResult::Continue;
 }
