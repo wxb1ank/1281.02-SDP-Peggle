@@ -25,10 +25,8 @@ void Ball::shootAt(const Position target) {
             std::abs(std::pow(this->vel.y, 2.f) + (2.f * Acceleration::GRAVITY * target.y))
         )
     ) / Acceleration::GRAVITY;
-    // printf("Time to target: %f sec\n", timeToTarget);
 
     this->vel.x = target.x / timeToTarget;
-    // printf("Vel: (%.5f, %.5f)\n", this->vel.x, this->vel.y);
 }
 
 Position &Ball::getPos() {

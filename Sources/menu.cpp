@@ -1,10 +1,8 @@
 #include <menu.hpp>
 
 #include <FEHLCD.hpp>
-#include <screen.hpp>
 
 #include <optional>
-#include <utility>
 
 namespace menu {
 
@@ -14,36 +12,56 @@ Menu::~Menu() {}
 
 void Menu::run(game::Statistics &stats) {
     while (true) {
-        // Fun fact: `LCD::Touch` redraws the screen (???). This has unfortunate consequences.
-        // Because of this, it is essential that we get the current touch---and, by extension,
-        // redraw the screen (ugh)---*before* we clear the screen. Otherwise, if we get the touch
-        // after clearing then the menu will be drawn incompletely (without the page buttons).
-        // Because we're in a loop, that equates to a nasty flickering effect that no one wants to
-        // see.
+        // We are careful to get the current touch *before* drawing the background. Unfortunate
+        // design decisions in the simulator library led to the `LCD::Touch` function, as well as
+        // sleep functions, updating the LCD when called. If the LCD is updated after the background
+        // is drawn but before the page buttons are drawn, then a flickering effect will occur,
+        // which is visually unpleasant.
         const auto touch = Position::getCurrentTouch();
-
+        // Now we can draw the background.
         this->drawBackground();
 
         std::optional<Page *> nextPage{};
 
         for (auto &page : this->pages) {
             const auto &runButton = page->getRunButton();
-            if (!nextPage.has_value() && touch.has_value() && runButton.contains(*touch)) {
+            if (
+                // It is impossible for two buttons to be pressed simultaneously, so if `nextPage`
+                // was previously set, we know that the run button of the current page cannot be
+                // pressed.
+                !nextPage.has_value() &&
+                touch.has_value() &&
+                // The short-circuiting property of the logical AND in C++ guarantees that `touch`
+                // is dereferenced only if it is first determined to contain a value.
+                runButton.contains(*touch)
+            ) {
+                // The run button is pressed.
                 runButton.drawPressed();
                 nextPage.emplace(page.get());
             } else {
+                // The run button is *not* pressed.
                 runButton.drawUnpressed();
             }
         }
 
-        // Finally, we can properly call `LCD::Update`.
+        // Flush our draw operations by rendering the LCD framebuffer.
         LCD.Update();
 
         if (nextPage.has_value()) {
+            const auto &runButton = (*nextPage)->getRunButton();
+
             // Wait until the button is no longer pressed.
-            while ((*nextPage)->getRunButton().isPressed());
+            while (runButton.isPressed()) {
+                // We should probably redraw the background and page buttons here, because the
+                // background might be dynamic (which is in fact the case with the main menu), but
+                // 99% of people will hold this button for such a short duration that they probably
+                // won't notice if the background freezes for a few frames.
+            }
 
             (*nextPage)->run(stats);
+
+            // The screen will be cleared when we draw the background in the next iteration of this
+            // loop.
         }
     }
 }

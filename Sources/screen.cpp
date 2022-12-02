@@ -22,6 +22,7 @@ const Color Color::RED{0xff, 0x00, 0x00};
 const Color Color::GREEN{0x00, 0xff, 0x00};
 const Color Color::BLUE{0x00, 0x00, 0xff};
 const Color Color::BLACK{0x00, 0x00, 0x00};
+// TODO: Define more colors?
 
 unsigned Color::encode() const {
     return (static_cast<unsigned>(this->r) << 16) |
@@ -30,8 +31,9 @@ unsigned Color::encode() const {
 }
 
 float Color::getValue() const {
-    // return std::max({this->r, this->g, this->b});
-    return 0.f;
+    // I'm having difficulty passing an initializer list of three floats to `std::max`, so I've
+    // broken it into two calls.
+    return std::max(std::max(this->r, this->g), this->b);
 }
 
 float Color::getChroma() const {
@@ -39,11 +41,11 @@ float Color::getChroma() const {
 }
 
 float Color::getHue() const {
-    // See: <https://en.wikipedia.org/wiki/Hue#Defining_hue_in_terms_of_RGB>.
+    // Source: <https://en.wikipedia.org/wiki/Hue#Defining_hue_in_terms_of_RGB>.
     return std::atan2(std::sqrt(3.f) * (this->g - this->b), (2.f * this->r) - this->g - this->b);
 }
 
 float Color::getMinComp() const {
-    // return std::min({this->r, this->g, this->b});
-    return 0.f;
+    // See `Color::getValue`.
+    return std::min(std::min(this->r, this->g), this->b);
 }

@@ -72,7 +72,7 @@ void Button::drawPressed() const {
 }
 
 float Button::pad(const float dim) const {
-    return dim + Button::DEFAULT_PADDING;
+    return dim + (2.f * Button::DEFAULT_PADDING);
 }
 
 void Button::drawBorder() const {
