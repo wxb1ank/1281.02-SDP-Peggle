@@ -1,6 +1,7 @@
 #include <menu.hpp>
 
 #include <FEHLCD.hpp>
+#include <game.hpp>
 
 namespace menu {
 

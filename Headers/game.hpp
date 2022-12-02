@@ -169,10 +169,9 @@ class Game {
 public:
     Game();
 
-    void run(Statistics &stats);
+    void run(Statistics &stats, PegBoard &board);
 
 private:
-    PegBoard board;
     Bucket bucket;
     ui::BackgroundView background;
 };

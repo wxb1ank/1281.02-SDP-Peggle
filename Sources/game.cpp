@@ -81,29 +81,13 @@ const ui::Size Bucket::SIZE{60.f, 5.f};
 
 Game::Game() : background{Color::BLACK}, bucket{} {}
 
-void Game::run(game::Statistics &stats) {
-
-    int orangePegsToPlace = 25;
-    int pegsToPlace = 100;
-    int tempColor = 0;
-    // Pegs on the board
-    for (unsigned x = 1; x < 200; x += 2) {
-        if(Random.RandInt()%pegsToPlace / pegsToPlace < orangePegsToPlace / pegsToPlace)
-        {
-            tempColor = 1;
-        }
-        else{
-            tempColor = 0;
-        }
-        board.push(Peg(x, 200, 1, tempColor));
-    }
-
+void Game::run(game::Statistics &stats, PegBoard &board) {
     std::size_t ballsRemaining = 10;
     std::size_t score = 0;
 
     while (ballsRemaining > 0) {
         this->background.draw();
-        this->board.drawPegs();
+        board.drawPegs();
         this->bucket.draw();
         this->bucket.tick();
         LCD.SetFontColor(Color::WHITE.encode());
@@ -115,7 +99,7 @@ void Game::run(game::Statistics &stats) {
         Position target;
         while (!LCD.Touch(&target.x, &target.y)) {
             this->background.draw();
-            this->board.drawPegs();
+            board.drawPegs();
             this->bucket.draw();
             this->bucket.tick();
             LCD.SetFontColor(Color::WHITE.encode());
@@ -128,12 +112,12 @@ void Game::run(game::Statistics &stats) {
             ball.shootAt(target);
 
             this->background.draw();
-            this->board.drawPegs();
+            board.drawPegs();
             this->bucket.draw();
             this->bucket.tick();
             LCD.SetFontColor(Color::WHITE.encode());
             LCD.WriteAt(static_cast<int>(ballsRemaining), 15, 15);
-            ball.drawGuide(this->board.getPegs());
+            ball.drawGuide(board.getPegs());
 
             LCD.ClearBuffer();
         }
@@ -148,7 +132,7 @@ void Game::run(game::Statistics &stats) {
         // Updates the position of the ball after each tick based on the balls velocity and gravity
         while (ball.isOnScreen()) {
             this->background.draw();
-            this->board.drawPegs();
+            board.drawPegs();
             this->bucket.draw();
             this->bucket.tick();
             LCD.SetFontColor(Color::WHITE.encode());
@@ -163,7 +147,7 @@ void Game::run(game::Statistics &stats) {
             LEFT_WALL.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
             RIGHT_WALL.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
 
-            for(auto &peg : this->board.getPegs())
+            for(auto &peg : board.getPegs())
             {
                 peg.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
             }
@@ -176,7 +160,7 @@ void Game::run(game::Statistics &stats) {
             ballsRemaining += 1;
         }
 
-        for(auto &peg : this->board.getPegs())
+        for(auto &peg : board.getPegs())
         {
             if(peg.getStatus() == 2)
             {

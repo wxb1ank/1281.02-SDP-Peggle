@@ -3,13 +3,16 @@
 
 #pragma once
 
-#include <game.hpp>
 #include <ui.hpp>
 
 #include <functional>
 #include <memory>
 #include <string>
 #include <vector>
+
+namespace game {
+    class Statistics;
+}
 
 /// \brief The Peggle main menu.
 namespace menu {
@@ -144,23 +147,13 @@ protected:
     virtual StepResult step(game::Statistics &stats);
 };
 
-/// \brief The page in which the game is played.
-///
 /// \author Will Blankemeyer
-class GamePage final : public Page {
+class LevelMenuPage final : public Page {
 public:
-    /// \brief Creates a new game page.
-    ///
-    /// \param[in]  centerY The Y coordinate of the center of the run button.
-    /// \author Will Blankemeyer
-    GamePage(float centerY);
+    LevelMenuPage(float centerY);
 
     /// \author Will Blankemeyer
     virtual void run(game::Statistics &stats) override;
-
-private:
-    /// \author Will Blankemeyer
-    Game game;
 };
 
 /// \brief A page that lists global game statistics.
@@ -195,39 +188,81 @@ protected:
     virtual StepResult step(game::Statistics &stats);
 };
 
-/// \brief The Peggle main menu.
+class LevelPage final : public Page {
+public:
+    LevelPage(std::string name, float centerY, std::function<std::vector<Position>()> makeLevel);
+
+    virtual void run(game::Statistics &stats) override;
+
+private:
+    std::function<std::vector<Position>()> makeLevel;
+};
+
+/// \brief A Peggle menu.
 ///
 /// \author Will Blankemeyer
 class Menu {
 public:
-    /// \brief Creates a new main menu.
-    ///
-    /// \author Will Blankemeyer
     Menu();
 
-    /// \brief Destroys this main menu.
+    /// \brief Destroys this menu.
     ///
     /// \author Will Blankemeyer
     virtual ~Menu();
 
     /// \brief Draws this menu and responds to input.
     ///
-    /// \note This method does not return.
     /// \author Will Blankemeyer
-    [[noreturn]] void run();
+    void run(game::Statistics &stats);
+
+protected:
+    std::vector<std::unique_ptr<Page>> &getPages();
+    const std::vector<std::unique_ptr<Page>> &getPages() const;
+
+    virtual void drawBackground();
+
+private:
+    /// \author Will Blankemeyer
+    std::vector<std::unique_ptr<Page>> pages;
+};
+
+class MainMenu final : public Menu {
+public:
+    /// \brief Creates a new main menu.
+    ///
+    /// \author Will Blankemeyer
+    MainMenu();
+
+protected:
+    virtual void drawBackground() override;
 
 private:
     /// \author Will Blankemeyer
     ui::StackedLabel title;
     /// \author Will Blankemeyer
-    std::vector<std::unique_ptr<Page>> pages;
+    ui::BackgroundView background;
+};
+
+class LevelMenu final : public Menu {
+public:
+    /// \brief Creates a new level menu.
+    ///
+    /// \author Will Blankemeyer
+    LevelMenu();
+
+protected:
+    virtual void drawBackground() override;
+
+private:
+    /// \author Will Blankemeyer
+    ui::Label title;
     /// \author Will Blankemeyer
     ui::BackgroundView background;
-    /// \author Will Blankemeyer
-    game::Statistics stats;
 };
 
 } // namespace menu
 
-// `menu::Menu` is tedious to write, so consumers can instead write `Menu`.
+// `menu::Menu` etc. are tedious to write, so consumers can instead write `Menu`.
 using menu::Menu;
+using menu::MainMenu;
+using menu::LevelMenu;
