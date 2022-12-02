@@ -40,7 +40,7 @@ REPO_HASH := c1a1b28
 
 # :: rel-path
 # The relative path to the local simulator repo directory.
-REPO_DIR := $(REPO_NAME)
+REPO_DIR := Vendor/$(REPO_NAME)
 # :: rel-path
 # The relative path to the directory in which object files and generated documentation are stored.
 BUILD_DIR := Build
@@ -123,7 +123,7 @@ INC_DIRS := $(REPO_DIR) Headers
 INCFLAGS := $(foreach dir,$(INC_DIRS),-I$(dir))
 # :: [text]
 # The list of GCC `-W` arguments that should be passed to all compiler invocations.
-WARNFLAGS := $(foreach name,all extra pedantic conversion,-W$(name))
+WARNFLAGS := $(foreach name,all extra pedantic conversion float-equal,-W$(name))
 # :: text
 # The revision of the C++ standard to compile C++ source files with.
 CXX_STD := 17

@@ -1,6 +1,3 @@
-// This is necessary for the `M_PI` family of macros.
-#define _USE_MATH_DEFINES
-
 #include <screen.hpp>
 
 #include <cmath>

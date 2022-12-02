@@ -1,10 +1,10 @@
 #include <menu.hpp>
 
+#include <FEHLCD.hpp>
 #include <screen.hpp>
 
-#include <FEHUtility.h>
-
 #include <optional>
+#include <utility>
 
 namespace menu {
 
@@ -14,15 +14,16 @@ Menu::Menu()
         "Peggle!",
         Color::WHITE
     )},
-    pages{
-        std::make_unique<GamePage>(75.f),
-        std::make_unique<StatsPage>(125.f),
-        std::make_unique<TutorialPage>(175.f),
-        std::make_unique<CreditsPage>(225.f)
-    },
+    pages{},
     background{Color::BLACK},
     stats{}
-{}
+{
+
+    this->pages.emplace_back(std::make_unique<GamePage>(75.f));
+    this->pages.emplace_back(std::make_unique<StatsPage>(125.f));
+    this->pages.emplace_back(std::make_unique<TutorialPage>(175.f));
+    this->pages.emplace_back(std::make_unique<CreditsPage>(225.f));
+}
 
 Menu::~Menu() {}
 

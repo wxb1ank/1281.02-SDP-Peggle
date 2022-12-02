@@ -1,7 +1,5 @@
 #include <ui.hpp>
 
-#include <FEHLCD.hpp>
-
 namespace ui {
 
 View::~View() {}

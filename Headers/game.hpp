@@ -10,6 +10,7 @@
 #include <optional>
 #include <vector>
 
+/// \brief Core game logic.
 namespace game {
 
 class Obstacle;
@@ -177,4 +178,5 @@ private:
 
 } // namespace game
 
+// `game::Game` is tedious to write, so consumers can instead write `Game`.
 using game::Game;

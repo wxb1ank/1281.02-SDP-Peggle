@@ -4,10 +4,7 @@
 
 namespace ui {
 
-Button::Button(
-    const Label label,
-    const Color borderColor
-)
+Button::Button(const Label label, const Color borderColor)
 :   label{label},
     size{Button::pad(label.getWidth()), Button::pad(label.getHeight())},
     borderColor{borderColor}

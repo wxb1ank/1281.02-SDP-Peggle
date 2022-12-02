@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <FEHLCD.hpp>
 #include <mechanics.hpp>
 
 #include <cstdlib>
@@ -90,24 +89,38 @@ public:
 ///
 /// \author Will Blankemeyer
 struct Color {
+    /// \author Will Blankemeyer
     Color(unsigned char r, unsigned char g, unsigned char b);
 
+    /// \author Will Blankemeyer
     float r;
+    /// \author Will Blankemeyer
     float g;
+    /// \author Will Blankemeyer
     float b;
 
+    /// \author Will Blankemeyer
     static const Color WHITE;
+    /// \author Will Blankemeyer
     static const Color RED;
+    /// \author Will Blankemeyer
     static const Color GREEN;
+    /// \author Will Blankemeyer
     static const Color BLUE;
+    /// \author Will Blankemeyer
     static const Color BLACK;
 
+    /// \author Will Blankemeyer
     unsigned encode() const;
 
+    /// \author Will Blankemeyer
     float getValue() const;
+    /// \author Will Blankemeyer
     float getChroma() const;
+    /// \author Will Blankemeyer
     float getHue() const;
 
 private:
+    /// \author Will Blankemeyer
     float getMinComp() const;
 };

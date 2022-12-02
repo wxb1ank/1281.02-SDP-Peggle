@@ -24,6 +24,12 @@ struct Size {
     /// \param[in]  width   The width, in pixels.
     /// \param[in]  height  The height, in pixels.
     /// \author Will Blankemeyer
+    Size(std::size_t width, std::size_t height);
+    /// \brief Creates a new `Size`.
+    ///
+    /// \param[in]  width   The width, in pixels.
+    /// \param[in]  height  The height, in pixels.
+    /// \author Will Blankemeyer
     Size(float width, float height);
 
     /// \brief The width, in pixels.

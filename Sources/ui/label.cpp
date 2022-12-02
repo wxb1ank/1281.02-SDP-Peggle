@@ -1,17 +1,12 @@
 #include <ui.hpp>
 
+#include <FEHLCD.hpp>
 #include <font.hpp>
 
 namespace ui {
 
-Label::Label(
-    const Position center,
-    const std::string content,
-    const Color fontColor
-)
-:   center{center},
-    content{content},
-    fontColor{fontColor}
+Label::Label(const Position center, const std::string content, const Color fontColor)
+: center{center}, content{content}, fontColor{fontColor}
 {}
 
 Label::~Label() {}

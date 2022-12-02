@@ -1,5 +1,7 @@
 #include <ui.hpp>
 
+#include <FEHLCD.hpp>
+
 namespace ui {
 
 BackgroundView::BackgroundView(const Color color) : color{color} {}
