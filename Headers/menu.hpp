@@ -147,15 +147,6 @@ protected:
     virtual StepResult step(game::Statistics &stats);
 };
 
-/// \author Will Blankemeyer
-class LevelMenuPage final : public Page {
-public:
-    LevelMenuPage(float centerY);
-
-    /// \author Will Blankemeyer
-    virtual void run(game::Statistics &stats) override;
-};
-
 /// \brief A page that lists global game statistics.
 ///
 /// \author Will Blankemeyer
@@ -188,14 +179,42 @@ protected:
     virtual StepResult step(game::Statistics &stats);
 };
 
-class LevelPage final : public Page {
+/// \author Will Blankemeyer
+class LevelMenuPage final : public Page {
 public:
-    LevelPage(std::string name, float centerY, std::function<std::vector<Position>()> makeLevel);
+    LevelMenuPage(float centerY);
 
+    /// \author Will Blankemeyer
     virtual void run(game::Statistics &stats) override;
+};
+
+struct Level {
+    std::vector<Position> pegPositions{};
+};
+
+class LevelPage : public Page {
+public:
+    LevelPage(std::string name, float centerY, Level level);
+
+    virtual void run(game::Statistics &stats) final;
 
 private:
-    std::function<std::vector<Position>()> makeLevel;
+    Level level;
+};
+
+class Level1Page final : public LevelPage {
+public:
+    Level1Page(float centerY);
+};
+
+class Level2Page final : public LevelPage {
+public:
+    Level2Page(float centerY);
+};
+
+class Level3Page final : public LevelPage {
+public:
+    Level3Page(float centerY);
 };
 
 /// \brief A Peggle menu.

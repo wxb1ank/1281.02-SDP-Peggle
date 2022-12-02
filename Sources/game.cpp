@@ -82,10 +82,11 @@ const ui::Size Bucket::SIZE{60.f, 5.f};
 Game::Game() : background{Color::BLACK}, bucket{} {}
 
 void Game::run(game::Statistics &stats, PegBoard &board) {
+    std::size_t orangePegsHit = 0;
     std::size_t ballsRemaining = 10;
     std::size_t score = 0;
 
-    while (ballsRemaining > 0) {
+    while ((ballsRemaining > 0) && (orangePegsHit != 25)) {
         this->background.draw();
         board.drawPegs();
         this->bucket.draw();
@@ -169,7 +170,7 @@ void Game::run(game::Statistics &stats, PegBoard &board) {
                         score += 1;
                         break;
                     default:
-                        stats.addOrangePegsHit(1);
+                        orangePegsHit += 1;
                         score += 2;
                         break;
                 }
@@ -179,6 +180,7 @@ void Game::run(game::Statistics &stats, PegBoard &board) {
         LCD.Update();
     }
 
+    stats.addOrangePegsHit(orangePegsHit);
     stats.addScore(score);
 }
 

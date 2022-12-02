@@ -1,7 +1,6 @@
 #include <menu.hpp>
 
 #include <FEHLCD.hpp>
-#include <game/level.hpp>
 #include <screen.hpp>
 
 #include <optional>
@@ -19,9 +18,9 @@ LevelMenu::LevelMenu()
     background{Color::BLACK}
 {
     auto &pages = this->getPages();
-    pages.emplace_back(std::make_unique<LevelPage>("Level 1", 100.f, game::level::make1));
-    pages.emplace_back(std::make_unique<LevelPage>("Level 2", 160.f, game::level::make2));
-    pages.emplace_back(std::make_unique<LevelPage>("Level 3", 220.f, game::level::make3));
+    pages.emplace_back(std::make_unique<Level1Page>(100.f));
+    pages.emplace_back(std::make_unique<Level2Page>(160.f));
+    pages.emplace_back(std::make_unique<Level3Page>(220.f));
 }
 
 void LevelMenu::drawBackground() {
