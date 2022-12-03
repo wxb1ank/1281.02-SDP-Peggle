@@ -20,16 +20,19 @@ class Statistics {
 public:
     Statistics();
 
+    std::size_t getTotalWins() const;
     std::size_t getTotalScore() const;
     std::size_t getTopScore() const;
     std::size_t getOrangePegsHit() const;
     std::size_t getBallsShot() const;
 
+    void addWin();
     void addScore(std::size_t score);
     void addOrangePegsHit(std::size_t pegsHit);
     void addBallsShot(std::size_t ballsShot);
 
 private:
+    std::size_t totalWins;
     std::size_t totalScore;
     std::size_t topScore;
     std::size_t orangePegsHit;
@@ -170,7 +173,12 @@ class Game {
 public:
     Game();
 
-    void run(Statistics &stats, PegBoard &board);
+    enum class Result {
+        Win,
+        Loss,
+    };
+
+    Result run(Statistics &stats, PegBoard &board);
 
 private:
     Bucket bucket;

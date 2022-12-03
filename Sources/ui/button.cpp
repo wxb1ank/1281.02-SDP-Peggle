@@ -2,6 +2,8 @@
 
 #include <FEHLCD.hpp>
 
+#include <functional>
+
 namespace ui {
 
 Button::Button(const Label label, const Color borderColor)
@@ -77,28 +79,173 @@ float Button::pad(const float dim) const {
     return dim + (2.f * Button::DEFAULT_PADDING);
 }
 
-void Button::drawBorder() const {
-    const auto topLeft = this->getTopLeft();
-
-    LCD.SetFontColor(this->borderColor.encode());
-    LCD.DrawRectangle(
-        static_cast<int>(topLeft.x),
-        static_cast<int>(topLeft.y),
-        static_cast<int>(this->size.width),
-        static_cast<int>(this->size.height)
+static void drawVerticalBorderLine(const float x, const float top, const float bottom) {
+    LCD.DrawVerticalLine(
+        static_cast<int>(x),
+        static_cast<int>(top + Button::BORDER_RADIUS),
+        static_cast<int>(bottom - Button::BORDER_RADIUS)
     );
 }
 
-void Button::fillBorder() const {
-    const auto topLeft = this->getTopLeft();
+static void drawVerticalBorderLines(
+    const float left,
+    const float right,
+    const float top,
+    const float bottom
+) {
+    drawVerticalBorderLine(left, top, bottom);
+    drawVerticalBorderLine(right, top, bottom);
+}
+
+static void drawHorizontalBorderLine(const float y, const float left, const float right) {
+    LCD.DrawHorizontalLine(
+        static_cast<int>(y),
+        static_cast<int>(left + Button::BORDER_RADIUS),
+        static_cast<int>(right - Button::BORDER_RADIUS)
+    );
+}
+
+static void drawHorizontalBorderLines(
+    const float left,
+    const float right,
+    const float top,
+    const float bottom
+) {
+    drawHorizontalBorderLine(top, left, right);
+    drawHorizontalBorderLine(bottom, left, right);
+}
+
+static void drawBorderLines(
+    const float left,
+    const float right,
+    const float top,
+    const float bottom
+) {
+    drawVerticalBorderLines(left, right, top, bottom);
+    drawHorizontalBorderLines(left, right, top, bottom);
+}
+
+static void drawBorderCircle(
+    const std::function<void(int, int, int)> &draw,
+    const float x,
+    const float y
+) {
+    draw(
+        static_cast<int>(x),
+        static_cast<int>(y),
+        static_cast<int>(Button::BORDER_RADIUS)
+    );
+}
+
+static void drawTopLeftBorderCircle(
+    const std::function<void(int, int, int)> &draw,
+    const float left,
+    const float top
+) {
+    drawBorderCircle(draw, (left + Button::BORDER_RADIUS), (top + Button::BORDER_RADIUS));
+}
+
+static void drawTopRightBorderCircle(
+    const std::function<void(int, int, int)> &draw,
+    const float right,
+    const float top
+) {
+    drawBorderCircle(draw, (right - Button::BORDER_RADIUS), (top + Button::BORDER_RADIUS));
+}
+
+static void drawBottomLeftBorderCircle(
+    const std::function<void(int, int, int)> &draw,
+    const float left,
+    const float bottom
+) {
+    drawBorderCircle(draw, (left + Button::BORDER_RADIUS), (bottom - Button::BORDER_RADIUS));
+}
+
+static void drawBottomRightBorderCircle(
+    const std::function<void(int, int, int)> &draw,
+    const float right,
+    const float bottom
+) {
+    drawBorderCircle(draw, (right - Button::BORDER_RADIUS), (bottom - Button::BORDER_RADIUS));
+}
+
+static void drawBorderCircles(
+    const std::function<void(int, int, int)> draw,
+    const float left,
+    const float right,
+    const float top,
+    const float bottom
+) {
+    drawTopLeftBorderCircle(draw, left, top);
+    drawTopRightBorderCircle(draw, right, top);
+    drawBottomLeftBorderCircle(draw, left, bottom);
+    drawBottomRightBorderCircle(draw, right, bottom);
+}
+
+static void drawRectangle(const Position center, const Size size) {
+    LCD.FillRectangle(
+        static_cast<int>(center.x),
+        static_cast<int>(center.y),
+        static_cast<int>(size.width),
+        static_cast<int>(size.height)
+    );
+}
+
+static float getStraightDim(const float dim) {
+    return dim - (2.f * Button::BORDER_RADIUS);
+}
+
+static void fixBorderCircles(
+    const Color color,
+    const float left,
+    const float right,
+    const float top,
+    const float bottom
+) {
+    LCD.SetFontColor(color.encode());
+
+    const auto width = right - left;
+    const auto height = bottom - top;
+
+    drawRectangle(
+        Position(left + 1.f, top + Button::BORDER_RADIUS),
+        Size(width - 1.f, getStraightDim(height))
+    );
+    drawRectangle(
+        Position(left + Button::BORDER_RADIUS, top + 1.f),
+        Size(getStraightDim(width), height - 1.f)
+    );
+}
+
+void Button::drawBorder() const {
+    using namespace std::placeholders;
+
+    const auto left = this->getLeftX();
+    const auto right = this->getRightX();
+    const auto top = this->getTopY();
+    const auto bottom = this->getBottomY();
 
     LCD.SetFontColor(this->borderColor.encode());
-    LCD.FillRectangle(
-        static_cast<int>(topLeft.x),
-        static_cast<int>(topLeft.y),
-        static_cast<int>(this->size.width),
-        static_cast<int>(this->size.height)
-    );
+    drawBorderLines(left, right, top, bottom);
+    LCD.SetFontColor(Color::BLACK.encode());
+    drawBorderCircles(std::bind(&FEHLCD::FillCircle, &LCD, _1, _2, _3), left, right, top, bottom);
+    LCD.SetFontColor(this->borderColor.encode());
+    drawBorderCircles(std::bind(&FEHLCD::DrawCircle, &LCD, _1, _2, _3), left, right, top, bottom);
+    fixBorderCircles(Color::BLACK, left, right, top, bottom);
+}
+
+void Button::fillBorder() const {
+    using namespace std::placeholders;
+
+    const auto left = this->getLeftX();
+    const auto right = this->getRightX();
+    const auto top = this->getTopY();
+    const auto bottom = this->getBottomY();
+
+    LCD.SetFontColor(this->borderColor.encode());
+    drawBorderLines(left, right, top, bottom);
+    drawBorderCircles(std::bind(&FEHLCD::FillCircle, &LCD, _1, _2, _3), left, right, top, bottom);
+    fixBorderCircles(this->borderColor, left, right, top, bottom);
 }
 
 } // namespace ui

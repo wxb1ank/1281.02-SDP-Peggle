@@ -128,7 +128,7 @@ void PegBoard::drawPegs() const
         {
             if(peg.getStatus() == 1)
             {
-                LCD.SetFontColor(ORANGERED);
+                LCD.SetFontColor(BROWN);
                 LCD.FillCircle(peg.getX(), peg.getY(),peg.getRadius());
                 LCD.SetFontColor(WHITESMOKE);
                 LCD.FillCircle(peg.getX() - 1, peg.getY() - 1, 1);

@@ -5,7 +5,7 @@
 namespace menu {
 
 CreditsPage::CreditsPage(const float centerY)
-:   PageWithBackButton{Page("Credits", centerY), ui::BackgroundView(Color::BLACK)}
+:   PageWithBackButton{Page("Credits", centerY, Color::BLUE), ui::BackgroundView(Color::BLACK)}
 {}
 
 CreditsPage::StepResult CreditsPage::step(game::Statistics &) {

@@ -5,14 +5,14 @@
 
 namespace menu {
 
-Page::Page(const std::string name, const float centerY)
+Page::Page(const std::string name, const float centerY, const Color borderColor)
 :   runButton{
         ui::Label(
             Position(static_cast<float>(Screen::CENTER_X), centerY),
             name,
             Color::WHITE
         ),
-        Color::RED,
+        borderColor,
         BUTTON_SIZE
     }
 {}
@@ -30,7 +30,7 @@ PageWithBackButton::PageWithBackButton(const Page page, const ui::BackgroundView
     background{background},
     backButton{
         ui::Label(Position(45.f, TITLE_POSITION.y), "Back", Color::WHITE),
-        Color::BLUE
+        Color::GRAY
     }
 {}
 

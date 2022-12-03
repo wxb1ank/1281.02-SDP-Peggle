@@ -10,6 +10,6 @@ if not errorlevel 1 (
         %git% -C "%repo_dir%" stash
         %git% -C "%repo_dir%" pull
     ) else (
-        %git% clone %repo_url%
+        %git% clone %repo_url% "%repo_dir%"
     )
 )

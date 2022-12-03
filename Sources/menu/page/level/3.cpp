@@ -2,15 +2,52 @@
 
 namespace menu {
 
-static const Level LEVEL = []() -> Level {
+Level Level::three()  {
     Level level{};
-    for (int i = 0; i < 50; i++) {
-        level.pegPositions.emplace_back(2.f * static_cast<float>(i), 150.f);
+
+    int radius = 5;
+    int initialXPosition = 20;
+    int initialYPosition = 80;
+    level.pegRadius = radius;
+    for(int r = 0; r < 8; r++)
+    {
+        for(int c = 0; c < 3; c++)
+        {
+            level.pegPositions.emplace_back(static_cast<float>(initialXPosition) + radius * 4 * c , static_cast<float>(initialYPosition) + radius * 4 * r);
+        }
     }
 
-    return level;
-}();
+    initialXPosition = 100;
+    for(int r = 0; r < 8; r++)
+    {
+        for(int c = 0; c < 3; c++)
+        {
+            level.pegPositions.emplace_back(static_cast<float>(initialXPosition) + radius * 4 * c , static_cast<float>(initialYPosition) + radius * 4 * r);
+        }
+    }
 
-Level3Page::Level3Page(const float centerY) : LevelPage{"Level 3", centerY, LEVEL} {}
+    initialXPosition = 180;
+    for(int r = 0; r < 8; r++)
+    {
+        for(int c = 0; c < 3; c++)
+        {
+            level.pegPositions.emplace_back(static_cast<float>(initialXPosition) + radius * 4 * c , static_cast<float>(initialYPosition) + radius * 4 * r);
+        }
+    }
+
+    initialXPosition = 260;
+    for(int r = 0; r < 8; r++)
+    {
+        for(int c = 0; c < 3; c++)
+        {
+            level.pegPositions.emplace_back(static_cast<float>(initialXPosition) + radius * 4 * c , static_cast<float>(initialYPosition) + radius * 4 * r);
+        }
+    }
+
+
+
+
+    return level;
+};
 
 } // namespace menu

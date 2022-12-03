@@ -5,8 +5,10 @@
 
 #include <ui.hpp>
 
+#include <array>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -20,6 +22,17 @@ namespace menu {
 extern const ui::Size BUTTON_SIZE;
 extern const Position TITLE_POSITION;
 
+struct Level;
+
+extern void drawPixelArt(
+    int radius,
+    int initialXPosition,
+    int initialYPosition,
+    Level &level,
+    const char *amogus,
+    int len
+);
+
 /// \brief A controller for a fullscreen view accessible from the main menu.
 ///
 /// \author Will Blankemeyer
@@ -30,7 +43,7 @@ public:
     /// \param[in]  name    The name of this page.
     /// \param[in]  centerY The Y coordinate of the center of the run button.
     /// \author Will Blankemeyer
-    Page(std::string name, float centerY);
+    Page(std::string name, float centerY, Color borderColor);
 
     /// \brief Destroys this page.
     ///
@@ -182,20 +195,22 @@ protected:
     virtual StepResult step(game::Statistics &stats);
 };
 
-/// \author Will Blankemeyer
-class LevelMenuPage final : public Page {
-public:
-    LevelMenuPage(float centerY);
-
-    /// \author Will Blankemeyer
-    virtual void run(game::Statistics &stats) override;
-};
-
 struct Level {
-    float pegRadius;
-    std::size_t orangePegCount;
+    std::optional<std::string> name{};
+    float pegRadius{3.f};
+    std::size_t orangePegCount{25};
     std::vector<Position> pegPositions{};
+
+    static Level one();
+    static Level two();
+    static Level three();
+    static Level four();
+    static Level five();
+    static Level six();
+    static Level amogus();
 };
+
+extern const std::array<Level, 7> LEVELS;
 
 class LevelPage : public Page {
 public:
@@ -205,21 +220,6 @@ public:
 
 private:
     Level level;
-};
-
-class Level1Page final : public LevelPage {
-public:
-    Level1Page(float centerY);
-};
-
-class Level2Page final : public LevelPage {
-public:
-    Level2Page(float centerY);
-};
-
-class Level3Page final : public LevelPage {
-public:
-    Level3Page(float centerY);
 };
 
 /// \brief A Peggle menu.
@@ -234,10 +234,12 @@ public:
     /// \author Will Blankemeyer
     virtual ~Menu();
 
+    [[noreturn]] void run(game::Statistics &stats);
+
     /// \brief Draws this menu and responds to input.
     ///
     /// \author Will Blankemeyer
-    void run(game::Statistics &stats);
+    void step(game::Statistics &stats);
 
 protected:
     std::vector<std::unique_ptr<Page>> &getPages();
@@ -282,6 +284,19 @@ private:
     ui::Label title;
     /// \author Will Blankemeyer
     ui::BackgroundView background;
+};
+
+/// \author Will Blankemeyer
+class LevelMenuPage final : public PageWithBackButton {
+public:
+    LevelMenuPage(float centerY);
+
+protected:
+    /// \author Will Blankemeyer
+    virtual StepResult step(game::Statistics &stats);
+
+protected:
+    LevelMenu levelMenu;
 };
 
 } // namespace menu

@@ -96,5 +96,5 @@ struct Acceleration : Vector {
     /// \brief The Y component of the acceleration caused by gravity on the world of Peggle.
     ///
     /// \author Will Blankemeyer
-    static constexpr float GRAVITY{1'000.f};
+    static constexpr float GRAVITY{1000.f};
 };

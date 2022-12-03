@@ -104,14 +104,17 @@ void Ball::drawGuide(std::vector<Peg> &pegs) {
     auto pos = this->pos;
     auto vel = this->vel;
 
-    for (int i = 0; i < 40; i++) {
-        Ball::tick(vel, pos, 0.025f);
+    for (int i = 0; i < 1000; i++) {
+        Ball::tick(vel, pos, 0.001f);
+
         if (pos.y > static_cast<float>(Screen::MAX_Y)) {
             return;
         }
 
-        LCD.SetFontColor(GOLDENROD);
-        LCD.DrawPixel(static_cast<int>(pos.x), static_cast<int>(pos.y));
+        LCD.SetFontColor(LIGHTBLUE);
+        if ((i % 100) == 0) {
+            LCD.DrawPixel(static_cast<int>(pos.x), static_cast<int>(pos.y));
+        }
 
         CEILING.checkCollisionWith(vel, pos, 1);
         LEFT_WALL.checkCollisionWith(vel, pos, 1);

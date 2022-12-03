@@ -361,6 +361,8 @@ public:
     /// \author Will Blankemeyer
     static constexpr float DEFAULT_PADDING{5.f};
 
+    static constexpr float BORDER_RADIUS{5.f};
+
     /// \brief A mutable reference to the contained label.
     ///
     /// \return The label.
@@ -417,9 +419,9 @@ private:
     /// \author Will Blankemeyer
     Label label;
     /// \author Will Blankemeyer
-    Size size;
-    /// \author Will Blankemeyer
     Color borderColor;
+    /// \author Will Blankemeyer
+    Size size;
 
     /// \author Will Blankemeyer
     float pad(float dim) const;
