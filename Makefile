@@ -64,6 +64,11 @@ CC := gcc
 # The name of the system Doxygen executable.
 DOXYGEN := doxygen
 
+# Note: it is important that these variables are assigned with `=` rather than `:=` because their
+# values may change over the course of the Makefile. Notably, if dependencies need to be pulled,
+# then the source tree will be modified, which affects the value of `$(SRC_DIRS)` and, by extension,
+# nearly everything else.
+
 # :: rel-path -> [rel-path]
 # Returns a list of relative paths to all nested subdirectories of the given directory, *excluding*
 # the given directory itself.
@@ -82,10 +87,10 @@ recurse_dirs = $1 $(call _recurse_dirs,$1)
 # The list of relative paths to all directories that *may* contain Peggle or simulator source files.
 #
 # This function simply returns paths to all directories that aren't the build directory.
-SRC_DIRS := $(filter-out ./$(BUILD_DIR)/%,$(call recurse_dirs,./))
+SRC_DIRS = $(filter-out ./$(BUILD_DIR)/%,$(call recurse_dirs,./))
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator source files.
-SRCS := $(patsubst ./%,%,$(foreach suffix,.cpp .c,$(wildcard $(addsuffix *$(suffix),$(SRC_DIRS)))))
+SRCS = $(patsubst ./%,%,$(foreach suffix,.cpp .c,$(wildcard $(addsuffix *$(suffix),$(SRC_DIRS)))))
 
 # :: text -> [rel-path]
 # Returns a list of relative paths to all Peggle and simulator object files compiled from source
@@ -94,25 +99,25 @@ filter_objs = $(addprefix $(BUILD_DIR)/,$(patsubst %$1,%.o,$(filter %$1,$(SRCS))
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator object files compiled from C++ source
 # files.
-CXX_OBJS := $(call filter_objs,.cpp)
+CXX_OBJS = $(call filter_objs,.cpp)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator object files compiled from C source files.
-C_OBJS := $(call filter_objs,.c)
+C_OBJS = $(call filter_objs,.c)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator object files.
-OBJS := $(CXX_OBJS) $(C_OBJS)
+OBJS = $(CXX_OBJS) $(C_OBJS)
 
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator dependency Makefiles generated from C++
 # source files.
-CXX_DEPS := $(CXX_OBJS:.o=.d)
+CXX_DEPS = $(CXX_OBJS:.o=.d)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator dependency Makefiles generated from C
 # source files.
-C_DEPS := $(C_OBJS:.o=.d)
+C_DEPS = $(C_OBJS:.o=.d)
 # :: [rel-path]
 # The list of relative paths to all Peggle and simulator dependency Makefiles.
-DEPS := $(CXX_DEPS) $(C_DEPS)
+DEPS = $(CXX_DEPS) $(C_DEPS)
 
 # :: [rel-path]
 # The list of relative paths to directories containing C/C++ header files that should be marked as
@@ -222,6 +227,7 @@ all: checkout-deps $(TARGET)
 
 # Checks-out vendored repositories to the correct commit hash.
 checkout-deps: clone-deps
+	@$(GIT) -C $(REPO_DIR) config advice.detachedHead false
 	@$(GIT) -C $(REPO_DIR) checkout $(REPO_HASH)
 
 # Clones all dependency repositories.
