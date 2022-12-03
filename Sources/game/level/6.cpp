@@ -1,8 +1,10 @@
-#include <menu.hpp>
+#include <game.hpp>
 
-namespace menu {
+namespace game {
 
-static const char BRUTUS[]{
+/// \author Solomon Blair
+/// \author Will Blankemeyer
+static const std::string BRUTUS{
     "000000000000000000001111\n"
     "0000000000000000000111111\n"
     "0000000000000001111000001111\n"
@@ -53,15 +55,10 @@ static const char BRUTUS[]{
 
 Level Level::six()  {
     Level level{};
-
-    int radius = 2;
-    int initialXPosition = 70;
-    int initialYPosition = 30;
-    level.pegRadius = radius;
-
-    drawPixelArt(radius, initialXPosition,initialYPosition,level,BRUTUS,sizeof(BRUTUS));
+    level.pegRadius = 2.f;
+    level.addPegBitmap(Position(70.f, 30.f), BRUTUS);
 
     return level;
-};
+}
 
-} // namespace menu
+} // namespace game

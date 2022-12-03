@@ -1,6 +1,6 @@
-#include <menu.hpp>
+#include <game.hpp>
 
-namespace menu {
+namespace game {
 
 Level Level::two() {
     Level level{};
@@ -47,6 +47,6 @@ Level Level::two() {
 
 
     return level;
-};
+}
 
-} // namespace menu
+} // namespace game

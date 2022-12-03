@@ -9,22 +9,14 @@ namespace menu {
 
 const ui::Size BUTTON_SIZE{
     160.f,
-    static_cast<float>(Font::HEIGHT) + (2.f * ui::Button::DEFAULT_PADDING)
+    // For visual consistency with other buttons, we would like the height to be the same, so we
+    // will calculate it just as the `ui::Button` constructor would.
+    ui::Button::pad(static_cast<float>(Font::HEIGHT))
 };
 
 const Position TITLE_POSITION{
     static_cast<float>(Screen::CENTER_X),
     static_cast<float>(Screen::MIN_Y + 25.f)
-};
-
-const std::array<Level, 7> LEVELS{
-    Level::one(),
-    Level::two(),
-    Level::three(),
-    Level::four(),
-    Level::five(),
-    Level::six(),
-    Level::amogus()
 };
 
 Menu::Menu() : pages{} {}

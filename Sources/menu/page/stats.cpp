@@ -24,7 +24,7 @@ StatsPage::StepResult StatsPage::step(game::Statistics &stats) {
     statLabels.draw();
 
     // TODO
-    LCD.WriteAt(static_cast<int>(stats.getTotalWins()), 250, 50);
+    LCD.WriteAt(static_cast<int>(stats.getWins()), 250, 50);
     LCD.WriteAt(static_cast<int>(stats.getTotalScore()), 250, 70);
     LCD.WriteAt(static_cast<int>(stats.getTopScore()), 250, 90);
     LCD.WriteAt(static_cast<int>(stats.getOrangePegsHit()), 250, 110);

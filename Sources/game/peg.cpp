@@ -10,16 +10,6 @@
 
 namespace game {
 
-// Default constructor for Peg class
-Peg::Peg()
-{
-    x_position = 0;
-    y_position = 0;
-    peg_radius = 0;
-    active = 0;
-    color = 0;
-}
-
 // Constructor for Peg class
 Peg::Peg(int x_pos, int y_pos, float radius, int colorOfPeg)
 {
@@ -64,7 +54,7 @@ void Peg::setStatus(int status)
     this->active = status;
 }
 
-void Peg::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
+void Peg::deflect(Velocity &vel, Position &pos, int guide) {
     if(this->getStatus() != 0)
     {
         float xDistance = pos.x - x_position;

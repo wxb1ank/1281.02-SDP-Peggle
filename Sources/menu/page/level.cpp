@@ -10,7 +10,7 @@
 
 namespace menu {
 
-LevelPage::LevelPage(const std::string name, const float centerY, const Level level)
+LevelPage::LevelPage(const std::string name, const float centerY, const game::Level level)
 :   Page{name, centerY, Color::RED}, level{level}
 {}
 

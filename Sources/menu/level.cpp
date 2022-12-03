@@ -14,8 +14,8 @@ LevelMenu::LevelMenu()
 :   Menu(), title{TITLE_POSITION, "Level Select", Color::WHITE}, background{Color::BLACK}
 {
     auto &pages = this->getPages();
-    for (unsigned i = 0; i < LEVELS.size(); i++) {
-        const auto &level = LEVELS.at(i);
+    for (unsigned i = 0; i < game::Level::ALL.size(); i++) {
+        const auto &level = game::Level::ALL.at(i);
 
         std::string name;
         if (level.name.has_value()) {

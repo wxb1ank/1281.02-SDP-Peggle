@@ -1,47 +1,37 @@
 /// \file
-/// \brief The Peggle main menu.
+/// \brief Peggle UI menus.
 
 #pragma once
 
+#include <game.hpp>
 #include <ui.hpp>
 
-#include <array>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <vector>
 
-namespace game {
-    class Statistics;
-}
-
-/// \brief The Peggle main menu.
+/// \brief Peggle UI menus.
 namespace menu {
 
+/// \brief The standard size of a menu button.
+///
+/// \author Will Blankemeyer
 extern const ui::Size BUTTON_SIZE;
+/// \brief The standard position of the center of a title label.
+///
+/// \author Will Blankemeyer
 extern const Position TITLE_POSITION;
 
-struct Level;
-
-extern void drawPixelArt(
-    int radius,
-    int initialXPosition,
-    int initialYPosition,
-    Level &level,
-    const char *amogus,
-    int len
-);
-
-/// \brief A controller for a fullscreen view accessible from the main menu.
+/// \brief A controller for a fullscreen view accessible from a menu.
 ///
 /// \author Will Blankemeyer
 class Page {
 public:
     /// \brief Creates a new page.
     ///
-    /// \param[in]  name    The name of this page.
-    /// \param[in]  centerY The Y coordinate of the center of the run button.
+    /// \param[in]  runButton   The button in the menu that runs this page.
     /// \author Will Blankemeyer
     Page(std::string name, float centerY, Color borderColor);
 
@@ -50,7 +40,7 @@ public:
     /// \author Will Blankemeyer
     virtual ~Page();
 
-    /// \brief An immutable reference to the main menu button that runs this page.
+    /// \brief An immutable reference to the menu button that runs this page.
     ///
     /// \return The run button.
     /// \author Will Blankemeyer
@@ -63,13 +53,11 @@ public:
     virtual void run(game::Statistics &stats);
 
 private:
-    /// \brief The button in the main menu that runs this page.
-    ///
     /// \author Will Blankemeyer
     ui::Button runButton;
 };
 
-/// \brief A page that provides a back button in its view that returns to the main menu.
+/// \brief A page that provides a back button in its view that returns to the previous menu.
 ///
 /// \author Will Blankemeyer
 class PageWithBackButton : public Page {
@@ -195,31 +183,14 @@ protected:
     virtual StepResult step(game::Statistics &stats);
 };
 
-struct Level {
-    std::optional<std::string> name{};
-    float pegRadius{3.f};
-    std::size_t orangePegCount{25};
-    std::vector<Position> pegPositions{};
-
-    static Level one();
-    static Level two();
-    static Level three();
-    static Level four();
-    static Level five();
-    static Level six();
-    static Level amogus();
-};
-
-extern const std::array<Level, 7> LEVELS;
-
 class LevelPage : public Page {
 public:
-    LevelPage(std::string name, float centerY, Level level);
+    LevelPage(std::string name, float centerY, game::Level level);
 
     virtual void run(game::Statistics &stats) final;
 
 private:
-    Level level;
+    game::Level level;
 };
 
 /// \brief A Peggle menu.

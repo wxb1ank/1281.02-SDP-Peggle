@@ -6,6 +6,7 @@
 #include <mechanics.hpp>
 #include <ui.hpp>
 
+#include <array>
 #include <cstdlib>
 #include <optional>
 #include <vector>
@@ -16,173 +17,534 @@ namespace game {
 class Obstacle;
 class Peg;
 
+/// \brief Lifetime game statistics.
+///
+/// \author Will Blankemeyer
 class Statistics {
 public:
+    /// \brief Creates a default set of statistics.
+    ///
+    /// \author Will Blankemeyer
     Statistics();
 
-    std::size_t getTotalWins() const;
+    /// \brief The total number of wins across all games.
+    ///
+    /// \return The total wins.
+    /// \author Will Blankemeyer
+    std::size_t getWins() const;
+    /// \brief The total score accumulated across all games.
+    ///
+    /// \return The total score.
+    /// \author Will Blankemeyer
     std::size_t getTotalScore() const;
+    /// \brief The top score achieved in any single game.
+    ///
+    /// \return The top score.
+    /// \author Will Blankemeyer
     std::size_t getTopScore() const;
+    /// \brief The total number of orange pegs hit across all games.
+    ///
+    /// \return The total orange pegs hit.
+    /// \author Will Blankemeyer
     std::size_t getOrangePegsHit() const;
+    /// \brief The total number of balls shot across all games.
+    ///
+    /// \return The total balls shot.
+    /// \author Will Blankemeyer
     std::size_t getBallsShot() const;
 
+    /// \brief Increments the total number of wins by one.
+    ///
+    /// \author Will Blankemeyer
     void addWin();
+    /// \brief Increases the total score by the given amount.
+    ///
+    /// If the given score is greater than the top score, then it becomes the new top score.
+    ///
+    /// \param[in]  score   The final score of a game.
+    /// \author Will Blankemeyer
     void addScore(std::size_t score);
+    /// \brief Increases the total orange pegs hit by the given amount.
+    ///
+    /// \param[in]  pegsHit The orange pegs hit.
+    /// \author Will Blankemeyer
     void addOrangePegsHit(std::size_t pegsHit);
+    /// \brief Increases the total balls shot by the given amount.
+    ///
+    /// \param[in]  ballsShot The balls shot.
+    /// \author Will Blankemeyer
     void addBallsShot(std::size_t ballsShot);
 
 private:
-    std::size_t totalWins;
+    /// \author Will Blankemeyer
+    std::size_t wins;
+    /// \author Will Blankemeyer
     std::size_t totalScore;
+    /// \author Will Blankemeyer
     std::size_t topScore;
+    /// \author Will Blankemeyer
     std::size_t orangePegsHit;
+    /// \author Will Blankemeyer
     std::size_t ballsShot;
 };
 
+/// \brief The Peggle ball.
+///
+/// \author Solomon Blair
 /// \author Will Blankemeyer
 class Ball final : public ui::View {
 public:
+    /// \brief Creates a new Peggle ball in the top-center of the screen.
+    ///
+    /// \author Will Blankemeyer
     Ball();
 
+    /// \brief The radius, in pixels, of the ball.
+    ///
+    /// Unlike pegs, which can vary in radius, all Peggle balls are of this radius.
+    ///
+    /// \author Solomon Blair
     static constexpr size_t RADIUS{3};
 
+    /// \brief The initial Y component of velocity when the ball is shot with `shootAt`.
+    ///
+    /// \note The X component of velocity varies with angle but the Y component is constant.
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    static constexpr float SHOOT_Y_VEL{4.f * Acceleration::GRAVITY};
+
+    /// \brief Adjusts the velocity of this ball such that it will hit the given target after some
+    /// period of time.
+    ///
+    /// \param[in]  target  The point on the screen that the ball should aim at.
+    /// \author Will Blankemeyer
     void shootAt(Position target);
 
+    /// \brief A mutable reference to the position.
+    ///
+    /// \return The position.
+    /// \author Will Blankemeyer
     Position &getPos();
+    /// \brief An immutable reference to the position.
+    ///
+    /// \return The position.
+    /// \author Will Blankemeyer
     const Position &getPos() const;
 
+    /// \brief A mutable reference to the velocity.
+    ///
+    /// \return The velocity.
+    /// \author Will Blankemeyer
     Velocity &getVel();
+    /// \brief An immutable reference to the velocity.
+    ///
+    /// \return The velocity.
+    /// \author Will Blankemeyer
     const Velocity &getVel() const;
 
-    void tick(float timeElapsed);
+    /// \brief The duration that `tick` operates on.
+    ///
+    /// \note
+    /// \parblock
+    /// The unit of tick duration was originally intended to be the second, but our physics system
+    /// does not invoke `TimeNow` or `Sleep`, so it is probably related to CPU speed. As such, while
+    /// the path a ball takes should be the same on all machines, the speed of the simulation may
+    /// vary.
+    /// \endparblock
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    static constexpr float TICK_DURATION{Acceleration::GRAVITY / 100.f};
 
-    bool isOnScreen() const;
-
-    virtual float getWidth() const override;
-    virtual float getHeight() const override;
-    virtual Position getCenter() const override;
-
-    virtual void draw() const override;
-    void drawGuide(std::vector<Peg> &);
-
-private:
-    Position pos;
-    Velocity vel;
-
-    static void tick(Velocity &vel, Position &pos, float timeElapsed);
-    static void tickX(const Velocity &vel, Position &pos, float timeElapsed);
-    static void tickY(Velocity &vel, Position &pos, float timeElapsed);
-};
-
-struct Deflection {
-    Position pos;
-    Velocity vel;
-};
-
-class Obstacle {
-public:
-    ~Obstacle();
-
-    static constexpr float MOMENTUM_LOSS{-.90f};
-
-    virtual void checkCollisionWith(Velocity &, Position &, int guide) = 0;
-};
-
-class Ceiling final : public Obstacle {
-public:
-    Ceiling();
-
-    virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
-};
-
-class LeftWall final : public Obstacle {
-public:
-    LeftWall();
-
-    virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
-};
-
-class RightWall final : public Obstacle {
-public:
-    RightWall();
-
-    virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
-};
-
-extern Ceiling CEILING;
-extern LeftWall LEFT_WALL;
-extern RightWall RIGHT_WALL;
-
-class Bucket final : public ui::View {
-public:
-    Bucket();
-
+    /// \brief Calculates the new position and velocity of this ball as if a brief duration of time
+    /// had elapsed.
+    ///
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
     void tick();
 
-    virtual ui::Size getSize() const override;
+    /// \brief Determines if the ball is above the bottom of the screen.
+    ///
+    /// \return Whether or not the ball is on the screen.
+    /// \author Will Blankemeyer
+    bool isOnScreen() const;
+
+    /// \brief The number of discrete ball positions that `drawGuide` should draw.
+    ///
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    static constexpr std::size_t GUIDE_LENGTH{50};
+
+    /// \brief Draws future positions of this ball to the screen.
+    ///
+    /// Each position is rendered as a single pixel. The number of positions drawn is
+    /// `GUIDE_LENGTH`, and the duration between each position is `TICK_DURATION`.
+    ///
+    /// \param[in]  pegs    All pegs that this simulation should consider for collision checking.
+    /// \note This method is `const` and, as such, does not mutate the ball position or velocity.
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    void drawGuide(const std::vector<Peg> &pegs) const;
+
+    /// \author Will Blankemeyer
     virtual float getWidth() const override;
+    /// \author Will Blankemeyer
     virtual float getHeight() const override;
+    /// \author Will Blankemeyer
     virtual Position getCenter() const override;
+    /// \author Will Blankemeyer
     virtual void draw() const override;
 
 private:
-    Position center;
-    float changeX;
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    Position pos;
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    Velocity vel;
 
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    static void tick(Velocity &vel, Position &pos);
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    static void tickX(const Velocity &vel, Position &pos);
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    static void tickY(Velocity &vel, Position &pos);
+};
+
+/// \brief An immovable object that deflects projectiles upon contact.
+///
+/// \author Will Blankemeyer
+class Obstacle {
+public:
+    /// \brief Destroys this obstacle.
+    ///
+    /// \author Will Blankemeyer
+    ~Obstacle();
+
+    /// \brief The factor by which the magnitude of the momentum of incoming projectiles is
+    /// multipled after contact with an obstacle.
+    ///
+    /// \author Will Blankemeyer
+    static constexpr float MOMENTUM_LOSS{-.90f};
+
+    // TODO: I'm (Will) not a fan of this style where copyable arguments are used for both input and
+    // output. If this method instead returned an `std::optional<Deflection>` object where
+    // `Deflection` contains the new position and velocity of the projectile, then the caller would
+    // not need to put blind faith into this method's claim to only mutate arguments if a deflection
+    // occurs. But, we're running short on time, and this is faster to write.
+
+    /// \brief Determines if a projectile is in contact with this obstacle and, if so, deflects the
+    /// projectile, adjusting the position and velocity as necessary.
+    ///
+    /// \param[inout]   vel The velocity of the projectile.
+    /// \param[inout]   pos The position of the projectile.
+    /// \return Whether or not a collision occurred.
+    /// \note `vel` and `pos` are only mutated if a deflection occurs.
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    virtual bool deflect(Velocity &vel, Position &pos) const = 0;
+};
+
+/// \brief A flat ceiling obstacle that deflects projectiles downward.
+///
+/// \author Solomon Blair
+/// \author Will Blankemeyer
+class Ceiling final : public Obstacle {
+public:
+    /// \brief Creates a new ceiling.
+    ///
+    /// \author Will Blankemeyer
+    Ceiling();
+
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    virtual bool deflect(Velocity &vel, Position &pos) const override;
+};
+
+/// \brief A flat wall obstacle that deflects projectiles rightward.
+///
+/// \author Solomon Blair
+/// \author Will Blankemeyer
+class LeftWall final : public Obstacle {
+public:
+    /// \brief Creates a new left wall.
+    ///
+    /// \author Will Blankemeyer
+    LeftWall();
+
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    virtual bool deflect(Velocity &vel, Position &pos) const override;
+};
+
+/// \brief A flat wall obstacle that deflects projectiles leftward.
+///
+/// \author Solomon Blair
+/// \author Will Blankemeyer
+class RightWall final : public Obstacle {
+public:
+    /// \brief Creates a new right wall.
+    ///
+    /// \author Will Blankemeyer
+    RightWall();
+
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    virtual bool deflect(Velocity &vel, Position &pos) const override;
+};
+
+/// \brief A global instance of `Ceiling`.
+///
+/// \author Will Blankemeyer
+extern const Ceiling CEILING;
+/// \brief A global instance of `LeftWall`.
+///
+/// \author Will Blankemeyer
+extern const LeftWall LEFT_WALL;
+/// \brief A global instance of `RightWall`.
+///
+/// \author Will Blankemeyer
+extern const RightWall RIGHT_WALL;
+
+/// \brief A view that translates along the bottom of the screen and returns balls that come into
+/// contact with it.
+///
+/// \author Will Blankemeyer
+class Bucket final : public ui::View {
+public:
+    /// \brief Creates a new bucket in the bottom-center of the screen.
+    ///
+    /// \author Will Blankemeyer
+    Bucket();
+
+    /// \brief Translates this bucket to its next position.
+    ///
+    /// \author Will Blankemeyer
+    void tick();
+
+    /// \brief The size of a bucket.
+    ///
+    /// \author Will Blankemeyer
     static const ui::Size SIZE;
+
+    /// \author Will Blankemeyer
+    virtual ui::Size getSize() const override;
+    /// \author Will Blankemeyer
+    virtual float getWidth() const override;
+    /// \author Will Blankemeyer
+    virtual float getHeight() const override;
+    /// \author Will Blankemeyer
+    virtual Position getCenter() const override;
+    /// \author Will Blankemeyer
+    virtual void draw() const override;
+
+private:
+    /// \author Will Blankemeyer
+    enum class Direction {
+        /// \brief The bucket is moving leftward.
+        ///
+        /// \author Will Blankemeyer
+        Left,
+        /// \brief The bucket is moving rightward.
+        ///
+        /// \author Will Blankemeyer
+        Right,
+    };
+
+    /// \author Will Blankemeyer
+    Position center;
+    /// \author Will Blankemeyer
+    Direction direction;
+    /// \author Will Blankemeyer
+    float animationProgress;
 };
 
 /// \brief Class representing a peg
 ///
 /// \author Solomon Blair
-class Peg : public Obstacle
+class Peg final : public ui::View, public Obstacle
 {
     public:
-        Peg();
-        Peg(int x_pos, int y_pos, float radius, int colorOfPeg);
-        int getX() const;
-        int getY() const;
+        /// \brief Creates a new peg.
+        ///
+        /// \param[in]  pos
+        /// \param[in]  radius
+        /// \param[in]  color
+        /// \author Solomon Blair
+        /// \author Will Blankemeyer
+        Peg(Position pos, float radius, Color color);
+
+        /// \brief The radius of this peg.
+        ///
+        /// \return The radius.
+        /// \author Solomon Blair
         float getRadius() const;
-        int getStatus() const;
-        void setStatus(int status);
-        int getColor() const;
-        virtual void checkCollisionWith(Velocity &, Position &, int guide) override;
+
+        /// \brief The state of a peg.
+        ///
+        /// \author Will Blankemeyer
+        enum class Status {
+            /// \brief This peg has not been hit yet.
+            ///
+            /// \author Will Blankemeyer
+            Unlit,
+            /// \brief This peg has been hit but is still visible.
+            ///
+            /// \author Will Blankemeyer
+            Lit,
+            /// \brief This peg was hit in a previous round and is now hidden.
+            ///
+            /// Collision checks are disabled while in this state.
+            ///
+            /// \author Will Blankemeyer
+            Obliterated,
+        };
+
+        /// \brief The state of this peg.
+        ///
+        /// \return The status.
+        /// \author Solomon Blair
+        /// \author Will Blankemeyer
+        Status getStatus() const;
+        /// \brief Lights up this peg if it was not hit previously.
+        ///
+        /// \author Will Blankemeyer
+        void hit();
+
+        /// \brief The color of a peg.
+        ///
+        /// \author Will Blankemeyer
+        enum class Color {
+            /// \brief This peg is blue.
+            ///
+            /// Hitting a blue peg contributes 1 point to the score.
+            ///
+            /// \author Will Blankemeyer
+            Blue,
+            /// \brief This peg is orange.
+            ///
+            /// Hitting an orange peg contributes 2 points to the score, and hitting 25 orange pegs
+            /// in a level is a necessary win condition.
+            ///
+            /// \author Will Blankemeyer
+            Orange,
+        };
+
+        /// \brief The color of this peg.
+        ///
+        /// \return The color.
+        /// \author Solomon Blair
+        /// \author Will Blankemeyer
+        Color getColor() const;
+
+        /// \author Will Blankemeyer
+        virtual float getWidth() const override;
+        /// \author Will Blankemeyer
+        virtual float getHeight() const override;
+        /// \author Will Blankemeyer
+        virtual Position getCenter() const override;
+        /// \author Will Blankemeyer
+        virtual void draw() const override;
+        /// \author Will Blankemeyer
+        virtual bool deflect(Velocity &vel, Position &pos) const override;
 
     private:
-        int x_position, y_position, active, color;
-        float peg_radius;
+        /// \author Solomon Blair
+        Position center;
+        /// \author Solomon Blair
+        float radius;
+        /// \author Solomon Blair
+        Color color;
 };
 
 /// \brief Class represeting the whole board
+///
+/// This is essentially a wrapper over a vector of pegs.
 ///
 /// \author Solomon Blair
 class PegBoard
 {
     public:
+        /// \brief Creates an empty peg board.
+        ///
+        /// \author Solomon Blair
         PegBoard();
+
+        /// \brief Adds a new peg to this board.
+        ///
+        /// \param[in]  peg The peg to add.
         /// \author Will Blankemeyer
         void push(Peg peg);
-        void drawPegs() const;
-        int getNum() const;
+
+        /// \brief A mutable reference to the pegs contained in this board.
+        ///
+        /// \return All pegs.
+        /// \author Solomon Blair
+        /// \author Will Blankemeyer
         std::vector<Peg> &getPegs();
+        /// \brief An immutable reference to the pegs contained in this board.
+        ///
+        /// \return All pegs.
+        /// \author Solomon Blair
+        /// \author Will Blankemeyer
+        const std::vector<Peg> &getPegs() const;
+
     private:
+        /// \author Solomon Blair
+        /// \author Will Blankemeyer
         std::vector<Peg> pegs;
 };
 
+struct Level {
+    std::optional<std::string> name{};
+    float pegRadius{3.f};
+    std::size_t orangePegCount{25};
+    std::vector<Position> pegPositions{};
+
+    void addPegBitmap(Position pos, const std::string &bitmap);
+
+    static const std::array<Level, 7> ALL;
+
+    static Level one();
+    static Level two();
+    static Level three();
+    static Level four();
+    static Level five();
+    static Level six();
+    static Level amogus();
+};
+
+/// \author Will Blankemeyer
 class Game {
 public:
+    /// \author Will Blankemeyer
     Game();
 
+    /// \author Will Blankemeyer
     enum class Result {
+        /// \brief The player won the game. Congratulations!
+        ///
+        /// \author Will Blankemeyer
         Win,
+        /// \brief The player lost the game.
+        ///
+        /// \author Will Blankemeyer
         Loss,
     };
 
-    Result run(Statistics &stats, PegBoard &board);
+    ///
+    ///
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    Result play(Statistics &stats, PegBoard &board);
 
 private:
-    Bucket bucket;
+    /// \author Will Blankemeyer
     ui::BackgroundView background;
+    /// \author Will Blankemeyer
+    Bucket bucket;
 };
 
 } // namespace game

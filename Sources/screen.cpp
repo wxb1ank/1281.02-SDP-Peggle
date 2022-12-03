@@ -28,8 +28,8 @@ unsigned Color::encode() const {
 }
 
 float Color::getValue() const {
-    // I'm having difficulty passing an initializer list of three floats to `std::max`, so I've
-    // broken it into two calls.
+    // I'm (Will) having difficulty passing an initializer list of three floats to `std::max`, so
+    // I've broken it into two calls.
     return std::max(std::max(this->r, this->g), this->b);
 }
 
@@ -47,6 +47,9 @@ float Color::getMinComp() const {
     return std::min(std::min(this->r, this->g), this->b);
 }
 
+// Source: `LCDColors.h`.
+//
+// (I used RegEx to copy these; I didn't write them by hand!)
 const Color Color::BLACK{0x000000u};
 const Color Color::NAVY{0x000080u};
 const Color Color::DARKBLUE{0x00008Bu};

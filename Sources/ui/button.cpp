@@ -75,7 +75,7 @@ void Button::drawPressed() const {
     this->label.draw();
 }
 
-float Button::pad(const float dim) const {
+float Button::pad(const float dim) {
     return dim + (2.f * Button::DEFAULT_PADDING);
 }
 

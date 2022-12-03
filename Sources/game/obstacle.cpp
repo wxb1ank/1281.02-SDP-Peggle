@@ -21,7 +21,7 @@ void checkFlatCollisionWith(
     }
 }
 
-void Ceiling::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
+void Ceiling::deflect(Velocity &vel, Position &pos, int guide) {
     checkFlatCollisionWith(
         vel,
         pos,
@@ -33,7 +33,7 @@ void Ceiling::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
 
 LeftWall::LeftWall() {}
 
-void LeftWall::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
+void LeftWall::deflect(Velocity &vel, Position &pos, int guide) {
     checkFlatCollisionWith(
         vel,
         pos,
@@ -45,7 +45,7 @@ void LeftWall::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
 
 RightWall::RightWall() {}
 
-void RightWall::checkCollisionWith(Velocity &vel, Position &pos, int guide) {
+void RightWall::deflect(Velocity &vel, Position &pos, int guide) {
     checkFlatCollisionWith(
         vel,
         pos,

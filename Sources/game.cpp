@@ -4,7 +4,6 @@
 
 #include <FEHLCD.hpp>
 #include <FEHRandom.h>
-#include <FEHUtility.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -41,8 +40,6 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
         }
 
         while (LCD.Touch(&target.x, &target.y)) {
-            target.x -= ball.getPos().x;
-            target.y -= ball.getPos().y;
             ball.shootAt(target);
 
             this->background.draw();
@@ -56,10 +53,6 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
             LCD.ClearBuffer();
         }
 
-        float target_angle = M_PI_2 - std::atan2(target.y, target.x);
-
-        double lastTime = TimeNow();
-
         ballsRemaining -=1;
         stats.addBallsShot(1);
 
@@ -71,18 +64,17 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
             LCD.SetFontColor(Color::WHITE.encode());
             LCD.WriteAt(static_cast<int>(ballsRemaining), 15, 15);
 
-            double newTime = TimeNow();
-            const auto tickDuration = static_cast<float>(newTime - lastTime);
-            lastTime = newTime;
-
-            ball.tick(tickDuration);
-            CEILING.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
-            LEFT_WALL.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
-            RIGHT_WALL.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
+            ball.tick();
+            CEILING.deflect(ball.getVel(), ball.getPos());
+            LEFT_WALL.deflect(ball.getVel(), ball.getPos());
+            RIGHT_WALL.deflect(ball.getVel(), ball.getPos());
 
             for(auto &peg : board.getPegs())
             {
-                peg.checkCollisionWith(ball.getVel(), ball.getPos(), 0);
+                if (peg.deflect(ball.getVel(), ball.getPos())) {
+                    peg.setStatus(2);
+                    break;
+                }
             }
 
             ball.draw();

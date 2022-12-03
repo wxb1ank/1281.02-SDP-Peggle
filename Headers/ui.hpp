@@ -415,6 +415,9 @@ public:
     /// \author Will Blankemeyer
     void drawPressed() const;
 
+    /// \author Will Blankemeyer
+    static float pad(float dim);
+
 private:
     /// \author Will Blankemeyer
     Label label;
@@ -422,9 +425,6 @@ private:
     Color borderColor;
     /// \author Will Blankemeyer
     Size size;
-
-    /// \author Will Blankemeyer
-    float pad(float dim) const;
 
     /// \author Will Blankemeyer
     void drawBorder() const;

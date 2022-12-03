@@ -1,8 +1,10 @@
 #define _USE_MATH_DEFINES
-#include <menu.hpp>
+
+#include <game.hpp>
+
 #include <cmath>
 
-namespace menu {
+namespace game {
 
 Level Level::four() {
     Level level{};
@@ -50,7 +52,6 @@ Level Level::four() {
     }
 
     return level;
-};
+}
 
-
-} // namespace menu
+} // namespace game

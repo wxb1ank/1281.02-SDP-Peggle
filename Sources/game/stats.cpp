@@ -3,11 +3,11 @@
 namespace game {
 
 Statistics::Statistics()
-:   totalWins{0}, totalScore{0}, topScore{0}, orangePegsHit{0}, ballsShot{0}
+:   wins{0}, totalScore{0}, topScore{0}, orangePegsHit{0}, ballsShot{0}
 {}
 
-std::size_t Statistics::getTotalWins() const {
-    return this->totalWins;
+std::size_t Statistics::getWins() const {
+    return this->wins;
 }
 
 std::size_t Statistics::getTotalScore() const {
@@ -27,10 +27,10 @@ std::size_t Statistics::getBallsShot() const {
 }
 
 void Statistics::addWin() {
-    this->totalWins += 1;
+    this->wins += 1;
 }
 
-void Statistics::addScore(std::size_t score) {
+void Statistics::addScore(const std::size_t score) {
     this->totalScore += score;
 
     if (score > this->topScore) {
@@ -38,11 +38,11 @@ void Statistics::addScore(std::size_t score) {
     }
 }
 
-void Statistics::addOrangePegsHit(std::size_t pegsHit) {
+void Statistics::addOrangePegsHit(const std::size_t pegsHit) {
     this->orangePegsHit += pegsHit;
 }
 
-void Statistics::addBallsShot(std::size_t ballsShot) {
+void Statistics::addBallsShot(const std::size_t ballsShot) {
     this->ballsShot += ballsShot;
 }
 

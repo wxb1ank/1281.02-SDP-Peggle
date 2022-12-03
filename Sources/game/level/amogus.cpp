@@ -1,11 +1,13 @@
-#include <menu.hpp>
+#include <game.hpp>
 
 #include <cassert>
 #include <cstdio>
 
-namespace menu {
+namespace game {
 
-static const char AMOGUSALIVE[]{
+/// \author Solomon Blair
+/// \author Will Blankemeyer
+static const std::string AMOGUSALIVE{
     "000000111111\n"
     "0000010000001\n"
     "00001000000001\n"
@@ -28,7 +30,9 @@ static const char AMOGUSALIVE[]{
     "000011100001110"
 };
 
-static const char AMOGUSDEAD[]{
+/// \author Solomon Blair
+/// \author Will Blankemeyer
+static const std::string AMOGUSDEAD{
     "\n"
     "\n"
     "\n"
@@ -55,15 +59,14 @@ Level Level::amogus()  {
     Level level{};
     level.name = "amogus";
 
-    int radius = 5;
-    int initialXPosition = 20;
-    int initialYPosition = 30;
-    level.pegRadius = radius;
+    const auto  initialXPosition = 20.f;
+    const auto  initialYPosition = 30.f;
+    level.pegRadius = 5.f;
 
-    drawPixelArt(radius, initialXPosition,initialYPosition,level,AMOGUSALIVE,sizeof(AMOGUSALIVE));
-    drawPixelArt(radius, initialXPosition + 160, initialYPosition, level, AMOGUSDEAD, sizeof(AMOGUSDEAD));
+    level.addPegBitmap(Position(initialXPosition, initialYPosition), AMOGUSALIVE);
+    level.addPegBitmap(Position(initialXPosition + 160, initialYPosition), AMOGUSDEAD);
 
     return level;
-};
+}
 
-} // namespace menu
+} // namespace game

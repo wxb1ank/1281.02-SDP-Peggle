@@ -6,9 +6,7 @@ repo_url=$3
 
 ping -c 1 -W 1000 google.com
 if [ "$$?" -eq 0 ]; then
-    if [ -d "${repo_dir}" ]; then
-        ${git} -C "${repo_dir}" pull origin main
-    else
+    if [ ! -d "${repo_dir}" ]; then
             ${git} clone ${repo_url}
     fi
 fi

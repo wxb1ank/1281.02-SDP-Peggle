@@ -34,10 +34,24 @@ public:
     /// \author Will Blankemeyer
     static constexpr std::size_t HEIGHT{14};
 
+    /// \brief The distance, in pixels, from the X coordinate of a character to the X coordinate of
+    /// its first colored pixel.
+    ///
+    /// \author Will Blankemeyer
     static constexpr std::size_t LEFT_MARGIN{2};
 
+    /// \brief The horizontal distance, in pixels, between characters in a single line.
+    ///
+    /// \author Will Blankemeyer
     static constexpr std::size_t HORI_PADDING{2};
+    /// \brief The vertical distance, in pixels, between lines.
+    ///
+    /// \author Will Blankemeyer
     static constexpr std::size_t VERT_PADDING{3};
 
+    /// \brief The width, in pixels, of a string rendered with the Proteus LCD font.
+    ///
+    /// \note This width *excludes* the left margin.
+    /// \author Will Blankemeyer
     static std::size_t getWidthOf(const std::string &s);
 };

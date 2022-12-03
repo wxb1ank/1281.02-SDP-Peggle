@@ -39,13 +39,16 @@ struct Vector {
     /// \brief The magnitude, or length, of this vector.
     ///
     /// \return The magnitude.
+    /// \note The return value is always non-negative (i.e. greater than or equal to zero).
     /// \author Will Blankemeyer
     float getMagnitude() const;
 };
 
 /// \brief A location in 2D space.
 ///
-/// In a user interface (UI), context, this type may also refer to a location on the screen.
+/// In a user interface (UI), context, this type may refer specifically to a location on the screen
+/// where the X component lies in `[Screen::MIN_X, Screen::MAX_X]` and the Y component lies in
+/// `[Screen::MIN_Y, Screen::MAX_Y]`.
 ///
 /// \author Will Blankemeyer
 struct Position : Vector {
@@ -72,6 +75,12 @@ struct Position : Vector {
 
     /// \brief Returns the angle from this position to the given position.
     ///
+    /// If the given position is directly below this position, then the returned angle is 0. If the
+    /// given position is to the right of this position, the returned angle is positive; otherwise,
+    /// if the given position is to the left of this position, the returned angle is negative. The
+    /// maximum returned angle of `M_PI` radians is achieved when the given position is directly
+    /// above this position.
+    ///
     /// \param[in]  pos The position to which angle is calculated.
     /// \return The angle, in radians.
     /// \author Will Blankemeyer
@@ -95,6 +104,11 @@ struct Acceleration : Vector {
 
     /// \brief The Y component of the acceleration caused by gravity on the world of Peggle.
     ///
+    /// \note
+    /// \parblock
+    /// This value is arbitrary. While it is defined as roughly equivalent to that of Earth in
+    /// meters per second per second, the units of gravity in the world of Peggle are *not* the
+    /// standard SI units of Earth.
     /// \author Will Blankemeyer
-    static constexpr float GRAVITY{1000.f};
+    static constexpr float GRAVITY{9.8f};
 };

@@ -46,6 +46,15 @@ public:
     /// \author Will Blankemeyer
     static constexpr std::size_t MAX_Y{Screen::HEIGHT - 1};
 
+    /// \author Will Blankemeyer
+    static constexpr std::size_t LEFT{Screen::MIN_X};
+    /// \author Will Blankemeyer
+    static constexpr std::size_t RIGHT{Screen::MAX_X};
+    /// \author Will Blankemeyer
+    static constexpr std::size_t TOP{Screen::MIN_Y};
+    /// \author Will Blankemeyer
+    static constexpr std::size_t BOTTOM{Screen::MAX_Y};
+
     /// \brief The position of the pixel in the top-left corner.
     ///
     /// \author Will Blankemeyer
@@ -87,6 +96,13 @@ public:
 
 /// \brief The color of a pixel.
 ///
+/// This type provides all CSS colors as static data members. With `Color::<name>.encode()`, they
+/// are a drop-in hygienic replacement for the color macros offered by `LCDColors.h`.
+///
+/// As is seen in the `getValue`, `getChroma`, and `getHue` methods, we were originally intending to
+/// use this type for more---ultimately, we wanted a `shiftHue` function that could be called in a
+/// loop to produce a rainbow effect---but unforunately, we didn't have enough time to implement it.
+///
 /// \author Will Blankemeyer
 struct Color {
     /// \author Will Blankemeyer
@@ -94,24 +110,48 @@ struct Color {
     /// \author Will Blankemeyer
     Color(unsigned char r, unsigned char g, unsigned char b);
 
+    /// \brief The red component.
+    ///
     /// \author Will Blankemeyer
     float r;
+    /// \brief The green component.
+    ///
     /// \author Will Blankemeyer
     float g;
+    /// \brief The blue component.
+    ///
     /// \author Will Blankemeyer
     float b;
 
+    /// \brief Returns this color encoded in RGB8 format.
+    ///
+    /// The result of this method may be passed directly to `LCD::SetFontColor` and
+    /// `LCD::SetBackgroundColor`.
+    ///
+    /// \return The RGB8 encoding of this color.
     /// \author Will Blankemeyer
     unsigned encode() const;
 
+    /// \brief The maximum component value.
+    ///
+    /// \return The value, or maximum component.
     /// \author Will Blankemeyer
     float getValue() const;
+    /// \brief The range in component values.
+    ///
+    /// \return The chroma, or range.
     /// \author Will Blankemeyer
     float getChroma() const;
+    /// \brief The hue.
+    ///
+    /// \return The hue.
     /// \author Will Blankemeyer
     float getHue() const;
 
 private:
+    /// \brief The minimum component value.
+    ///
+    /// \return The minimum component.
     /// \author Will Blankemeyer
     float getMinComp() const;
 
