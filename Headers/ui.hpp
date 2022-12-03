@@ -213,9 +213,9 @@ class Label : public View {
 public:
     /// \brief Creates a new label.
     ///
-    /// \param[in]  center          The initial position of the center of this label.
-    /// \param[in]  content         The initial textual content of this label.
-    /// \param[in]  fontColor       The initial font color.
+    /// \param[in]  center      The initial position of the center of this label.
+    /// \param[in]  content     The initial textual content of this label.
+    /// \param[in]  fontColor   The initial font color.
     /// \author Will Blankemeyer
     Label(
         Position center,
@@ -256,7 +256,6 @@ public:
     virtual float getHeight() const override;
     /// \author Will Blankemeyer
     virtual Position getCenter() const override;
-
     /// \author Will Blankemeyer
     virtual void draw() const override;
 
@@ -296,9 +295,9 @@ class MultilineLabel : public ui::View {
 public:
     /// \brief Creates a new multiline label.
     ///
-    /// \param[in]  center          The initial position of the center of this multiline label.
-    /// \param[in]  content         The initial textual content of this multiline label.
-    /// \param[in]  fontColor       The initial font color.
+    /// \param[in]  center      The initial position of the center of this multiline label.
+    /// \param[in]  content     The initial textual content of this multiline label.
+    /// \param[in]  fontColor   The initial font color.
     /// \author Will Blankemeyer
     MultilineLabel(
         Position center,
@@ -306,6 +305,8 @@ public:
         Color fontColor
     );
 
+    /// \brief Destroys this multiline label.
+    ///
     /// \author Will Blankemeyer
     virtual ~MultilineLabel();
 
@@ -315,7 +316,6 @@ public:
     virtual float getHeight() const override;
     /// \author Will Blankemeyer
     virtual Position getCenter() const override;
-
     /// \author Will Blankemeyer
     virtual void draw() const override;
 
@@ -338,17 +338,19 @@ public:
     /// The size of this button is determined by adding `DEFAULT_PADDING` to the size of the
     /// contained label.
     ///
-    /// \param[in]  label       The button label.
-    /// \param[in]  borderColor The border color.
+    /// \param[in]  label           The button label.
+    /// \param[in]  borderColor     The border color.
+    /// \param[in]  backgroundColor The background color.
     /// \author Will Blankemeyer
-    Button(Label label, Color borderColor);
+    Button(Label label, Color borderColor, Color backgroundColor);
     /// \brief Creates a new button.
     ///
-    /// \param[in]  label       The button label.
-    /// \param[in]  borderColor The border color.
-    /// \param[in]  size        The size of the button.
+    /// \param[in]  label           The button label.
+    /// \param[in]  borderColor     The border color.
+    /// \param[in]  backgroundColor The background color.
+    /// \param[in]  size            The size of the button.
     /// \author Will Blankemeyer
-    Button(Label label, Color borderColor, Size size);
+    Button(Label label, Color borderColor, Color backgroundColor, Size size);
 
     /// \brief Destroys this button.
     ///
@@ -361,6 +363,9 @@ public:
     /// \author Will Blankemeyer
     static constexpr float DEFAULT_PADDING{5.f};
 
+    /// \brief The radius, in pixels, of the rounded corners of this button.
+    ///
+    /// \author Will Blankemeyer
     static constexpr float BORDER_RADIUS{5.f};
 
     /// \brief A mutable reference to the contained label.
@@ -385,14 +390,16 @@ public:
     /// \author Will Blankemeyer
     const Color &getBorderColor() const;
 
+    /// \brief A mutable reference to the background color.
+    ///
+    /// \return The background color.
     /// \author Will Blankemeyer
-    virtual Size getSize() const override;
+    Color &getBackgroundColor();
+    /// \brief An immutable reference to the background color.
+    ///
+    /// \return The background color.
     /// \author Will Blankemeyer
-    virtual float getWidth() const override;
-    /// \author Will Blankemeyer
-    virtual float getHeight() const override;
-    /// \author Will Blankemeyer
-    virtual Position getCenter() const override;
+    const Color &getBackgroundColor() const;
 
     /// \brief Determines if this button is currently pressed.
     ///
@@ -400,9 +407,6 @@ public:
     /// \warning This method updates the LCD.
     /// \author Will Blankemeyer
     bool isPressed() const;
-
-    /// \author Will Blankemeyer
-    virtual void draw() const override;
 
     /// \brief Draws this button, in its unpressed state, to the screen.
     ///
@@ -415,14 +419,31 @@ public:
     /// \author Will Blankemeyer
     void drawPressed() const;
 
+    /// \brief Returns an extension of the given dimension by `DEFAULT_PADDING`.
+    ///
+    /// \param[in]  dim The dimension to pad (e.g., width, height).
+    /// \return The padded dimension.
     /// \author Will Blankemeyer
     static float pad(float dim);
+
+    /// \author Will Blankemeyer
+    virtual Size getSize() const override;
+    /// \author Will Blankemeyer
+    virtual float getWidth() const override;
+    /// \author Will Blankemeyer
+    virtual float getHeight() const override;
+    /// \author Will Blankemeyer
+    virtual Position getCenter() const override;
+    /// \author Will Blankemeyer
+    virtual void draw() const override;
 
 private:
     /// \author Will Blankemeyer
     Label label;
     /// \author Will Blankemeyer
     Color borderColor;
+    /// \author Will Blankemeyer
+    Color backgroundColor;
     /// \author Will Blankemeyer
     Size size;
 

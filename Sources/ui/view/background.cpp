@@ -15,6 +15,7 @@ const Color &BackgroundView::getColor() const {
 }
 
 void BackgroundView::draw() const {
+    // Maybe this is faster than drawing a filled rectangle?
     LCD.Clear(this->color.encode());
 }
 

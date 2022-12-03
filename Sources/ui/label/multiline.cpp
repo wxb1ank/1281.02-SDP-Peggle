@@ -3,7 +3,6 @@
 #include <FEHLCD.hpp>
 #include <font.hpp>
 
-#include <algorithm>
 #include <sstream>
 #include <utility>
 

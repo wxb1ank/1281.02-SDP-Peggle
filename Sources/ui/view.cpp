@@ -64,6 +64,8 @@ bool View::contains(const Position Pos) const {
         return false;
     }
 
+    // We have demonstrated that the given position cannot be outside this view, so it must be
+    // inside.
     return true;
 }
 
