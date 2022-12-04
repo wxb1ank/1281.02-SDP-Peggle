@@ -122,6 +122,7 @@ public:
     /// \author Will Blankemeyer
     StatsPage(float centerY);
 
+    /// \author Will Blankemeyer
     virtual void run(game::Statistics &stats) override;
 };
 
@@ -136,16 +137,21 @@ public:
     /// \author Will Blankemeyer
     TutorialPage(float centerY);
 
+    /// \author Will Blankemeyer
     virtual void run(game::Statistics &stats) override;
 };
 
+/// \author Will Blankemeyer
 class LevelPage : public Page {
 public:
+    /// \author Will Blankemeyer
     LevelPage(ui::Button runButton, game::Level level);
 
+    /// \author Will Blankemeyer
     virtual void run(game::Statistics &stats) final;
 
 private:
+    /// \author Will Blankemeyer
     game::Level level;
 };
 
@@ -154,6 +160,7 @@ private:
 /// \author Will Blankemeyer
 class Menu {
 public:
+    /// \author Will Blankemeyer
     Menu();
 
     /// \brief Destroys this menu.
@@ -161,6 +168,7 @@ public:
     /// \author Will Blankemeyer
     virtual ~Menu();
 
+    /// \author Will Blankemeyer
     [[noreturn]] void run(game::Statistics &stats);
 
     /// \brief Draws this menu and responds to input.
@@ -169,9 +177,12 @@ public:
     void step(game::Statistics &stats);
 
 protected:
+    /// \author Will Blankemeyer
     std::vector<std::unique_ptr<Page>> &getPages();
+    /// \author Will Blankemeyer
     const std::vector<std::unique_ptr<Page>> &getPages() const;
 
+    /// \author Will Blankemeyer
     virtual void drawBackground();
 
 private:
@@ -179,6 +190,7 @@ private:
     std::vector<std::unique_ptr<Page>> pages;
 };
 
+/// \author Will Blankemeyer
 class MainMenu final : public Menu {
 public:
     /// \brief Creates a new main menu.
@@ -186,9 +198,11 @@ public:
     /// \author Will Blankemeyer
     MainMenu();
 
+    /// \author Will Blankemeyer
     static ui::Button createRunButton(std::string name, float centerY, Color borderColor);
 
 protected:
+    /// \author Will Blankemeyer
     virtual void drawBackground() override;
 
 private:
@@ -198,6 +212,7 @@ private:
     ui::BackgroundView background;
 };
 
+/// \author Will Blankemeyer
 class LevelMenu final : public Menu {
 public:
     /// \brief Creates a new level menu.
@@ -206,6 +221,7 @@ public:
     LevelMenu(const ui::Button &backButton);
 
 protected:
+    /// \author Will Blankemeyer
     virtual void drawBackground() override;
 
 private:
@@ -220,11 +236,14 @@ private:
 /// \author Will Blankemeyer
 class LevelMenuPage final : public PageWithBackButton {
 public:
+    /// \author Will Blankemeyer
     LevelMenuPage(float centerY);
 
+    /// \author Will Blankemeyer
     virtual void run(game::Statistics &stats) override;
 
 protected:
+    /// \author Will Blankemeyer
     LevelMenu levelMenu;
 };
 
