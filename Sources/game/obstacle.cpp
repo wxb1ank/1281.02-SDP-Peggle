@@ -8,7 +8,7 @@ Obstacle::~Obstacle() {}
 
 Ceiling::Ceiling() {}
 
-void checkFlatCollisionWith(
+bool checkFlatCollisionWith(
     Velocity &vel,
     Position &pos,
     const bool condition,
@@ -18,11 +18,15 @@ void checkFlatCollisionWith(
     if (condition) {
         fixPos(pos);
         selectVelComp(vel) *= Obstacle::MOMENTUM_LOSS;
+
+        return true;
+    } else {
+        return false;
     }
 }
 
-void Ceiling::deflect(Velocity &vel, Position &pos, int guide) {
-    checkFlatCollisionWith(
+bool Ceiling::deflect(Velocity &vel, Position &pos) const {
+    return checkFlatCollisionWith(
         vel,
         pos,
         (pos.y - static_cast<float>(Ball::RADIUS)) < static_cast<float>(Screen::MIN_Y),
@@ -33,8 +37,8 @@ void Ceiling::deflect(Velocity &vel, Position &pos, int guide) {
 
 LeftWall::LeftWall() {}
 
-void LeftWall::deflect(Velocity &vel, Position &pos, int guide) {
-    checkFlatCollisionWith(
+bool LeftWall::deflect(Velocity &vel, Position &pos) const {
+    return checkFlatCollisionWith(
         vel,
         pos,
         (pos.x - static_cast<float>(Ball::RADIUS)) < static_cast<float>(Screen::MIN_X),
@@ -45,8 +49,8 @@ void LeftWall::deflect(Velocity &vel, Position &pos, int guide) {
 
 RightWall::RightWall() {}
 
-void RightWall::deflect(Velocity &vel, Position &pos, int guide) {
-    checkFlatCollisionWith(
+bool RightWall::deflect(Velocity &vel, Position &pos) const {
+    return checkFlatCollisionWith(
         vel,
         pos,
         (pos.x + static_cast<float>(Ball::RADIUS)) > static_cast<float>(Screen::MAX_X),
@@ -55,8 +59,8 @@ void RightWall::deflect(Velocity &vel, Position &pos, int guide) {
     );
 }
 
-Ceiling CEILING{};
-LeftWall LEFT_WALL{};
-RightWall RIGHT_WALL{};
+const Ceiling CEILING{};
+const LeftWall LEFT_WALL{};
+const RightWall RIGHT_WALL{};
 
 } // namespace game

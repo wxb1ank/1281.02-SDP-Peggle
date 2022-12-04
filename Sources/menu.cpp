@@ -16,7 +16,7 @@ const ui::Size BUTTON_SIZE{
 
 const Position TITLE_POSITION{
     static_cast<float>(Screen::CENTER_X),
-    static_cast<float>(Screen::MIN_Y + 25.f)
+    static_cast<float>(Screen::TOP + 25.f)
 };
 
 Menu::Menu() : pages{} {}
@@ -62,9 +62,6 @@ void Menu::step(game::Statistics &stats) {
         }
     }
 
-    // Flush our draw operations by rendering the LCD framebuffer.
-    LCD.Update();
-
     if (nextPage.has_value()) {
         const auto &runButton = (*nextPage)->getRunButton();
 
@@ -80,6 +77,9 @@ void Menu::step(game::Statistics &stats) {
 
         // The screen will be cleared when we draw the background in the next iteration of this
         // loop.
+    } else {
+        // Flush our draw operations by rendering the LCD framebuffer.
+        LCD.Update();
     }
 }
 

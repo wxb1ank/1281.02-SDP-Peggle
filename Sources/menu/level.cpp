@@ -10,8 +10,11 @@
 
 namespace menu {
 
-LevelMenu::LevelMenu()
-:   Menu(), title{TITLE_POSITION, "Level Select", Color::WHITE}, background{Color::BLACK}
+LevelMenu::LevelMenu(const ui::Button &backButton)
+:   Menu{},
+    title{TITLE_POSITION, "Level Select", Color::WHITE},
+    background{Color::BLACK},
+    backButton{backButton}
 {
     auto &pages = this->getPages();
     for (unsigned i = 0; i < game::Level::ALL.size(); i++) {
@@ -28,15 +31,20 @@ LevelMenu::LevelMenu()
         }
 
         pages.emplace_back(std::make_unique<LevelPage>(
-            name,
-            60.f + (20.f * static_cast<float>(i)),
+            MainMenu::createRunButton(
+                name,
+                60.f + (25.f * static_cast<float>(i)),
+                Color::BLUEVIOLET
+            ),
             level
         ));
     }
 }
 
 void LevelMenu::drawBackground() {
+    this->background.draw();
     this->title.draw();
+    this->backButton.drawUnpressed();
 }
 
 } // namespace menu

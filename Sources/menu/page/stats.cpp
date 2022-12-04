@@ -1,15 +1,15 @@
 #include <menu.hpp>
 
 #include <FEHLCD.hpp>
-#include <game.hpp>
 
 namespace menu {
 
 StatsPage::StatsPage(const float centerY)
-: PageWithBackButton{Page("Stats", centerY, Color::YELLOW), ui::BackgroundView(Color::BLACK)}
+:   PageWithBackButton{Page(MainMenu::createRunButton("Stats", centerY, Color::YELLOW))}
 {}
 
-StatsPage::StepResult StatsPage::step(game::Statistics &stats) {
+void StatsPage::run(game::Statistics &stats) {
+    ui::BackgroundView(Color::BLACK).draw();
     ui::MultilineLabel(TITLE_POSITION, "Lifetime\nStatistics", Color::SILVER).draw();
 
     const auto statLabels = ui::MultilineLabel(
@@ -30,7 +30,7 @@ StatsPage::StepResult StatsPage::step(game::Statistics &stats) {
     LCD.WriteAt(static_cast<int>(stats.getOrangePegsHit()), 250, 110);
     LCD.WriteAt(static_cast<int>(stats.getBallsShot()), 250, 130);
 
-    return StepResult::Continue;
+    while (!this->shouldReturnFromRun());
 }
 
 } // namespace menu

@@ -5,10 +5,11 @@
 namespace menu {
 
 CreditsPage::CreditsPage(const float centerY)
-:   PageWithBackButton{Page("Credits", centerY, Color::BLUE), ui::BackgroundView(Color::BLACK)}
+:   PageWithBackButton{Page(MainMenu::createRunButton("Credits", centerY, Color::BLUE))}
 {}
 
-CreditsPage::StepResult CreditsPage::step(game::Statistics &) {
+void CreditsPage::run(game::Statistics &) {
+    ui::BackgroundView(Color::BLACK).draw();
     ui::Label(TITLE_POSITION, "Credits", Color::SILVER).draw();
 
     const auto namesLabel = ui::MultilineLabel(
@@ -26,7 +27,7 @@ CreditsPage::StepResult CreditsPage::step(game::Statistics &) {
     )
     .draw();
 
-    return StepResult::Continue;
+    while (!this->shouldReturnFromRun());
 }
 
 } // namespace menu

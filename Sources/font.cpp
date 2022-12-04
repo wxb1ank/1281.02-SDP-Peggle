@@ -1,7 +1,5 @@
 #include <font.hpp>
 
-#include <string>
-
 std::size_t Font::getWidthOf(const std::string &s) {
     const auto length = s.length();
 

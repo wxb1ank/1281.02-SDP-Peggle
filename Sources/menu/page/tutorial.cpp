@@ -1,14 +1,13 @@
 #include <menu.hpp>
 
-#include <FEHLCD.hpp>
-
 namespace menu {
 
 TutorialPage::TutorialPage(const float centerY)
-:   PageWithBackButton{Page("How to Play", centerY, Color::GREEN), ui::BackgroundView(Color::BLACK)}
+:   PageWithBackButton{Page(MainMenu::createRunButton("How to Play", centerY, Color::GREEN))}
 {}
 
-TutorialPage::StepResult TutorialPage::step(game::Statistics &) {
+void TutorialPage::run(game::Statistics &) {
+    ui::BackgroundView(Color::BLACK).draw();
     ui::Label(TITLE_POSITION, "How to Play", Color::SILVER).draw();
 
     ui::MultilineLabel(
@@ -26,7 +25,7 @@ TutorialPage::StepResult TutorialPage::step(game::Statistics &) {
     )
     .draw();
 
-    return StepResult::Continue;
+    while (!this->shouldReturnFromRun());
 }
 
 } // namespace menu

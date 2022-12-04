@@ -342,21 +342,7 @@ public:
 
 private:
     /// \author Will Blankemeyer
-    enum class Direction {
-        /// \brief The bucket is moving leftward.
-        ///
-        /// \author Will Blankemeyer
-        Left,
-        /// \brief The bucket is moving rightward.
-        ///
-        /// \author Will Blankemeyer
-        Right,
-    };
-
-    /// \author Will Blankemeyer
     Position center;
-    /// \author Will Blankemeyer
-    Direction direction;
     /// \author Will Blankemeyer
     float animationProgress;
 };
@@ -367,6 +353,8 @@ private:
 class Peg final : public ui::View, public Obstacle
 {
     public:
+        enum class Color;
+
         /// \brief Creates a new peg.
         ///
         /// \param[in]  pos
@@ -374,7 +362,7 @@ class Peg final : public ui::View, public Obstacle
         /// \param[in]  color
         /// \author Solomon Blair
         /// \author Will Blankemeyer
-        Peg(Position pos, float radius, Color color);
+        Peg(Position pos, float radius, Peg::Color color);
 
         /// \brief The radius of this peg.
         ///
@@ -412,6 +400,7 @@ class Peg final : public ui::View, public Obstacle
         ///
         /// \author Will Blankemeyer
         void hit();
+        void obliterate();
 
         /// \brief The color of a peg.
         ///
@@ -437,7 +426,7 @@ class Peg final : public ui::View, public Obstacle
         /// \return The color.
         /// \author Solomon Blair
         /// \author Will Blankemeyer
-        Color getColor() const;
+        Peg::Color getColor() const;
 
         /// \author Will Blankemeyer
         virtual float getWidth() const override;
@@ -456,7 +445,9 @@ class Peg final : public ui::View, public Obstacle
         /// \author Solomon Blair
         float radius;
         /// \author Solomon Blair
-        Color color;
+        Status status;
+        /// \author Solomon Blair
+        Peg::Color color;
 };
 
 /// \brief Class represeting the whole board
@@ -464,7 +455,7 @@ class Peg final : public ui::View, public Obstacle
 /// This is essentially a wrapper over a vector of pegs.
 ///
 /// \author Solomon Blair
-class PegBoard
+class PegBoard : public ui::FullscreenView
 {
     public:
         /// \brief Creates an empty peg board.
@@ -490,6 +481,9 @@ class PegBoard
         /// \author Solomon Blair
         /// \author Will Blankemeyer
         const std::vector<Peg> &getPegs() const;
+
+        /// \author Solomon Blair
+        virtual void draw() const override;
 
     private:
         /// \author Solomon Blair
@@ -538,7 +532,7 @@ public:
     ///
     /// \author Solomon Blair
     /// \author Will Blankemeyer
-    Result play(Statistics &stats, PegBoard &board);
+    Result play(Statistics &stats, const Level &level);
 
 private:
     /// \author Will Blankemeyer

@@ -1,17 +1,14 @@
 #include <menu.hpp>
 
 #include <FEHLCD.hpp>
-#include <game.hpp>
 
 #include <FEHRandom.h>
 #include <FEHUtility.h>
 
-#include <algorithm>
-
 namespace menu {
 
-LevelPage::LevelPage(const std::string name, const float centerY, const game::Level level)
-:   Page{name, centerY, Color::RED}, level{level}
+LevelPage::LevelPage(const ui::Button runButton, const game::Level level)
+:   Page{runButton}, level{level}
 {}
 
 std::string getRandomWinMessage() {
@@ -21,6 +18,7 @@ std::string getRandomWinMessage() {
         case 1:
             return "Nice job!";
         case 2:
+        default:
             return "Way to go!";
     }
 }
@@ -31,32 +29,14 @@ std::string getRandomLoseMessage() {
             return "Bjorn looks down\nupon you...";
         case 1:
             return "Better luck next time.";
+        case 2:
         default:
             return "You've been peggled.";
     }
 }
 
 void LevelPage::run(game::Statistics &stats) {
-    auto pegsToPlace = this->level.pegPositions.size();
-    auto orangePegsToPlace = std::min(this->level.orangePegCount, pegsToPlace);
-
-    game::PegBoard board{};
-    for (auto pegPos : this->level.pegPositions) {
-        int color;
-
-        if((Random.RandInt()%pegsToPlace) * 1. / pegsToPlace < orangePegsToPlace * 1. / pegsToPlace)
-        {
-            color = 1;
-            orangePegsToPlace -= 1;
-        }
-        else{
-            color = 0;
-        }
-        board.push(game::Peg(pegPos.x, pegPos.y, this->level.pegRadius, color));
-        pegsToPlace -= 1;
-    }
-
-    const auto result = Game().run(stats, board);
+    const auto result = Game().play(stats, this->level);
     ui::BackgroundView(Color::BLUE).draw();
 
     switch (result) {

@@ -31,9 +31,9 @@ class Page {
 public:
     /// \brief Creates a new page.
     ///
-    /// \param[in]  runButton   The button in the menu that runs this page.
+    /// \param[in]  runButton   The button in a menu that runs this page.
     /// \author Will Blankemeyer
-    Page(std::string name, float centerY, Color borderColor);
+    Page(ui::Button runButton);
 
     /// \brief Destroys this page.
     ///
@@ -64,10 +64,9 @@ class PageWithBackButton : public Page {
 public:
     /// \brief Creates a new page with a back button.
     ///
-    /// \param[in]  page        The page.
-    /// \param[in]  background  The background view that is drawn behind the back button.
+    /// \param[in]  page    The page.
     /// \author Will Blankemeyer
-    PageWithBackButton(Page page, ui::BackgroundView background);
+    PageWithBackButton(Page page);
 
     /// \brief Destroys this page.
     ///
@@ -80,56 +79,19 @@ public:
     /// \author Will Blankemeyer
     const ui::Button &getBackButton() const;
 
-    /// \brief Draws this page and responds to input.
-    ///
-    /// \param[in]  stats   A mutable reference to global game statistics.
-    /// \author Will Blankemeyer
-    virtual void run(game::Statistics &stats) final;
-
 protected:
-    /// \brief The result of the `step` method.
+    /// \brief Determines if the `run` method should return, depending on the state of the run
+    /// button.
     ///
-    /// The value of this type dictates control flow in `run`.
-    ///
+    /// \return Whether or not the `run` method should return.
     /// \author Will Blankemeyer
-    enum class StepResult {
-        /// \brief The background and back button should be redrawn, after which the `step` method
-        /// should be called again.
-        ///
-        /// \author Will Blankemeyer
-        RedrawAndContinue,
-        /// \brief The `step` method should be called again without redrawing the background or back
-        /// button.
-        ///
-        /// \author Will Blankemeyer
-        Continue,
-        /// \brief The `run` method should return.
-        ///
-        /// \author Will Blankemeyer
-        Return,
-    };
-
-    /// \author Will Blankemeyer
-    virtual StepResult step(game::Statistics &stats);
-
-    /// \brief A mutable reference to the background view drawn behind the back button.
-    ///
-    /// \return The background view.
-    /// \author Will Blankemeyer
-    ui::BackgroundView &getBackground();
-    /// \brief An immutable reference to the background view drawn behind the back button.
-    ///
-    /// \return The background view.
-    /// \author Will Blankemeyer
-    const ui::BackgroundView &getBackground() const;
+    bool shouldReturnFromRun() const;
 
 private:
     /// \brief The button drawn on the page that returns control to the main menu.
     ///
     /// \author Will Blankemeyer
     ui::Button backButton;
-    /// \author Will Blankemeyer
-    ui::BackgroundView background;
 
     /// \author Will Blankemeyer
     void draw(std::function<void(const ui::Button *)>);
@@ -146,9 +108,7 @@ public:
     /// \author Will Blankemeyer
     CreditsPage(float centerY);
 
-protected:
-    /// \author Will Blankemeyer
-    virtual StepResult step(game::Statistics &stats);
+    virtual void run(game::Statistics &stats) override;
 };
 
 /// \brief A page that lists global game statistics.
@@ -162,9 +122,7 @@ public:
     /// \author Will Blankemeyer
     StatsPage(float centerY);
 
-protected:
-    /// \author Will Blankemeyer
-    virtual StepResult step(game::Statistics &stats) override;
+    virtual void run(game::Statistics &stats) override;
 };
 
 /// \brief A page that instructs new users how to play Peggle.
@@ -178,14 +136,12 @@ public:
     /// \author Will Blankemeyer
     TutorialPage(float centerY);
 
-protected:
-    /// \author Will Blankemeyer
-    virtual StepResult step(game::Statistics &stats);
+    virtual void run(game::Statistics &stats) override;
 };
 
 class LevelPage : public Page {
 public:
-    LevelPage(std::string name, float centerY, game::Level level);
+    LevelPage(ui::Button runButton, game::Level level);
 
     virtual void run(game::Statistics &stats) final;
 
@@ -230,6 +186,8 @@ public:
     /// \author Will Blankemeyer
     MainMenu();
 
+    static ui::Button createRunButton(std::string name, float centerY, Color borderColor);
+
 protected:
     virtual void drawBackground() override;
 
@@ -245,9 +203,11 @@ public:
     /// \brief Creates a new level menu.
     ///
     /// \author Will Blankemeyer
-    LevelMenu();
+    LevelMenu(const ui::Button &backButton);
 
 protected:
+    static ui::Button createRunButton(std::size_t rank);
+
     virtual void drawBackground() override;
 
 private:
@@ -255,6 +215,8 @@ private:
     ui::Label title;
     /// \author Will Blankemeyer
     ui::BackgroundView background;
+    /// \author Will Blankemeyer
+    const ui::Button &backButton;
 };
 
 /// \author Will Blankemeyer
@@ -262,9 +224,7 @@ class LevelMenuPage final : public PageWithBackButton {
 public:
     LevelMenuPage(float centerY);
 
-protected:
-    /// \author Will Blankemeyer
-    virtual StepResult step(game::Statistics &stats);
+    virtual void run(game::Statistics &stats) override;
 
 protected:
     LevelMenu levelMenu;

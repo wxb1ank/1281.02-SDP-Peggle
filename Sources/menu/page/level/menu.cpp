@@ -3,13 +3,17 @@
 namespace menu {
 
 LevelMenuPage::LevelMenuPage(const float centerY)
-:   PageWithBackButton{Page("Play", centerY, Color::RED), Color::BLACK}, levelMenu{}
+:   PageWithBackButton{Page(MainMenu::createRunButton("Play", centerY, Color::RED))},
+    levelMenu{this->getBackButton()}
 {}
 
-LevelMenuPage::StepResult LevelMenuPage::step(game::Statistics &stats) {
-    this->levelMenu.step(stats);
-
-    return StepResult::RedrawAndContinue;
+void LevelMenuPage::run(game::Statistics &stats) {
+    while (true) {
+        this->levelMenu.step(stats);
+        if (this->shouldReturnFromRun()) {
+            break;
+        }
+    }
 }
 
 } // namespace menu

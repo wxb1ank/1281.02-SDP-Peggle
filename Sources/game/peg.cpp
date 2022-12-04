@@ -4,82 +4,129 @@
 
 #include <FEHLCD.hpp>
 
-#include <LCDColors.h>
-
 #include <cmath>
 
 namespace game {
 
 // Constructor for Peg class
-Peg::Peg(int x_pos, int y_pos, float radius, int colorOfPeg)
-{
-    x_position = x_pos;
-    y_position = y_pos;
-    peg_radius = radius;
-    active = 1;
-    color = colorOfPeg; // 0 for blue : 1 for orange
-}
+Peg::Peg(const Position center, float radius, const Peg::Color color)
+:   center{center}, radius{radius}, color{color}
+{}
 
 // returns color of peg
-int Peg::getColor() const
+Peg::Color Peg::getColor() const
 {
     return color;
-}
-// Returns x position of peg
-int Peg::getX() const
-{
-    return x_position;
-}
-
-// Returns y position of peg
-int Peg::getY() const
-{
-    return y_position;
 }
 
 // Returns radius of peg
 float Peg::getRadius() const
 {
-    return peg_radius;
+    return radius;
 }
 
 // Returns whther peg is active(1) or inactive(0)
-int Peg::getStatus() const
+Peg::Status Peg::getStatus() const
 {
-    return active;
+    return status;
 }
 
-void Peg::setStatus(int status)
-{
-    this->active = status;
+void Peg::hit() {
+    if (this->status == Status::Unlit) {
+        this->status = Status::Lit;
+    }
 }
 
-void Peg::deflect(Velocity &vel, Position &pos, int guide) {
-    if(this->getStatus() != 0)
+void Peg::obliterate() {
+    this->status = Status::Obliterated;
+}
+
+float Peg::getWidth() const {
+    return 2.f * this->radius;
+}
+
+float Peg::getHeight() const {
+    return 2.f * this->radius;
+}
+
+Position Peg::getCenter() const {
+    return this->center;
+}
+
+bool Peg::deflect(Velocity &vel, Position &pos) const {
+    if (this->status == Status::Obliterated)
     {
-        float xDistance = pos.x - x_position;
-        float yDistance = pos.y - y_position;
+        return false;
+    }
+    else
+    {
+        float xDistance = pos.x - this->center.x;
+        float yDistance = pos.y - this->center.y;
         float distance = std::hypot(xDistance, yDistance);
-    if(distance <= static_cast<float>(peg_radius + Ball::RADIUS))
+
+        if(distance <= (this->radius + static_cast<float>(Ball::RADIUS)))
         {
             float collisionAngle = atan(yDistance/xDistance);
             if(xDistance >= 0)
             {
                 collisionAngle += M_PI;
             }
-            float velMag = Obstacle::MOMENTUM_LOSS * vel.getMagnitude();
+            const auto velMag = Obstacle::MOMENTUM_LOSS * vel.getMagnitude();
             vel.x = velMag * cos(collisionAngle);
             vel.y = velMag * sin(collisionAngle);
-            if(guide == 0)
-            {
-                this->setStatus(2);
-            }
-
         }
-    }
 
+        return true;
+    }
 }
 
+void Peg::draw() const {
+    const auto x = static_cast<int>(this->center.x);
+    const auto y = static_cast<int>(this->center.y);
+    const auto radius = static_cast<int>(this->radius);
+
+    switch (this->color) {
+        case Peg::Color::Blue:
+            switch (this->status) {
+                case Status::Unlit:
+                    LCD.SetFontColor(::Color::NAVY.encode());
+                    LCD.FillCircle(x, y,radius);
+                    LCD.SetFontColor(::Color::LIGHTSTEELBLUE.encode());
+                    LCD.FillCircle(x - 1, y - 1, 1);
+                    LCD.SetFontColor(::Color::ROYALBLUE.encode());
+                    LCD.DrawCircle(x, y,radius);
+                    break;
+                case Status::Lit:
+                    LCD.SetFontColor(::Color::DEEPSKYBLUE.encode());
+                    LCD.FillCircle(x, y,radius);
+                    LCD.SetFontColor(::Color::DODGERBLUE.encode());
+                    LCD.DrawCircle(x, y,radius);
+                case Status::Obliterated:
+                    break;
+            }
+            break;
+        case Peg::Color::Orange:
+            switch (this->status) {
+                case Status::Unlit:
+                    LCD.SetFontColor(::Color::BROWN.encode());
+                    LCD.FillCircle(x, y,radius);
+                    LCD.SetFontColor(::Color::WHITESMOKE.encode());
+                    LCD.FillCircle(x - 1, y - 1, 1);
+                    LCD.SetFontColor(::Color::PERU.encode());
+                    LCD.DrawCircle(x, y,radius);
+                    break;
+                case Status::Lit:
+                    LCD.SetFontColor(::Color::ORANGE.encode());
+                    LCD.FillCircle(x, y,radius);
+                    LCD.SetFontColor(::Color::DARKORANGE.encode());
+                    LCD.DrawCircle(x, y,radius);
+                    break;
+                case Status::Obliterated:
+                    break;
+            }
+            break;
+    }
+}
 
 // PegBoard class functions
 
@@ -91,55 +138,12 @@ void PegBoard::push(const Peg peg) {
 }
 
 // Draws every peg in the PegBoard class
-void PegBoard::drawPegs() const
+void PegBoard::draw() const
 {
     for(auto &peg : pegs)
     {
-        if(peg.getColor() == 0)
-        {
-            if(peg.getStatus() == 1)
-            {
-                LCD.SetFontColor(NAVY);
-                LCD.FillCircle(peg.getX(), peg.getY(),peg.getRadius());
-                LCD.SetFontColor(LIGHTSTEELBLUE);
-                LCD.FillCircle(peg.getX() - 1, peg.getY() - 1, 1);
-                LCD.SetFontColor(ROYALBLUE);
-                LCD.DrawCircle(peg.getX(), peg.getY(),peg.getRadius());
-            }
-            else if(peg.getStatus() == 2)
-            {
-                LCD.SetFontColor(DEEPSKYBLUE);
-                LCD.FillCircle(peg.getX(), peg.getY(),peg.getRadius());
-                LCD.SetFontColor(DODGERBLUE);
-                LCD.DrawCircle(peg.getX(), peg.getY(),peg.getRadius());
-            }
-        }
-        else if(peg.getColor() == 1)
-        {
-            if(peg.getStatus() == 1)
-            {
-                LCD.SetFontColor(BROWN);
-                LCD.FillCircle(peg.getX(), peg.getY(),peg.getRadius());
-                LCD.SetFontColor(WHITESMOKE);
-                LCD.FillCircle(peg.getX() - 1, peg.getY() - 1, 1);
-                LCD.SetFontColor(PERU);
-                LCD.DrawCircle(peg.getX(), peg.getY(),peg.getRadius());
-            }
-            else if(peg.getStatus() == 2)
-            {
-                LCD.SetFontColor(ORANGE);
-                LCD.FillCircle(peg.getX(), peg.getY(),peg.getRadius());
-                LCD.SetFontColor(DARKORANGE);
-                LCD.DrawCircle(peg.getX(), peg.getY(),peg.getRadius());
-            }
-        }
-
+        peg.draw();
     }
-}
-
-int PegBoard::getNum() const
-{
-    return pegs.size();
 }
 
 std::vector<Peg> &PegBoard::getPegs() {

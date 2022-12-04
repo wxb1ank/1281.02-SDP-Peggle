@@ -332,13 +332,13 @@ static void fixBorderCircles(
 
     // Draw the horizontal bar.
     fillRectangle(
-        Position(left, top + Button::BORDER_RADIUS),
-        Size(width, getStraightDim(height))
+        Position(left + 1.f, top + Button::BORDER_RADIUS),
+        Size(width - 1.f, getStraightDim(height))
     );
     // Draw the vertical bar.
     fillRectangle(
-        Position(left + Button::BORDER_RADIUS, top),
-        Size(getStraightDim(width), height)
+        Position(left + Button::BORDER_RADIUS, top + 1.f),
+        Size(getStraightDim(width), height - 1.f)
     );
 }
 
@@ -380,8 +380,7 @@ void Button::fillBorder() const {
     // We don't use the background color at all, so we can set the font color to be the border color
     // and be done with that.
     LCD.SetFontColor(this->borderColor.encode());
-    // We can start by filling the border circles with the border color. We don't need to draw the
-    // straight sides because `fixBorderCircles` will do that for us.
+    drawBorderLines(left, right, top, bottom);
     drawBorderCircles(std::bind(&FEHLCD::FillCircle, &LCD, _1, _2, _3), left, right, top, bottom);
     // Finally, we fill in the body of the button with the border color.
     fixBorderCircles(left, right, top, bottom);

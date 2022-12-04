@@ -112,7 +112,7 @@ void Ball::tickY(Velocity &vel, Position &pos) {
     pos.y += vel.y * Ball::TICK_DURATION;
 }
 
-void Ball::drawGuide(std::vector<Peg> &pegs) const {
+void Ball::drawGuide(const std::vector<Peg> &pegs) const {
     auto pos = this->pos;
     auto vel = this->vel;
 
@@ -126,11 +126,13 @@ void Ball::drawGuide(std::vector<Peg> &pegs) const {
         LCD.SetFontColor(Color::LIGHTBLUE.encode());
         LCD.DrawPixel(static_cast<int>(pos.x), static_cast<int>(pos.y));
 
-        CEILING.deflect(vel, pos, 1);
-        LEFT_WALL.deflect(vel, pos, 1);
-        RIGHT_WALL.deflect(vel, pos, 1);
+        CEILING.deflect(vel, pos);
+        LEFT_WALL.deflect(vel, pos);
+        RIGHT_WALL.deflect(vel, pos);
         for (auto &peg : pegs) {
-            peg.deflect(vel, pos, 1);
+            if (peg.deflect(vel, pos)) {
+                break;
+            }
         }
     }
 }

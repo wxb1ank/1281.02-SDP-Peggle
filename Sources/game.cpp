@@ -5,6 +5,7 @@
 #include <FEHLCD.hpp>
 #include <FEHRandom.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
@@ -13,14 +14,35 @@ namespace game {
 
 Game::Game() : background{Color::BLACK}, bucket{} {}
 
-Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
+Game::Result Game::play(game::Statistics &stats, const Level &level) {
+    auto pegsToPlace = level.pegPositions.size();
+
+    const auto totalOrangePegs = std::min(level.orangePegCount, pegsToPlace);
+    auto orangePegsToPlace = totalOrangePegs;
+
+    PegBoard board{};
+    for (auto pegPos : level.pegPositions) {
+        Peg::Color color;
+
+        if((Random.RandInt()%pegsToPlace) * 1. / pegsToPlace < orangePegsToPlace * 1. / pegsToPlace)
+        {
+            color = Peg::Color::Orange;
+            orangePegsToPlace -= 1;
+        }
+        else{
+            color = Peg::Color::Blue;
+        }
+        board.push(Peg(pegPos, level.pegRadius, color));
+        pegsToPlace -= 1;
+    }
+
     std::size_t orangePegsHit = 0;
     std::size_t ballsRemaining = 10;
     std::size_t score = 0;
 
-    while ((ballsRemaining > 0) && (orangePegsHit != 25)) {
+    while ((ballsRemaining > 0) && (orangePegsHit != totalOrangePegs)) {
         this->background.draw();
-        board.drawPegs();
+        board.draw();
         this->bucket.draw();
         this->bucket.tick();
         LCD.SetFontColor(Color::WHITE.encode());
@@ -32,7 +54,7 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
         Position target;
         while (!LCD.Touch(&target.x, &target.y)) {
             this->background.draw();
-            board.drawPegs();
+            board.draw();
             this->bucket.draw();
             this->bucket.tick();
             LCD.SetFontColor(Color::WHITE.encode());
@@ -43,7 +65,7 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
             ball.shootAt(target);
 
             this->background.draw();
-            board.drawPegs();
+            board.draw();
             this->bucket.draw();
             this->bucket.tick();
             LCD.SetFontColor(Color::WHITE.encode());
@@ -59,7 +81,7 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
         // Updates the position of the ball after each tick based on the balls velocity and gravity
         while (ball.isOnScreen()) {
             this->background.draw();
-            board.drawPegs();
+            board.draw();
             this->bucket.tick();
             LCD.SetFontColor(Color::WHITE.encode());
             LCD.WriteAt(static_cast<int>(ballsRemaining), 15, 15);
@@ -72,7 +94,7 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
             for(auto &peg : board.getPegs())
             {
                 if (peg.deflect(ball.getVel(), ball.getPos())) {
-                    peg.setStatus(2);
+                    peg.hit();
                     break;
                 }
             }
@@ -88,31 +110,31 @@ Game::Result Game::run(game::Statistics &stats, PegBoard &board) {
 
         for(auto &peg : board.getPegs())
         {
-            if(peg.getStatus() == 2)
+            if(peg.getStatus() == Peg::Status::Lit)
             {
                 switch (peg.getColor()) {
-                    case 0:
+                    case Peg::Color::Blue:
                         score += 1;
                         break;
-                    default:
+                    case Peg::Color::Orange:
                         orangePegsHit += 1;
                         score += 2;
                         break;
                 }
-                peg.setStatus(0);
+                peg.obliterate();
             }
         }
         LCD.Update();
     }
 
-    if (orangePegsHit == 25) {
+    if (orangePegsHit == totalOrangePegs) {
         score += 100;
     }
 
     stats.addOrangePegsHit(orangePegsHit);
     stats.addScore(score);
 
-    if (orangePegsHit == 25) {
+    if (orangePegsHit == totalOrangePegs) {
         stats.addWin();
         return Result::Win;
     } else {
