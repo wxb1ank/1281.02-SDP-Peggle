@@ -206,8 +206,6 @@ public:
     LevelMenu(const ui::Button &backButton);
 
 protected:
-    static ui::Button createRunButton(std::size_t rank);
-
     virtual void drawBackground() override;
 
 private:

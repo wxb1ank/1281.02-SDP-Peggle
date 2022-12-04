@@ -8,7 +8,7 @@ Obstacle::~Obstacle() {}
 
 Ceiling::Ceiling() {}
 
-bool checkFlatCollisionWith(
+static bool checkFlatCollisionWith(
     Velocity &vel,
     Position &pos,
     const bool condition,

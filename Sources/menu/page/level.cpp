@@ -11,7 +11,7 @@ LevelPage::LevelPage(const ui::Button runButton, const game::Level level)
 :   Page{runButton}, level{level}
 {}
 
-std::string getRandomWinMessage() {
+static std::string getRandomWinMessage() {
     switch (Random.RandInt() % 3) {
         case 0:
             return "Congratulations, you win!";
@@ -23,7 +23,7 @@ std::string getRandomWinMessage() {
     }
 }
 
-std::string getRandomLoseMessage() {
+static std::string getRandomLoseMessage() {
     switch (Random.RandInt() % 3) {
         case 0:
             return "Bjorn looks down\nupon you...";
