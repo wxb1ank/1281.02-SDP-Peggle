@@ -10,7 +10,7 @@ namespace game {
 
 // Constructor for Peg class
 Peg::Peg(const Position center, float radius, const Peg::Color color)
-:   center{center}, radius{radius}, color{color}
+:   center{center}, radius{radius}, color{color}, status{Status::Unlit}
 {}
 
 // returns color of peg
@@ -74,9 +74,11 @@ bool Peg::deflect(Velocity &vel, Position &pos) const {
             const auto velMag = Obstacle::MOMENTUM_LOSS * vel.getMagnitude();
             vel.x = velMag * cos(collisionAngle);
             vel.y = velMag * sin(collisionAngle);
-        }
 
-        return true;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

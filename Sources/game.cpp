@@ -40,7 +40,7 @@ Game::Result Game::play(game::Statistics &stats, const Level &level) {
     std::size_t ballsRemaining = 10;
     std::size_t score = 0;
 
-    while ((ballsRemaining > 0) && (orangePegsHit != totalOrangePegs)) {
+    while ((ballsRemaining > 0) && (orangePegsHit < totalOrangePegs)) {
         this->background.draw();
         board.draw();
         this->bucket.draw();
