@@ -3,20 +3,24 @@
 #include <FEHLCD.hpp>
 
 #include <cmath>
-#include <cstdio>
 
 namespace game {
 
 Ball::Ball() : pos{Screen::CENTER_X, Screen::MIN_Y + Ball::RADIUS + 5}, vel{} {}
 
 void Ball::shootAt(const Position target) {
+    // (Although the angle check will catch this as well, comparing Y coordinates is faster than
+    // computing the angle.)
     if (target.y <= this->pos.y) {
         // Uh oh! If our Y velocity points downward, and gravity points downward, then there's no
         // way we could shoot to a point above the ball!
         return;
     }
 
-    if (this->pos.getAngleTo(target) >= 1.35) {
+    // We can't let the player shoot *too* high, because the X velocity necessary to compensate for
+    // the low Y velocity would cause the ball to violently dart across the screen and probably
+    // break everything.
+    if (this->pos.getAngleTo(target) >= Ball::MAX_SHOOT_ANGLE) {
         return;
     }
 
@@ -71,11 +75,7 @@ bool Ball::isOnScreen() const {
     return this->getBottomY() <= static_cast<float>(Screen::MAX_Y);
 }
 
-float Ball::getWidth() const {
-    return static_cast<float>(Ball::RADIUS);
-}
-
-float Ball::getHeight() const {
+float Ball::getRadius() const {
     return static_cast<float>(Ball::RADIUS);
 }
 
@@ -116,7 +116,7 @@ void Ball::drawGuide(const std::vector<Peg> &pegs) const {
     auto pos = this->pos;
     auto vel = this->vel;
 
-    for (int i = 0; i < Ball::GUIDE_LENGTH; i++) {
+    for (std::size_t i = 0; i < Ball::GUIDE_LENGTH; i++) {
         Ball::tick(vel, pos);
 
         if (pos.y > static_cast<float>(Screen::MAX_Y)) {

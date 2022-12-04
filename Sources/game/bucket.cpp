@@ -30,14 +30,14 @@ void Bucket::tick() {
     //         = x_0 + A cos(t) dt
     //
     // ...where A = 160 - (WIDTH / 2)
-
     this->center.x += ((static_cast<float>(Screen::WIDTH) / 2.f) - (Bucket::SIZE.width / 2.f)) *
                       std::cos(this->animationProgress) *
                       DIFFERENTIAL;
     this->animationProgress += DIFFERENTIAL;
 
-    if (this->animationProgress >= (2.f * M_PI)) {
-        this->animationProgress -= (2.f * M_PI);
+    const auto tau = 2.f * static_cast<float>(M_PI);
+    if (this->animationProgress >= tau) {
+        this->animationProgress -= tau;
     }
 }
 
@@ -60,14 +60,22 @@ Position Bucket::getCenter() const {
 void Bucket::draw() const {
     LCD.SetFontColor(Color::SILVER.encode());
     LCD.FillRectangle(
-        this->getLeftX() + Ball::RADIUS,
-        this->getTopY(),
-        Bucket::SIZE.width - (2.f * Ball::RADIUS),
-        Bucket::SIZE.height
+        static_cast<int>(this->getLeftX() + static_cast<float>(Ball::RADIUS)),
+        static_cast<int>(this->getTopY()),
+        static_cast<int>(Bucket::SIZE.width - (2.f * Ball::RADIUS)),
+        static_cast<int>(Bucket::SIZE.height)
     );
     LCD.SetFontColor(Color::BLACK.encode());
-    LCD.FillCircle(this->getLeftX() + Ball::RADIUS, this->getTopY() + Ball::RADIUS, Ball::RADIUS);
-    LCD.FillCircle(this->getRightX() - Ball::RADIUS, this->getTopY() + Ball::RADIUS, Ball::RADIUS);
+    LCD.FillCircle(
+        static_cast<int>(this->getLeftX() + static_cast<float>(Ball::RADIUS)),
+        static_cast<int>(this->getTopY() + static_cast<float>(Ball::RADIUS)),
+        static_cast<int>(Ball::RADIUS)
+    );
+    LCD.FillCircle(
+        static_cast<int>(this->getRightX() - static_cast<float>(Ball::RADIUS)),
+        static_cast<int>(this->getTopY() + static_cast<float>(Ball::RADIUS)),
+        static_cast<int>(Ball::RADIUS)
+    );
 }
 
 const ui::Size Bucket::SIZE{60.f + (2.f * Ball::RADIUS), 2.f * Ball::RADIUS};

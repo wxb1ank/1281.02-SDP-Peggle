@@ -92,7 +92,7 @@ private:
 ///
 /// \author Solomon Blair
 /// \author Will Blankemeyer
-class Ball final : public ui::View {
+class Ball final : public ui::CircleView {
 public:
     /// \brief Creates a new Peggle ball in the top-center of the screen.
     ///
@@ -112,6 +112,12 @@ public:
     /// \author Solomon Blair
     /// \author Will Blankemeyer
     static constexpr float SHOOT_Y_VEL{4.f * Acceleration::GRAVITY};
+    /// \brief The maximum angle, in radians, that a ball can be shot at.
+    ///
+    /// `pi/2` radians corresponds to shooting horizontal.
+    ///
+    /// \author Will Blankemeyer
+    static constexpr float MAX_SHOOT_ANGLE{1.35f};
 
     /// \brief Adjusts the velocity of this ball such that it will hit the given target after some
     /// period of time.
@@ -186,9 +192,7 @@ public:
     void drawGuide(const std::vector<Peg> &pegs) const;
 
     /// \author Will Blankemeyer
-    virtual float getWidth() const override;
-    /// \author Will Blankemeyer
-    virtual float getHeight() const override;
+    virtual float getRadius() const override;
     /// \author Will Blankemeyer
     virtual Position getCenter() const override;
     /// \author Will Blankemeyer
@@ -350,7 +354,7 @@ private:
 /// \brief Class representing a peg
 ///
 /// \author Solomon Blair
-class Peg final : public ui::View, public Obstacle
+class Peg final : public ui::CircleView, public Obstacle
 {
     public:
         enum class Color;
@@ -363,12 +367,6 @@ class Peg final : public ui::View, public Obstacle
         /// \author Solomon Blair
         /// \author Will Blankemeyer
         Peg(Position pos, float radius, Peg::Color color);
-
-        /// \brief The radius of this peg.
-        ///
-        /// \return The radius.
-        /// \author Solomon Blair
-        float getRadius() const;
 
         /// \brief The state of a peg.
         ///
@@ -400,6 +398,9 @@ class Peg final : public ui::View, public Obstacle
         ///
         /// \author Will Blankemeyer
         void hit();
+        /// \brief Sets the status of this peg to `Status::Obliterate`.
+        ///
+        /// \author Will Blankemeyer
         void obliterate();
 
         /// \brief The color of a peg.
@@ -428,10 +429,8 @@ class Peg final : public ui::View, public Obstacle
         /// \author Will Blankemeyer
         Peg::Color getColor() const;
 
-        /// \author Will Blankemeyer
-        virtual float getWidth() const override;
-        /// \author Will Blankemeyer
-        virtual float getHeight() const override;
+        /// \author Solomon Blair
+        virtual float getRadius() const override;
         /// \author Will Blankemeyer
         virtual Position getCenter() const override;
         /// \author Will Blankemeyer
@@ -491,31 +490,107 @@ class PegBoard : public ui::FullscreenView
         std::vector<Peg> pegs;
 };
 
+/// \brief A level of Peggle.
+///
+/// \author Will Blankemeyer
 struct Level {
+    /// \brief The name of this level.
+    ///
+    /// This value is only used for initializing the content of the run button label on the
+    /// corresponding level page. If this value is unset, then the label content is initialized with
+    /// this level's rank (e.g. 1 for the first level, 2 for the second level).
+    ///
+    /// \author Will Blankemeyer
     std::optional<std::string> name{};
+    /// \brief The radius of all pegs in this level.
+    ///
+    /// \note The radii of individual pegs cannot be set.
+    /// \author Will Blankemeyer
     float pegRadius{3.f};
+    /// \brief The number of orange pegs to generate in this level.
+    ///
+    /// If the length of `pegPositions` is less than this number, then all pegs will be orange.
+    ///
+    /// \note A standard Peggle level contains 25 orange pegs.
+    /// \author Will Blankemeyer
     std::size_t orangePegCount{25};
+    /// \brief The positions of all pegs in this level.
+    ///
+    /// \note Peg positions are unfortunately static; pegs cannot move while a level is being
+    /// played.
+    /// \author Will Blankemeyer
     std::vector<Position> pegPositions{};
 
-    void addPegBitmap(Position pos, const std::string &bitmap);
+    /// \brief Inserts new peg positions according to the given bitmap.
+    ///
+    /// The bitmap is encoded as a sequence of lines, delimited by a single line feed character,
+    /// each consisting of a sequence of characters of either `0` or `1`. Each `1` corresponds to a
+    /// peg whereas each `0` is the absence of a peg.
+    ///
+    /// \param[in]  topLeft The position of the top-left corner of the bitmap.
+    /// \param[in]  bitmap  The bitmap.
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
+    void addPegBitmap(Position topLeft, const std::string &bitmap);
 
+    /// \brief All levels, in chronological order.
+    ///
+    /// \author Will Blankemeyer
     static const std::array<Level, 7> ALL;
 
+    /// \brief The first level.
+    ///
+    /// This is based on the first level in Peggle Deluxe.
+    ///
+    /// \return Level one.
+    /// \author Solomon Blair
     static Level one();
+    /// \brief The second level.
+    ///
+    /// \return Level two.
+    /// \author Solomon Blair
     static Level two();
+    /// \brief The third level.
+    ///
+    /// \return Level three.
+    /// \author Solomon Blair
     static Level three();
+    /// \brief The fourth level.
+    ///
+    /// \return Level four.
+    /// \author Solomon Blair
     static Level four();
+    /// \brief The fifth level.
+    ///
+    /// \return Level five.
+    /// \author Solomon Blair
     static Level five();
+    /// \brief The sixth level.
+    ///
+    /// \return Level six.
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
     static Level six();
+    /// \brief The seventh and final level.
+    ///
+    /// \return Level seven.
+    /// \author Solomon Blair
+    /// \author Will Blankemeyer
     static Level amogus();
 };
 
+/// \brief That which can play a level.
+///
 /// \author Will Blankemeyer
 class Game {
 public:
+    /// \brief Creates a new game.
+    ///
     /// \author Will Blankemeyer
     Game();
 
+    /// \brief The result of `play`.
+    ///
     /// \author Will Blankemeyer
     enum class Result {
         /// \brief The player won the game. Congratulations!
@@ -528,8 +603,12 @@ public:
         Loss,
     };
 
+    /// \brief Plays the given level, returning when either all balls have been expended or all
+    /// orange pegs have been hit.
     ///
-    ///
+    /// \param[inout]   stats   Lifetime statistics.
+    /// \param[in]      level   The level to play.
+    /// \return The result of the game.
     /// \author Solomon Blair
     /// \author Will Blankemeyer
     Result play(Statistics &stats, const Level &level);

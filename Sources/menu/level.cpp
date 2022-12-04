@@ -5,7 +5,6 @@
 
 #include <array>
 #include <optional>
-#include <sstream>
 #include <utility>
 
 namespace menu {
@@ -17,17 +16,14 @@ LevelMenu::LevelMenu(const ui::Button &backButton)
     backButton{backButton}
 {
     auto &pages = this->getPages();
-    for (unsigned i = 0; i < game::Level::ALL.size(); i++) {
+    for (std::size_t i = 0; i < game::Level::ALL.size(); i++) {
         const auto &level = game::Level::ALL.at(i);
 
         std::string name;
         if (level.name.has_value()) {
             name = *level.name;
         } else {
-            std::stringstream stream{};
-            stream << 1 + i;
-
-            name = stream.str();
+            name = std::to_string(1 + i);
         }
 
         pages.emplace_back(std::make_unique<LevelPage>(

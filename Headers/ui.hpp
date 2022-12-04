@@ -206,6 +206,33 @@ private:
     Color color;
 };
 
+/// \brief A view with circular content.
+///
+/// \author Will Blankemeyer
+class CircleView : public View {
+public:
+    /// \brief Destroys this circle view.
+    ///
+    /// \author Will Blankemeyer
+    virtual ~CircleView();
+
+    /// \brief The diameter of this view.
+    ///
+    /// \return The diameter.
+    /// \author Will Blankemeyer
+    virtual float getDiameter() const;
+    /// \brief The radius of this view.
+    ///
+    /// \return The radius.
+    /// \author Will Blankemeyer
+    virtual float getRadius() const = 0;
+
+    /// \author Will Blankemeyer
+    virtual float getWidth() const final;
+    /// \author Will Blankemeyer
+    virtual float getHeight() const final;
+};
+
 /// \brief A single line of text.
 ///
 /// \author Will Blankemeyer

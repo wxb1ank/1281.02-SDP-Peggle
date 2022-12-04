@@ -1,8 +1,5 @@
 #include <game.hpp>
 
-#include <cassert>
-#include <cstdio>
-
 namespace game {
 
 /// \author Solomon Blair

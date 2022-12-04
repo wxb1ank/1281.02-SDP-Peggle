@@ -1,14 +1,7 @@
-#define _USE_MATH_DEFINES
-
 #include <game.hpp>
 
 #include <FEHLCD.hpp>
 #include <FEHRandom.h>
-
-#include <algorithm>
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
 
 namespace game {
 
@@ -127,19 +120,22 @@ Game::Result Game::play(game::Statistics &stats, const Level &level) {
         LCD.Update();
     }
 
-    if (orangePegsHit == totalOrangePegs) {
+    Result result;
+    if (orangePegsHit >= totalOrangePegs) {
+        result = Result::Win;
+    } else {
+        result = Result::Loss;
+    }
+
+    if (result == Result::Win) {
         score += 100;
+        stats.addWin();
     }
 
     stats.addOrangePegsHit(orangePegsHit);
     stats.addScore(score);
 
-    if (orangePegsHit == totalOrangePegs) {
-        stats.addWin();
-        return Result::Win;
-    } else {
-        return Result::Loss;
-    }
+    return result;
 }
 
 } // namespace game

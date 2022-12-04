@@ -10,19 +10,13 @@ namespace game {
 
 // Constructor for Peg class
 Peg::Peg(const Position center, float radius, const Peg::Color color)
-:   center{center}, radius{radius}, color{color}, status{Status::Unlit}
+:   center{center}, radius{radius}, status{Status::Unlit}, color{color}
 {}
 
 // returns color of peg
 Peg::Color Peg::getColor() const
 {
     return color;
-}
-
-// Returns radius of peg
-float Peg::getRadius() const
-{
-    return radius;
 }
 
 // Returns whther peg is active(1) or inactive(0)
@@ -41,12 +35,10 @@ void Peg::obliterate() {
     this->status = Status::Obliterated;
 }
 
-float Peg::getWidth() const {
-    return 2.f * this->radius;
-}
-
-float Peg::getHeight() const {
-    return 2.f * this->radius;
+// Returns radius of peg
+float Peg::getRadius() const
+{
+    return radius;
 }
 
 Position Peg::getCenter() const {
@@ -66,14 +58,14 @@ bool Peg::deflect(Velocity &vel, Position &pos) const {
 
         if(distance <= (this->radius + static_cast<float>(Ball::RADIUS)))
         {
-            float collisionAngle = atan(yDistance/xDistance);
+            float collisionAngle = std::atan(yDistance/xDistance);
             if(xDistance >= 0)
             {
-                collisionAngle += M_PI;
+                collisionAngle += static_cast<float>(M_PI);
             }
             const auto velMag = Obstacle::MOMENTUM_LOSS * vel.getMagnitude();
-            vel.x = velMag * cos(collisionAngle);
-            vel.y = velMag * sin(collisionAngle);
+            vel.x = velMag * std::cos(collisionAngle);
+            vel.y = velMag * std::sin(collisionAngle);
 
             return true;
         } else {

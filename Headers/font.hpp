@@ -51,6 +51,7 @@ public:
 
     /// \brief The width, in pixels, of a string rendered with the Proteus LCD font.
     ///
+    /// \param[in]  s   The string.
     /// \note This width *excludes* the left margin.
     /// \author Will Blankemeyer
     static std::size_t getWidthOf(const std::string &s);
