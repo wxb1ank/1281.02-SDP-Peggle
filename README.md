@@ -11,7 +11,7 @@
 
 ### Procedure
 
-Run `make` or `make all` in this directory. The build product will be written to either `./game` or `./game.exe` depending on the host platform.
+Run `make` or `make all` in this directory (you might have to run it twice). The build product will be written to either `./game` or `./game.exe` depending on the host platform.
 
 ## Credits
 

@@ -20,7 +20,7 @@ void Ball::shootAt(const Position target) {
     // We can't let the player shoot *too* high, because the X velocity necessary to compensate for
     // the low Y velocity would cause the ball to violently dart across the screen and probably
     // break everything.
-    if (this->pos.getAngleTo(target) >= Ball::MAX_SHOOT_ANGLE) {
+    if (std::abs(this->pos.getAngleTo(target)) >= Ball::MAX_SHOOT_ANGLE) {
         return;
     }
 
